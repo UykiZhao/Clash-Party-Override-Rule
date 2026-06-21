@@ -312,7 +312,7 @@ Shadowrocket 不能直接导入 `override.yaml`。`override.yaml` 使用的是 C
 
 | 文件 | 推荐场景 | DNS 策略 |
 | --- | --- | --- |
-| `shadowrocket-strict.conf` | 默认推荐，优先防 DNS 泄露 | 仅使用加密 DNS，禁用系统 DNS fallback，劫持常见 53 端口 DNS，UDP 不支持时拒绝 |
+| `shadowrocket-strict.conf` | 默认推荐，优先防 DNS 泄露 | 使用显式公共 DNS，禁用系统 DNS fallback，核心代理域名强制远程解析，劫持常见 53 端口 DNS，UDP 不支持时拒绝 |
 | `shadowrocket-compatible.conf` | 某些 App、局域网发现、Apple 服务或 UDP 兼容性异常时使用 | 仍禁用系统 DNS fallback 和保留 DNS 劫持，但放宽 UDP fallback 和 real-ip 例外 |
 
 Shadowrocket 配置不内置节点。VLESS、VMess、Trojan、Shadowsocks、Hysteria、TUIC、WireGuard 等协议由 Shadowrocket 自己的节点或订阅导入能力负责。本项目只负责规则、DNS 和策略组。
@@ -342,14 +342,15 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadow
 
 ### Shadowrocket DNS 防泄露重点
 
-严格版的目标是尽量避免 DNS 回落到运营商、路由器、系统 DNS、阿里 DNS 或腾讯 DNS：
+严格版的目标是先避免 DNS 回落到路由器、系统 DNS 或运营商自动下发 DNS，同时让海外代理域名通过代理侧远程解析：
 
-- 使用 Cloudflare / Google 的 DoH / DoT 作为 Shadowrocket DNS。
+- 使用显式 DNS 服务器，不使用 `system` 或路由器 DNS。
 - `dns-direct-system = false`，避免直连域名使用系统 DNS。
 - `dns-fallback-system = false`，避免解析失败时回落系统 DNS。
 - `dns-direct-fallback-proxy = true`，直连解析异常时允许通过代理兜底。
 - `hijack-dns` 劫持 `:53` 以及常见公共 DNS 的 53 端口。
-- `dnsleaktest.com`、`ipleak.net`、`browserleaks.com`、`dns.google`、`cloudflare-dns.com` 等域名强制走代理。
+- `dnsleaktest.com`、`ipleak.net`、`browserleaks.com`、`dns.google`、`cloudflare-dns.com` 等域名强制走代理并使用 `force-remote-dns`。
+- Google、GitHub、YouTube、OpenAI、Claude 等核心代理域名也显式使用 `force-remote-dns`，减少本地 DNS 污染和泄露。
 
 兼容版仍然保留上面的关键防泄露设置，但允许更多 real-ip 例外，并把 UDP 不支持时的行为从拒绝改为直连。它更容易兼容部分 App、局域网服务、Apple 推送和银行支付链路，但隐私强度低于严格版。
 
@@ -381,7 +382,7 @@ DNS 泄露测试：
 - https://www.dnsleaktest.com/
 - https://browserleaks.com/dns
 
-严格版的通过标准：结果中不应出现中国电信、联通、移动、校园网、路由器、本地网关、阿里 DNS、腾讯 DNS 等本地或中国 DNS。出现 Cloudflare / Google DNS 通常表示 Shadowrocket 正在使用配置中的加密 DNS；如果你要求“DNS 也必须显示代理节点所在地区”，需要后续改成节点提供商或自建的海外 DoH/DoT。
+严格版的通过标准：DNS 泄露测试页面中不应出现路由器、本地网关、系统 DNS、校园网或运营商自动下发 DNS。因为配置中显式包含国内公共 DNS，普通直连域名可能会使用阿里 / 腾讯 / 114 DNS；但 `dnsleaktest.com`、`ipleak.net`、`browserleaks.com` 这类测试域名本身应命中 `PROXY,force-remote-dns`。如果测试页仍显示 `192.168.x.x`、本地路由器或运营商 DNS，需要继续排查 Shadowrocket 是否启用了当前配置。
 
 ## 项目文件
 
