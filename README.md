@@ -1,6 +1,6 @@
 # Clash Party Override Rule
 
-面向 Clash Party / mihomo 的订阅覆写配置，适合单节点订阅，尤其是 3X-UI 创建的 VLESS + Reality + Vision 节点。配置重点是中国直连、海外默认代理、AI 平台细化、国内敏感业务直连和 DNS 泄露防护。
+面向 Clash Party / mihomo 的订阅覆写配置。配置重点是直连、海外默认代理、AI 平台细化、国内敏感业务直连和 DNS 泄露防护。
 
 ## 目标
 
