@@ -1,0 +1,780 @@
+# ============================================================
+# Clash Party 覆写配置 - 3X-UI VLESS + Reality + Vision 单美国节点
+# 目标：国内直连 / 其他走美国节点 / DNS 防泄露 / 规则集自动更新
+# 说明：这是 Clash Party YAML 覆写文件，不是独立 mihomo 配置文件。
+# ============================================================
+
+mode: rule
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# ============================================================
+# TUN 与 DNS 防泄露
+# Windows 下 strict-route 会添加防火墙规则，降低多宿主 DNS 泄露风险。
+# 如 Clash Party 未以管理员权限运行导致 TUN 启动失败，可在 GUI 中开启 TUN
+# 或把 tun.enable 改为 false，仅使用系统代理。
+# ============================================================
+tun!:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+  strict-route: true
+
+dns!:
+  enable: true
+  listen: 0.0.0.0:1053
+  ipv6: false
+  prefer-h3: false
+  use-hosts: true
+  use-system-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - "geosite:private"
+    - "geosite:cn"
+    - "geosite:apple-cn"
+    - "geosite:microsoft@cn"
+    - "geosite:steam@cn"
+    - "geosite:category-games@cn"
+    - "+.lan"
+    - "+.local"
+    - "+.localhost"
+    - "localhost.ptlogin2.qq.com"
+    - "dns.msftncsi.com"
+    - "www.msftconnecttest.com"
+    - "*.msftconnecttest.com"
+    - "*.msftncsi.com"
+    - "+.market.xiaomi.com"
+    - "+.push.apple.com"
+    - "time.*.com"
+    - "time.*.gov"
+    - "time.*.edu.cn"
+    - "time.*.apple.com"
+    - "time1.*.com"
+    - "time2.*.com"
+    - "time3.*.com"
+    - "time4.*.com"
+    - "time5.*.com"
+    - "time6.*.com"
+    - "time7.*.com"
+    - "*.ntp.org.cn"
+    - "*.pool.ntp.org"
+
+  # 仅用于解析 DNS 服务器域名，必须是 IP 或基于 IP 的加密 DNS。
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+    - tls://223.5.5.5
+
+  # 默认 DNS 用国内加密 DNS；代理域名在 fake-ip + 规则命中后不会泄露给这里。
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+
+  # DIRECT 出口使用国内 DNS，保证国内 CDN 命中。
+  direct-nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  direct-nameserver-follow-policy: true
+
+  # respect-rules 需要 proxy-server-nameserver，避免节点域名解析进入代理递归。
+  proxy-server-nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+
+  # 国内域名走国内 DNS；明确代理域名走海外 DoH，并由规则送进代理。
+  nameserver-policy:
+    "geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn,google-cn":
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    "rule-set:domestic_sensitive,domestic_ai_domain":
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    "rule-set:ai_static,ai_acl4ssr,openai_acl4ssr,ai_domain,openai_domain,anthropic_domain,telegram_domain,youtube_domain,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn":
+      - https://cloudflare-dns.com/dns-query
+      - https://dns.google/dns-query
+
+  respect-rules: true
+
+# ============================================================
+# Geo 数据库
+# ============================================================
+geodata-mode: true
+geox-url!:
+  geoip: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
+  asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
+geo-auto-update: true
+geo-update-interval: 24
+
+# ============================================================
+# 代理组：单美国节点场景，无需地区分组
+# ============================================================
+proxy-groups:
+  - name: "🚀 节点选择"
+    type: select
+    proxies:
+      - "♻️ 自动选择"
+      - "🌐 全部节点"
+      - DIRECT
+
+  - name: "♻️ 自动选择"
+    type: url-test
+    include-all: true
+    exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+    tolerance: 50
+    timeout: 5000
+
+  - name: "🌐 全部节点"
+    type: select
+    include-all: true
+    exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
+
+  - name: "🤖 AI 平台"
+    type: select
+    proxies:
+      - "🚀 节点选择"
+      - "♻️ 自动选择"
+      - "🌐 全部节点"
+      - DIRECT
+
+  - name: "📲 电报消息"
+    type: select
+    proxies:
+      - "🚀 节点选择"
+      - "♻️ 自动选择"
+      - "🌐 全部节点"
+      - DIRECT
+
+  - name: "📹 油管视频"
+    type: select
+    proxies:
+      - "🚀 节点选择"
+      - "♻️ 自动选择"
+      - "🌐 全部节点"
+      - DIRECT
+
+  - name: "🎬 流媒体解锁"
+    type: select
+    proxies:
+      - "🚀 节点选择"
+      - "♻️ 自动选择"
+      - "🌐 全部节点"
+      - DIRECT
+
+  - name: "Ⓜ️ 微软服务"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 节点选择"
+      - "♻️ 自动选择"
+      - "🌐 全部节点"
+
+  - name: "🍎 苹果服务"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 节点选择"
+      - "♻️ 自动选择"
+      - "🌐 全部节点"
+
+  - name: "🛑 广告拦截"
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: "🎯 全球直连"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 节点选择"
+
+  - name: "🐟 漏网之鱼"
+    type: select
+    proxies:
+      - "🚀 节点选择"
+      - "♻️ 自动选择"
+      - "🌐 全部节点"
+      - DIRECT
+
+# ============================================================
+# 规则集
+# 主要使用 MetaCubeX .mrs，避免 classical 文本规则被误声明成 domain/ipcidr。
+# ============================================================
+rule-providers!:
+  private_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/private_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs"
+
+  private_ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/private_ip.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs"
+
+  cn_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/cn_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/cn.mrs"
+
+  cn_ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/cn_ip.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/cn.mrs"
+
+  domestic_sensitive:
+    type: inline
+    behavior: classical
+    payload:
+      # 政务 / 公共服务
+      - "DOMAIN-SUFFIX,gov.cn"
+      - "DOMAIN-SUFFIX,12306.cn"
+      - "DOMAIN-SUFFIX,12333.gov.cn"
+      - "DOMAIN-SUFFIX,chinatax.gov.cn"
+      - "DOMAIN-SUFFIX,nhsa.gov.cn"
+      - "DOMAIN-SUFFIX,mohrss.gov.cn"
+      - "DOMAIN-SUFFIX,mps.gov.cn"
+      - "DOMAIN-SUFFIX,miit.gov.cn"
+      - "DOMAIN-SUFFIX,samr.gov.cn"
+      - "DOMAIN-SUFFIX,nmpa.gov.cn"
+      - "DOMAIN-SUFFIX,customs.gov.cn"
+      - "DOMAIN-SUFFIX,pbc.gov.cn"
+      - "DOMAIN-SUFFIX,safe.gov.cn"
+      - "DOMAIN-SUFFIX,gjj.gov.cn"
+      - "DOMAIN-SUFFIX,creditchina.gov.cn"
+      # 支付 / 清算
+      - "DOMAIN-SUFFIX,alipay.com"
+      - "DOMAIN-SUFFIX,alipayobjects.com"
+      - "DOMAIN-SUFFIX,tenpay.com"
+      - "DOMAIN-SUFFIX,wechatpay.cn"
+      - "DOMAIN-SUFFIX,wechatpay.com.cn"
+      - "DOMAIN-SUFFIX,unionpay.com"
+      - "DOMAIN-SUFFIX,unionpayintl.com"
+      - "DOMAIN-SUFFIX,95516.com"
+      - "DOMAIN-SUFFIX,chinaums.com"
+      - "DOMAIN-SUFFIX,lakala.com"
+      - "DOMAIN-SUFFIX,duxiaoman.com"
+      - "DOMAIN-SUFFIX,jdpay.com"
+      - "DOMAIN-SUFFIX,chinapay.com"
+      - "DOMAIN-SUFFIX,netpay.com.cn"
+      - "DOMAIN-SUFFIX,yeepay.com"
+      - "DOMAIN-SUFFIX,99bill.com"
+      # 全国性银行 / 常见股份制银行
+      - "DOMAIN-SUFFIX,icbc.com.cn"
+      - "DOMAIN-SUFFIX,abchina.com"
+      - "DOMAIN-SUFFIX,boc.cn"
+      - "DOMAIN-SUFFIX,bankofchina.com"
+      - "DOMAIN-SUFFIX,ccb.com"
+      - "DOMAIN-SUFFIX,ccb.cn"
+      - "DOMAIN-SUFFIX,cmbchina.com"
+      - "DOMAIN-SUFFIX,bankcomm.com"
+      - "DOMAIN-SUFFIX,psbc.com"
+      - "DOMAIN-SUFFIX,spdb.com.cn"
+      - "DOMAIN-SUFFIX,cib.com.cn"
+      - "DOMAIN-SUFFIX,citicbank.com"
+      - "DOMAIN-SUFFIX,cebbank.com"
+      - "DOMAIN-SUFFIX,bank.pingan.com"
+      - "DOMAIN-SUFFIX,pingan.com"
+      - "DOMAIN-SUFFIX,hxb.com.cn"
+      - "DOMAIN-SUFFIX,cgbchina.com.cn"
+      - "DOMAIN-SUFFIX,cmbc.com.cn"
+      - "DOMAIN-SUFFIX,bob.com.cn"
+      - "DOMAIN-SUFFIX,srcb.com"
+      - "DOMAIN-SUFFIX,bankofbeijing.com.cn"
+      - "DOMAIN-SUFFIX,bankofshanghai.com"
+      - "DOMAIN-SUFFIX,nbcb.com.cn"
+      - "DOMAIN-SUFFIX,czbank.com"
+
+  domestic_ai_domain:
+    type: inline
+    behavior: classical
+    payload:
+      # 中国 AI 服务直连，避免被美国出口触发风控或绕路。
+      - "DOMAIN-SUFFIX,deepseek.com"
+      - "DOMAIN-SUFFIX,deepseek.ai"
+      - "DOMAIN-SUFFIX,moonshot.cn"
+      - "DOMAIN-SUFFIX,kimi.moonshot.cn"
+      - "DOMAIN-SUFFIX,qwen.ai"
+      - "DOMAIN-SUFFIX,tongyi.aliyun.com"
+      - "DOMAIN-SUFFIX,dashscope.aliyun.com"
+      - "DOMAIN-SUFFIX,modelscope.cn"
+      - "DOMAIN-SUFFIX,doubao.com"
+      - "DOMAIN-SUFFIX,volcengine.com"
+      - "DOMAIN-SUFFIX,coze.cn"
+      - "DOMAIN-SUFFIX,yuanbao.tencent.com"
+      - "DOMAIN-SUFFIX,hunyuan.tencent.com"
+      - "DOMAIN-SUFFIX,ima.qq.com"
+      - "DOMAIN-SUFFIX,wenxin.baidu.com"
+      - "DOMAIN-SUFFIX,yiyan.baidu.com"
+      - "DOMAIN-SUFFIX,zhipuai.cn"
+      - "DOMAIN-SUFFIX,chatglm.cn"
+      - "DOMAIN-SUFFIX,bigmodel.cn"
+      - "DOMAIN-SUFFIX,minimax.chat"
+      - "DOMAIN-SUFFIX,minimaxi.com"
+      - "DOMAIN-SUFFIX,siliconflow.cn"
+      - "DOMAIN-SUFFIX,tiangong.cn"
+      - "DOMAIN-SUFFIX,xfyun.cn"
+
+  geolocation_not_cn:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/geolocation_not_cn.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/geolocation-!cn.mrs"
+
+  ai_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/ai_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ai-!cn.mrs"
+
+  openai_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/openai_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/openai.mrs"
+
+  anthropic_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/anthropic_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/anthropic.mrs"
+
+  ai_acl4ssr:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    path: ./ruleset/override/ai_acl4ssr.list
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/AI.list"
+
+  openai_acl4ssr:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    path: ./ruleset/override/openai_acl4ssr.list
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/OpenAi.list"
+
+  ai_static:
+    type: inline
+    behavior: classical
+    payload:
+      # OpenAI / ChatGPT
+      - "DOMAIN-SUFFIX,openai.com"
+      - "DOMAIN-SUFFIX,chatgpt.com"
+      - "DOMAIN-SUFFIX,oaistatic.com"
+      - "DOMAIN-SUFFIX,oaiusercontent.com"
+      - "DOMAIN-SUFFIX,chat.openai.com"
+      - "DOMAIN-SUFFIX,api.openai.com"
+      - "DOMAIN-SUFFIX,auth.openai.com"
+      - "DOMAIN-SUFFIX,platform.openai.com"
+      - "DOMAIN-SUFFIX,openaiapi-site.azureedge.net"
+      - "DOMAIN-SUFFIX,client-api.arkoselabs.com"
+      - "DOMAIN-SUFFIX,challenges.cloudflare.com"
+      # Anthropic / Claude
+      - "DOMAIN-SUFFIX,anthropic.com"
+      - "DOMAIN-SUFFIX,claude.ai"
+      - "DOMAIN-SUFFIX,claudeusercontent.com"
+      # Google Gemini / NotebookLM / DeepMind
+      - "DOMAIN-SUFFIX,gemini.google.com"
+      - "DOMAIN-SUFFIX,aistudio.google.com"
+      - "DOMAIN-SUFFIX,ai.google.dev"
+      - "DOMAIN-SUFFIX,generativelanguage.googleapis.com"
+      - "DOMAIN-SUFFIX,bard.google.com"
+      - "DOMAIN-SUFFIX,labs.google"
+      - "DOMAIN-SUFFIX,notebooklm.google.com"
+      - "DOMAIN-SUFFIX,notebooklm.google"
+      - "DOMAIN-SUFFIX,deepmind.com"
+      - "DOMAIN-SUFFIX,deepmind.google"
+      # Microsoft Copilot / Bing AI
+      - "DOMAIN-SUFFIX,copilot.microsoft.com"
+      - "DOMAIN-SUFFIX,copilot.cloud.microsoft"
+      - "DOMAIN-SUFFIX,sydney.bing.com"
+      - "DOMAIN-SUFFIX,bing.com"
+      - "DOMAIN-KEYWORD,copilot"
+      # GitHub Copilot
+      - "DOMAIN-SUFFIX,githubcopilot.com"
+      - "DOMAIN-SUFFIX,api.githubcopilot.com"
+      - "DOMAIN-SUFFIX,copilot-proxy.githubusercontent.com"
+      - "DOMAIN-SUFFIX,copilot-telemetry.githubusercontent.com"
+      # Common overseas AI products
+      - "DOMAIN-SUFFIX,perplexity.ai"
+      - "DOMAIN-SUFFIX,pplx.ai"
+      - "DOMAIN-SUFFIX,poe.com"
+      - "DOMAIN-SUFFIX,quora.com"
+      - "DOMAIN-SUFFIX,x.ai"
+      - "DOMAIN-SUFFIX,grok.com"
+      - "DOMAIN-SUFFIX,openrouter.ai"
+      - "DOMAIN-SUFFIX,mistral.ai"
+      - "DOMAIN-SUFFIX,cohere.com"
+      - "DOMAIN-SUFFIX,cohere.ai"
+      - "DOMAIN-SUFFIX,huggingface.co"
+      - "DOMAIN-SUFFIX,hf.co"
+      - "DOMAIN-SUFFIX,replicate.com"
+      - "DOMAIN-SUFFIX,replicate.delivery"
+      # AI coding
+      - "DOMAIN-SUFFIX,cursor.com"
+      - "DOMAIN-SUFFIX,cursor.sh"
+      - "DOMAIN-SUFFIX,cursorapi.com"
+      - "DOMAIN-SUFFIX,cursor-cdn.com"
+      - "DOMAIN-SUFFIX,windsurf.com"
+      - "DOMAIN-SUFFIX,codeium.com"
+      - "DOMAIN-SUFFIX,codeiumdata.com"
+      # AI image / audio / video
+      - "DOMAIN-SUFFIX,midjourney.com"
+      - "DOMAIN-SUFFIX,stability.ai"
+      - "DOMAIN-SUFFIX,runwayml.com"
+      - "DOMAIN-SUFFIX,ideogram.ai"
+      - "DOMAIN-SUFFIX,leonardo.ai"
+      - "DOMAIN-SUFFIX,elevenlabs.io"
+      - "DOMAIN-SUFFIX,suno.com"
+      - "DOMAIN-SUFFIX,suno.ai"
+      - "DOMAIN-SUFFIX,udio.com"
+
+  telegram_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/telegram_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/telegram.mrs"
+
+  telegram_ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/telegram_ip.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/telegram.mrs"
+
+  youtube_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/youtube_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/youtube.mrs"
+
+  streaming_static:
+    type: inline
+    behavior: classical
+    payload:
+      - "DOMAIN-SUFFIX,max.com"
+      - "DOMAIN-SUFFIX,hbomax.com"
+      - "DOMAIN-SUFFIX,maxgo.com"
+      - "DOMAIN-SUFFIX,peacocktv.com"
+      - "DOMAIN-SUFFIX,paramountplus.com"
+      - "DOMAIN-SUFFIX,cbsaavideo.com"
+      - "DOMAIN-SUFFIX,pluto.tv"
+      - "DOMAIN-SUFFIX,tubi.tv"
+      - "DOMAIN-SUFFIX,crunchyroll.com"
+      - "DOMAIN-SUFFIX,funimation.com"
+      - "DOMAIN-SUFFIX,discoveryplus.com"
+      - "DOMAIN-SUFFIX,dplus.com"
+      - "DOMAIN-SUFFIX,tv.apple.com"
+      - "DOMAIN-SUFFIX,atv-ps.amazon.com"
+      - "DOMAIN-SUFFIX,primevideo.com"
+      - "DOMAIN-SUFFIX,pv-cdn.net"
+
+  netflix_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/netflix_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/netflix.mrs"
+
+  disney_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/disney_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/disney.mrs"
+
+  hbo_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/hbo_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/hbo.mrs"
+
+  hulu_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/hulu_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/hulu.mrs"
+
+  primevideo_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/primevideo_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/primevideo.mrs"
+
+  spotify_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/spotify_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/spotify.mrs"
+
+  tiktok_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/tiktok_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/tiktok.mrs"
+
+  apple_tv_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/apple_tv_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/apple-tvplus.mrs"
+
+  discoveryplus_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/discoveryplus_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/discoveryplus.mrs"
+
+  bahamut_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/bahamut_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/bahamut.mrs"
+
+  biliintl_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/biliintl_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/biliintl.mrs"
+
+  google_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/google_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/google.mrs"
+
+  google_cn_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/google_cn_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/google-cn.mrs"
+
+  github_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/github_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/github.mrs"
+
+  apple_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/apple_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/apple.mrs"
+
+  apple_cn_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/apple_cn_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/apple-cn.mrs"
+
+  microsoft_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/microsoft_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/microsoft.mrs"
+
+  microsoft_cn_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/microsoft_cn_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/microsoft@cn.mrs"
+
+  onedrive_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/onedrive_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/onedrive.mrs"
+
+  steam_cn_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/steam_cn_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/steam@cn.mrs"
+
+  games_cn_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/games_cn_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-games@cn.mrs"
+
+  ads_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/ads_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs"
+
+  prevent_dns_leak:
+    type: http
+    behavior: domain
+    format: text
+    interval: 86400
+    path: ./ruleset/override/prevent_dns_leak.list
+    url: "https://raw.githubusercontent.com/xishang0128/rules/main/clash%20or%20stash/prevent_dns_leak/prevent_dns_leak_domain.list"
+
+# ============================================================
+# 路由规则：从上到下匹配，域名规则优先，IP 规则带 no-resolve。
+# ============================================================
+rules:
+  # 内网 / 局域网直连
+  - "RULE-SET,private_domain,🎯 全球直连"
+  - "RULE-SET,private_ip,🎯 全球直连,no-resolve"
+  - "GEOSITE,private,🎯 全球直连"
+  - "GEOIP,private,🎯 全球直连,no-resolve"
+  - "DOMAIN-SUFFIX,msftconnecttest.com,🎯 全球直连"
+  - "DOMAIN-SUFFIX,msftncsi.com,🎯 全球直连"
+
+  # DoH / DNS 泄露检测域名必须走代理，避免测试和海外 DNS 查询走直连。
+  - "DOMAIN-SUFFIX,cloudflare-dns.com,🚀 节点选择"
+  - "DOMAIN-SUFFIX,dns.cloudflare.com,🚀 节点选择"
+  - "DOMAIN-SUFFIX,dns.google,🚀 节点选择"
+  - "DOMAIN-SUFFIX,one.one.one.one,🚀 节点选择"
+  - "DOMAIN-SUFFIX,dns.quad9.net,🚀 节点选择"
+  - "DOMAIN-SUFFIX,doh.opendns.com,🚀 节点选择"
+  - "DOMAIN-SUFFIX,ipleak.net,🚀 节点选择"
+  - "DOMAIN-SUFFIX,browserleaks.com,🚀 节点选择"
+  - "DOMAIN-SUFFIX,dnsleaktest.com,🚀 节点选择"
+  - "DOMAIN-SUFFIX,dnsleak.com,🚀 节点选择"
+  - "RULE-SET,prevent_dns_leak,🚀 节点选择"
+
+  # 国内支付 / 银行 / 政务 / 中国 AI 服务优先直连，避免风控和绕路。
+  - "RULE-SET,domestic_sensitive,🎯 全球直连"
+  - "RULE-SET,domestic_ai_domain,🎯 全球直连"
+
+  # 广告
+  - "RULE-SET,ads_domain,🛑 广告拦截"
+
+  # AI / 通讯 / 视频 / 开发服务：默认走美国节点
+  - "RULE-SET,ai_static,🤖 AI 平台"
+  - "RULE-SET,ai_acl4ssr,🤖 AI 平台"
+  - "RULE-SET,openai_acl4ssr,🤖 AI 平台"
+  - "RULE-SET,ai_domain,🤖 AI 平台"
+  - "RULE-SET,openai_domain,🤖 AI 平台"
+  - "RULE-SET,anthropic_domain,🤖 AI 平台"
+  - "DOMAIN-KEYWORD,openai,🤖 AI 平台"
+  - "DOMAIN-KEYWORD,chatgpt,🤖 AI 平台"
+  - "DOMAIN-KEYWORD,anthropic,🤖 AI 平台"
+  - "DOMAIN-KEYWORD,claude,🤖 AI 平台"
+  - "DOMAIN-SUFFIX,ai.com,🤖 AI 平台"
+  - "RULE-SET,telegram_domain,📲 电报消息"
+  - "RULE-SET,telegram_ip,📲 电报消息,no-resolve"
+  - "RULE-SET,youtube_domain,📹 油管视频"
+
+  # 流媒体解锁：单美国节点下统一走美国出口。
+  - "RULE-SET,streaming_static,🎬 流媒体解锁"
+  - "RULE-SET,netflix_domain,🎬 流媒体解锁"
+  - "RULE-SET,disney_domain,🎬 流媒体解锁"
+  - "RULE-SET,hbo_domain,🎬 流媒体解锁"
+  - "RULE-SET,hulu_domain,🎬 流媒体解锁"
+  - "RULE-SET,primevideo_domain,🎬 流媒体解锁"
+  - "RULE-SET,spotify_domain,🎬 流媒体解锁"
+  - "RULE-SET,tiktok_domain,🎬 流媒体解锁"
+  - "RULE-SET,apple_tv_domain,🎬 流媒体解锁"
+  - "RULE-SET,discoveryplus_domain,🎬 流媒体解锁"
+  - "RULE-SET,bahamut_domain,🎬 流媒体解锁"
+  - "RULE-SET,biliintl_domain,🎬 流媒体解锁"
+
+  - "RULE-SET,github_domain,🚀 节点选择"
+  - "RULE-SET,google_cn_domain,🎯 全球直连"
+  - "RULE-SET,google_domain,🚀 节点选择"
+
+  # 微软 / 苹果：默认直连，但可在策略组里手动切到代理。
+  - "RULE-SET,microsoft_cn_domain,Ⓜ️ 微软服务"
+  - "RULE-SET,onedrive_domain,Ⓜ️ 微软服务"
+  - "RULE-SET,microsoft_domain,Ⓜ️ 微软服务"
+  - "RULE-SET,apple_cn_domain,🍎 苹果服务"
+  - "RULE-SET,apple_domain,🍎 苹果服务"
+
+  # 常见中国接入点和国内域名/IP 直连
+  - "RULE-SET,steam_cn_domain,🎯 全球直连"
+  - "RULE-SET,games_cn_domain,🎯 全球直连"
+  - "RULE-SET,cn_domain,🎯 全球直连"
+  - "GEOSITE,cn,🎯 全球直连"
+  - "RULE-SET,cn_ip,🎯 全球直连,no-resolve"
+  - "GEOIP,CN,🎯 全球直连,no-resolve"
+
+  # 明确非中国域名和其他漏网流量默认走美国节点。
+  - "RULE-SET,geolocation_not_cn,🚀 节点选择"
+  - "MATCH,🐟 漏网之鱼"
