@@ -761,9 +761,15 @@ rules:
   - "RULE-SET,google_domain,🚀 节点选择"
 
   # 微软 / 苹果：默认直连，但可在策略组里手动切到代理。
+  # Apple TV+ 已在上方流媒体规则中优先匹配，这里只兜底基础 Apple / iCloud 服务。
   - "RULE-SET,microsoft_cn_domain,Ⓜ️ 微软服务"
   - "RULE-SET,onedrive_domain,Ⓜ️ 微软服务"
   - "RULE-SET,microsoft_domain,Ⓜ️ 微软服务"
+  - "DOMAIN-SUFFIX,icloud.com,🍎 苹果服务"
+  - "DOMAIN-SUFFIX,icloud.com.cn,🍎 苹果服务"
+  - "DOMAIN-SUFFIX,apple.com,🍎 苹果服务"
+  - "DOMAIN-SUFFIX,mzstatic.com,🍎 苹果服务"
+  - "DOMAIN-SUFFIX,itunes.com,🍎 苹果服务"
   - "RULE-SET,apple_cn_domain,🍎 苹果服务"
   - "RULE-SET,apple_domain,🍎 苹果服务"
 
