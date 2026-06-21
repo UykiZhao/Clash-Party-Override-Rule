@@ -1,6 +1,6 @@
 # Clash Party Override Rule
 
-这是给 Clash Party / mihomo 使用的订阅覆写规则，适合只有一个美国节点，或希望简化为“中国直连、海外代理”的场景。
+这是给 Clash Party / mihomo 使用的订阅覆写规则，也提供适配 Shadowrocket 的 iOS 配置。适合希望简化为“中国直连、海外代理”的场景。
 
 配置重点：
 
@@ -8,17 +8,18 @@
 - 海外 AI、Google、GitHub、Telegram、YouTube、流媒体解锁走代理
 - 国内支付、银行、政务、中国 AI 服务明确直连
 - 未匹配流量默认走代理
-- 使用 fake-ip、TUN DNS hijack、strict-route、respect-rules 和 no-resolve 降低 DNS 泄露风险
+- Clash Party 使用 fake-ip、TUN DNS hijack、strict-route、respect-rules 和 no-resolve 降低 DNS 泄露风险
+- Shadowrocket 使用独立 `.conf` 配置，兼容单节点、多节点和 Shadowrocket 支持的多种代理协议
 
-如果只是想完成设置，按下面的“快速配置步骤”操作即可。后面的规则说明和故障排查用于后续优化。
+如果使用 Clash Party，按下面的“Clash Party 快速配置步骤”操作。若使用 Shadowrocket，直接跳到“Shadowrocket iOS 配置”。
 
-## 快速配置步骤
+## Clash Party 快速配置步骤
 
 ### 第 1 步：准备订阅
 
 先确认你的代理订阅在 Clash Party 中可以正常导入，并且节点本身可用。
 
-本项目只提供覆写规则，不提供节点。如果 VLESS + Reality + Vision 节点本身连不上，先检查订阅或节点配置。
+本项目只提供规则和 DNS 配置，不提供节点。如果某个节点或订阅协议本身连不上，先检查订阅、节点字段或客户端对该协议的支持。
 
 ### 第 2 步：导入覆写文件
 
@@ -252,9 +253,9 @@ can't resolve ip: couldn't find ip
 
 如果真实节点名称刚好包含这些词，删除 `exclude-filter` 后再更新订阅。
 
-### VLESS + Reality + Vision 节点连不上
+### 某个协议节点连不上
 
-这通常不是规则问题。检查订阅转换后的节点字段：
+这通常不是规则问题。以 VLESS + Reality + Vision 为例，检查订阅转换后的节点字段：
 
 - `type: vless`
 - `tls: true`
@@ -264,6 +265,8 @@ can't resolve ip: couldn't find ip
 - `reality-opts.short-id`
 - `client-fingerprint: chrome`
 - Clash Party 使用的 mihomo 内核版本足够新
+
+如果使用 Shadowrocket，则由 Shadowrocket 自己负责解析节点或订阅。VMess、Trojan、Shadowsocks、Hysteria、TUIC、WireGuard 等协议同理：先确认客户端版本支持该协议，再确认订阅字段没有在转换过程中丢失。
 
 ### 微软或苹果服务访问异常
 
@@ -301,9 +304,92 @@ DeepSeek、Kimi、通义千问、豆包、腾讯元宝、文心一言等中国 A
 - 不同机场订阅的节点命名不同，如果策略组为空，优先检查节点是否被 `exclude-filter` 过滤。
 - 机场订阅更新后，确认该订阅仍然绑定了本项目覆写。
 
+## Shadowrocket iOS 配置
+
+Shadowrocket 不能直接导入 `override.yaml`。`override.yaml` 使用的是 Clash Party / mihomo 覆写语法，里面的 `dns!`、`tun!`、`rule-providers!`、`.mrs`、`GEOSITE` 等能力不属于 Shadowrocket 配置格式。
+
+本项目为 Shadowrocket 提供两份独立配置：
+
+| 文件 | 推荐场景 | DNS 策略 |
+| --- | --- | --- |
+| `shadowrocket-strict.conf` | 默认推荐，优先防 DNS 泄露 | 仅使用加密 DNS，禁用系统 DNS fallback，劫持常见 53 端口 DNS，UDP 不支持时拒绝 |
+| `shadowrocket-compatible.conf` | 某些 App、局域网发现、Apple 服务或 UDP 兼容性异常时使用 | 仍禁用系统 DNS fallback 和保留 DNS 劫持，但放宽 UDP fallback 和 real-ip 例外 |
+
+Shadowrocket 配置不内置节点。VLESS、VMess、Trojan、Shadowsocks、Hysteria、TUIC、WireGuard 等协议由 Shadowrocket 自己的节点或订阅导入能力负责。本项目只负责规则、DNS 和策略组。
+
+### 导入方式
+
+先在 Shadowrocket 中导入你的节点或机场订阅，确认节点本身可用。然后导入下面任意一份配置：
+
+```text
+https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadowrocket-strict.conf
+```
+
+或兼容版：
+
+```text
+https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadowrocket-compatible.conf
+```
+
+导入后检查策略组：
+
+- `ALL`：显示 Shadowrocket 中已导入的全部节点。
+- `AUTO`：对全部节点做 URL 测速。
+- `AI`、`Telegram`、`YouTube`、`Streaming`：默认走 `PROXY` / `AUTO` / `ALL`，也可以手动切 `DIRECT`。
+- `Microsoft`、`Apple`：默认直连优先；Copilot、Bing AI、GitHub Copilot 会被更高优先级的 AI 规则送去代理。
+
+如果你的订阅里有“流量、到期、官网”等信息节点，Shadowrocket 可能也会把它们显示到 `ALL` 或 `AUTO` 中。此时在 Shadowrocket 内手动选择真实节点，或按自己的节点命名习惯调整 `policy-regex-filter`。
+
+### Shadowrocket DNS 防泄露重点
+
+严格版的目标是尽量避免 DNS 回落到运营商、路由器、系统 DNS、阿里 DNS 或腾讯 DNS：
+
+- 使用 Cloudflare / Google 的 DoH / DoT 作为 Shadowrocket DNS。
+- `dns-direct-system = false`，避免直连域名使用系统 DNS。
+- `dns-fallback-system = false`，避免解析失败时回落系统 DNS。
+- `dns-direct-fallback-proxy = true`，直连解析异常时允许通过代理兜底。
+- `hijack-dns` 劫持 `:53` 以及常见公共 DNS 的 53 端口。
+- `dnsleaktest.com`、`ipleak.net`、`browserleaks.com`、`dns.google`、`cloudflare-dns.com` 等域名强制走代理。
+
+兼容版仍然保留上面的关键防泄露设置，但允许更多 real-ip 例外，并把 UDP 不支持时的行为从拒绝改为直连。它更容易兼容部分 App、局域网服务、Apple 推送和银行支付链路，但隐私强度低于严格版。
+
+如果启用了 iCloud Private Relay、某些 App 内置 DoH、浏览器安全 DNS、第三方 DNS 描述文件或企业 VPN 描述文件，DNS 行为可能绕过 Shadowrocket。排查 DNS 泄露时建议先关闭这些额外 DNS/VPN 功能。
+
+### Shadowrocket 验证
+
+导入后在 Shadowrocket 日志中检查规则命中：
+
+| 测试域名 | 预期策略 |
+| --- | --- |
+| `baidu.com` | `DIRECT` |
+| `bilibili.com` | `DIRECT` |
+| `deepseek.com` | `DIRECT` |
+| `alipay.com` | `DIRECT` |
+| `gov.cn` | `DIRECT` |
+| `google.com` | `PROXY` |
+| `github.com` | `PROXY` |
+| `chatgpt.com` | `AI` / `PROXY` |
+| `claude.ai` | `AI` / `PROXY` |
+| `youtube.com` | `YouTube` / `PROXY` |
+| `netflix.com` | `Streaming` / `PROXY` |
+| `dns.google` | `PROXY` |
+| `cloudflare-dns.com` | `PROXY` |
+
+DNS 泄露测试：
+
+- https://ipleak.net/
+- https://www.dnsleaktest.com/
+- https://browserleaks.com/dns
+
+严格版的通过标准：结果中不应出现中国电信、联通、移动、校园网、路由器、本地网关、阿里 DNS、腾讯 DNS 等本地或中国 DNS。出现 Cloudflare / Google DNS 通常表示 Shadowrocket 正在使用配置中的加密 DNS；如果你要求“DNS 也必须显示代理节点所在地区”，需要后续改成节点提供商或自建的海外 DoH/DoT。
+
 ## 项目文件
 
 - `override.yaml`：Clash Party YAML 覆写文件
+- `shadowrocket-strict.conf`：Shadowrocket 严格防 DNS 泄露配置
+- `shadowrocket-compatible.conf`：Shadowrocket 兼容性优先配置
+- `rules/shadowrocket/direct-supplement.list`：Shadowrocket 国内支付、银行、政务、中国 AI 直连补充规则
+- `rules/shadowrocket/proxy-supplement.list`：Shadowrocket DNS 泄露检测、公共 DoH/DoT、海外 AI、流媒体代理补充规则
 - `.gitignore`：忽略本地日志软链、系统文件和临时文件
 
 ## 参考资料
@@ -317,3 +403,6 @@ DeepSeek、Kimi、通义千问、豆包、腾讯元宝、文心一言等中国 A
 - mihomo VLESS 文档：https://wiki.metacubex.one/en/config/proxies/vless/
 - MetaCubeX 规则数据：https://github.com/MetaCubeX/meta-rules-dat
 - ACL4SSR 规则集：https://github.com/ACL4SSR/ACL4SSR
+- Shadowrocket App Store：https://apps.apple.com/app/shadowrocket/id932747118
+- Shadowrocket 默认配置示例：https://github.com/Shadowrocket/config
+- blackmatrix7 iOS 规则集：https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Shadowrocket
