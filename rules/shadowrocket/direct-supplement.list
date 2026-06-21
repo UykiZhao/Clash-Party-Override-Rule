@@ -1,0 +1,92 @@
+# NAME: DirectSupplement
+# AUTHOR: UykiZhao
+# REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
+# UPDATED: 2026-06-21
+# PURPOSE: China-sensitive direct rules for payment, banking, government, and domestic AI.
+
+# Government and public services
+DOMAIN-SUFFIX,gov.cn
+DOMAIN-SUFFIX,12306.cn
+DOMAIN-SUFFIX,12333.gov.cn
+DOMAIN-SUFFIX,chinatax.gov.cn
+DOMAIN-SUFFIX,nhsa.gov.cn
+DOMAIN-SUFFIX,mohrss.gov.cn
+DOMAIN-SUFFIX,mps.gov.cn
+DOMAIN-SUFFIX,miit.gov.cn
+DOMAIN-SUFFIX,samr.gov.cn
+DOMAIN-SUFFIX,nmpa.gov.cn
+DOMAIN-SUFFIX,customs.gov.cn
+DOMAIN-SUFFIX,pbc.gov.cn
+DOMAIN-SUFFIX,safe.gov.cn
+DOMAIN-SUFFIX,gjj.gov.cn
+DOMAIN-SUFFIX,creditchina.gov.cn
+
+# Payment and clearing
+DOMAIN-SUFFIX,alipay.com
+DOMAIN-SUFFIX,alipayobjects.com
+DOMAIN-SUFFIX,tenpay.com
+DOMAIN-SUFFIX,wechatpay.cn
+DOMAIN-SUFFIX,wechatpay.com.cn
+DOMAIN-SUFFIX,unionpay.com
+DOMAIN-SUFFIX,unionpayintl.com
+DOMAIN-SUFFIX,95516.com
+DOMAIN-SUFFIX,chinaums.com
+DOMAIN-SUFFIX,lakala.com
+DOMAIN-SUFFIX,duxiaoman.com
+DOMAIN-SUFFIX,jdpay.com
+DOMAIN-SUFFIX,chinapay.com
+DOMAIN-SUFFIX,netpay.com.cn
+DOMAIN-SUFFIX,yeepay.com
+DOMAIN-SUFFIX,99bill.com
+
+# Banks
+DOMAIN-SUFFIX,icbc.com.cn
+DOMAIN-SUFFIX,abchina.com
+DOMAIN-SUFFIX,boc.cn
+DOMAIN-SUFFIX,bankofchina.com
+DOMAIN-SUFFIX,ccb.com
+DOMAIN-SUFFIX,ccb.cn
+DOMAIN-SUFFIX,cmbchina.com
+DOMAIN-SUFFIX,bankcomm.com
+DOMAIN-SUFFIX,psbc.com
+DOMAIN-SUFFIX,spdb.com.cn
+DOMAIN-SUFFIX,cib.com.cn
+DOMAIN-SUFFIX,citicbank.com
+DOMAIN-SUFFIX,cebbank.com
+DOMAIN-SUFFIX,bank.pingan.com
+DOMAIN-SUFFIX,pingan.com
+DOMAIN-SUFFIX,hxb.com.cn
+DOMAIN-SUFFIX,cgbchina.com.cn
+DOMAIN-SUFFIX,cmbc.com.cn
+DOMAIN-SUFFIX,bob.com.cn
+DOMAIN-SUFFIX,srcb.com
+DOMAIN-SUFFIX,bankofbeijing.com.cn
+DOMAIN-SUFFIX,bankofshanghai.com
+DOMAIN-SUFFIX,nbcb.com.cn
+DOMAIN-SUFFIX,czbank.com
+
+# Domestic AI
+DOMAIN-SUFFIX,deepseek.com
+DOMAIN-SUFFIX,deepseek.ai
+DOMAIN-SUFFIX,moonshot.cn
+DOMAIN-SUFFIX,kimi.moonshot.cn
+DOMAIN-SUFFIX,qwen.ai
+DOMAIN-SUFFIX,tongyi.aliyun.com
+DOMAIN-SUFFIX,dashscope.aliyun.com
+DOMAIN-SUFFIX,modelscope.cn
+DOMAIN-SUFFIX,doubao.com
+DOMAIN-SUFFIX,volcengine.com
+DOMAIN-SUFFIX,coze.cn
+DOMAIN-SUFFIX,yuanbao.tencent.com
+DOMAIN-SUFFIX,hunyuan.tencent.com
+DOMAIN-SUFFIX,ima.qq.com
+DOMAIN-SUFFIX,wenxin.baidu.com
+DOMAIN-SUFFIX,yiyan.baidu.com
+DOMAIN-SUFFIX,zhipuai.cn
+DOMAIN-SUFFIX,chatglm.cn
+DOMAIN-SUFFIX,bigmodel.cn
+DOMAIN-SUFFIX,minimax.chat
+DOMAIN-SUFFIX,minimaxi.com
+DOMAIN-SUFFIX,siliconflow.cn
+DOMAIN-SUFFIX,tiangong.cn
+DOMAIN-SUFFIX,xfyun.cn
