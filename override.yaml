@@ -780,6 +780,8 @@ rules:
   - "DOMAIN-SUFFIX,apple.com,🍎 苹果服务"
   - "DOMAIN-SUFFIX,mzstatic.com,🍎 苹果服务"
   - "DOMAIN-SUFFIX,itunes.com,🍎 苹果服务"
+  - "DOMAIN-SUFFIX,icloud-content.com,🍎 苹果服务"
+  - "DOMAIN-SUFFIX,cdn-apple.com,🍎 苹果服务"
   - "RULE-SET,apple_cn_domain,🍎 苹果服务"
   - "RULE-SET,apple_domain,🍎 苹果服务"
 
