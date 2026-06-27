@@ -54,6 +54,8 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 | --- | --- | --- |
 | TUN 模式 | 开启 | 接管系统流量和 DNS，降低 DNS 泄露概率 |
 | DNS 覆写 / 接管 DNS | 关闭 | 避免 Clash Party GUI 默认 DNS 覆盖本项目的 `dns!` |
+| IPv6 | 关闭 | 当前规则以 IPv4 稳定性优先，减少 IPv6 直连超时噪声 |
+| TCP Concurrent | 开启 | 优先选择更快可用连接，降低单一路径超时影响 |
 | 嗅探覆写 / 接管嗅探 | 默认即可 | 只有日志显示嗅探误判时再单独调整 |
 | 以管理员权限运行 | 建议开启 | Windows 上 TUN 通常需要管理员权限 |
 | 订阅更新使用代理 | 规则集下载失败时开启 | 某些网络无法直连 GitHub 或 CDN |
@@ -84,6 +86,16 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 
 ## 成功标准
 
+### 有效配置检查
+
+在 Clash Party 重载配置后，最终生效配置应满足：
+
+- `controlDns: false`
+- `ipv6: false`
+- `tcp-concurrent: true`
+- `respect-rules: true`
+- `RULE-SET,google_proxy_static,🚀 节点选择` 位于 `RULE-SET,google_cn_domain,🎯 全球直连` 前面
+
 ### 规则命中检查
 
 打开 Clash Party 日志，访问下面域名，看命中的策略是否符合预期。
@@ -93,6 +105,10 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 | `baidu.com` | `🎯 全球直连` | 中国网站直连 |
 | `bilibili.com` | `🎯 全球直连` | 中国网站直连 |
 | `google.com` | `🚀 节点选择` | 海外网站走代理 |
+| `ssl.gstatic.com` | `🚀 节点选择` | Google 静态资源走代理 |
+| `fonts.gstatic.com` | `🚀 节点选择` | Google 字体静态资源走代理 |
+| `update.googleapis.com` | `🚀 节点选择` | Google API 走代理 |
+| `c.pki.goog` | `🚀 节点选择` | Google 证书链路走代理 |
 | `github.com` | `🚀 节点选择` | GitHub 走代理 |
 | `chatgpt.com` | `🤖 AI 平台` | 海外 AI 走代理 |
 | `claude.ai` | `🤖 AI 平台` | 海外 AI 走代理 |
@@ -157,6 +173,28 @@ can't resolve ip: couldn't find ip
 - 日志热重载完成后，不再持续出现 DNS 解析失败告警。
 
 「嗅探覆写」不需要因为 DNS 问题直接关闭。只有当日志明确显示 sniffer 造成错误识别、错误分流或访问异常时，再单独调整嗅探相关设置。
+
+## Google CN 误直连优化
+
+日志中如果大量出现下面这类记录：
+
+```text
+match RuleSet/google_cn_domain) ... ssl.gstatic.com:443 error: connect failed: ... i/o timeout
+match RuleSet/google_cn_domain) ... fonts.gstatic.com:443 error: connect failed: ... i/o timeout
+match RuleSet/google_cn_domain) ... update.googleapis.com:443 error: connect failed: ... i/o timeout
+```
+
+说明 `google-cn` 规则集中有部分 Google 静态资源或 API 域名被直连，但当前网络无法稳定直连这些地址。
+
+本配置使用 `google_proxy_static` 精确修复这类高频误直连：
+
+- `gstatic.com`
+- `googleapis.com`
+- `pki.goog`
+
+这些域名会在 `google_cn_domain` 前提前命中 `🚀 节点选择`。这样不会把整个 `google-cn` 都改成代理，只修复日志中确认高频超时的 Google CDN/API 域名。
+
+如果日志中 `www.gdust.edu.cn`、`10.68.162.46:445` 等国内域名、学校域名或内网地址直连超时，通常不是代理规则问题。这类流量命中 `cn_domain`、`cn_ip` 或 `private_ip` 后直连是预期行为，真正原因更可能是目标服务、校园网、局域网或本机网络不可达。
 
 ## 策略组说明
 

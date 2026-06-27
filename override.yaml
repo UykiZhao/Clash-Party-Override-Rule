@@ -94,13 +94,13 @@ dns!:
 
   # 国内域名走国内 DNS；明确代理域名走海外 DoH，并由规则送进代理。
   nameserver-policy:
-    "geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn,google-cn":
+    "geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn":
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
     "rule-set:domestic_sensitive,domestic_ai_domain":
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
-    "rule-set:ai_static,ai_acl4ssr,openai_acl4ssr,ai_domain,openai_domain,anthropic_domain,telegram_domain,youtube_domain,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn":
+    "rule-set:ai_static,ai_acl4ssr,openai_acl4ssr,ai_domain,openai_domain,anthropic_domain,telegram_domain,youtube_domain,google_proxy_static,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn":
       - https://cloudflare-dns.com/dns-query
       - https://dns.google/dns-query
 
@@ -606,6 +606,14 @@ rule-providers!:
     path: ./ruleset/override/google_domain.mrs
     url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/google.mrs"
 
+  google_proxy_static:
+    type: inline
+    behavior: classical
+    payload:
+      - "DOMAIN-SUFFIX,gstatic.com"
+      - "DOMAIN-SUFFIX,googleapis.com"
+      - "DOMAIN-SUFFIX,pki.goog"
+
   google_cn_domain:
     type: http
     behavior: domain
@@ -757,6 +765,8 @@ rules:
   - "RULE-SET,biliintl_domain,🎬 流媒体解锁"
 
   - "RULE-SET,github_domain,🚀 节点选择"
+  # google-cn 中部分 CDN/API 域名在国内直连容易超时，先精确送代理。
+  - "RULE-SET,google_proxy_static,🚀 节点选择"
   - "RULE-SET,google_cn_domain,🎯 全球直连"
   - "RULE-SET,google_domain,🚀 节点选择"
 
