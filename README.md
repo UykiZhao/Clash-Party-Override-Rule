@@ -388,11 +388,13 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadow
 - `dns-direct-fallback-proxy = true`，直连解析异常时允许通过代理兜底。
 - `hijack-dns` 劫持 `:53` 以及常见公共 DNS 的 53 端口。
 - `dnsleaktest.com`、`ipleak.net`、`browserleaks.com`、`dns.google`、`cloudflare-dns.com` 等域名强制走代理并使用 `force-remote-dns`。
-- Google、GitHub、YouTube、OpenAI、Claude 等核心代理域名也显式使用 `force-remote-dns`，减少本地 DNS 污染和泄露。
+- Google、GitHub、YouTube、OpenAI、Claude、Gemini、Perplexity、Copilot 等核心代理域名也显式使用 `force-remote-dns`，减少本地 DNS 污染和泄露。
 
 兼容版仍然保留上面的关键防泄露设置，但允许更多 real-ip 例外，并把 UDP 不支持时的行为从拒绝改为直连。它更容易兼容部分 App、局域网服务、Apple 推送和银行支付链路，但隐私强度低于严格版。
 
 如果启用了 iCloud Private Relay、某些 App 内置 DoH、浏览器安全 DNS、第三方 DNS 描述文件或企业 VPN 描述文件，DNS 行为可能绕过 Shadowrocket。排查 DNS 泄露时建议先关闭这些额外 DNS/VPN 功能。
+
+如果日志里只有 `gateway.icloud.com` 的 AAAA 查询偶发使用本地网关、运营商 DNS 或链路本地 IPv6 DNS，优先检查 iCloud Private Relay、限制 IP 地址跟踪、DNS 描述文件、企业 VPN 描述文件，以及 Shadowrocket 是否已经刷新到最新配置。
 
 ### Shadowrocket 验证
 
@@ -406,11 +408,17 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadow
 | `alipay.com` | `DIRECT` |
 | `gov.cn` | `DIRECT` |
 | `google.com` | `PROXY` |
+| `c.pki.goog` | `PROXY` |
 | `github.com` | `PROXY` |
-| `chatgpt.com` | `AI` / `PROXY` |
-| `claude.ai` | `AI` / `PROXY` |
+| `chatgpt.com` | `AI` |
+| `claude.ai` | `AI` |
+| `gemini.google.com` | `AI` |
+| `perplexity.ai` | `AI` |
+| `copilot.microsoft.com` | `AI` |
 | `youtube.com` | `YouTube` / `PROXY` |
 | `netflix.com` | `Streaming` / `PROXY` |
+| `gateway-asset.icloud-content.com` | `Apple` |
+| `cabana-server.cdn-apple.com` | `Apple` |
 | `dns.google` | `PROXY` |
 | `cloudflare-dns.com` | `PROXY` |
 
