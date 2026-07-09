@@ -97,7 +97,7 @@ dns!:
     "geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn":
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
-    "rule-set:domestic_sensitive,domestic_ai_domain":
+    "rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static":
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
     "rule-set:ai_static,ai_acl4ssr,openai_acl4ssr,ai_domain,openai_domain,anthropic_domain,telegram_domain,youtube_domain,google_proxy_static,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn":
@@ -686,6 +686,80 @@ rule-providers!:
     path: ./ruleset/override/games_cn_domain.mrs
     url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-games@cn.mrs"
 
+  tencent_services:
+    type: inline
+    behavior: classical
+    payload:
+      # 微信 / QQ / 腾讯服务直连，放在广告规则前，避免诊断与安全检测域名被误拦截。
+      - "DOMAIN-SUFFIX,weixin.qq.com"
+      - "DOMAIN-SUFFIX,weixin.qq.com.cn"
+      - "DOMAIN-SUFFIX,weixinbridge.com"
+      - "DOMAIN-SUFFIX,wx.qq.com"
+      - "DOMAIN-SUFFIX,wxs.qq.com"
+      - "DOMAIN-SUFFIX,wechat.com"
+      - "DOMAIN-SUFFIX,wechatpay.cn"
+      - "DOMAIN-SUFFIX,wechatpay.com.cn"
+      - "DOMAIN-SUFFIX,ptlogin2.qq.com"
+      - "DOMAIN-SUFFIX,ptlogin2.game.qq.com"
+      - "DOMAIN-SUFFIX,ptlogin2.wegame.com.cn"
+      - "DOMAIN-SUFFIX,beacon.qq.com"
+      - "DOMAIN-SUFFIX,beaconcdn.qq.com"
+      - "DOMAIN-SUFFIX,beacon.cdn.qq.com"
+      - "DOMAIN-SUFFIX,trace.qq.com"
+      - "DOMAIN-SUFFIX,h.trace.qq.com"
+      - "DOMAIN-SUFFIX,pingjs.qq.com"
+      - "DOMAIN-SUFFIX,tdm.qq.com"
+
+  tencent_games_static:
+    type: inline
+    behavior: classical
+    payload:
+      # 腾讯游戏 / WeGame / 反作弊 / TQOS 优先直连，降低 UDP 被广告集或兜底代理影响。
+      - "DOMAIN-SUFFIX,wegame.com.cn"
+      - "DOMAIN-SUFFIX,wegame.gtimg.com"
+      - "DOMAIN-SUFFIX,test.wegame.gtimg.com"
+      - "DOMAIN-SUFFIX,game.qq.com"
+      - "DOMAIN-SUFFIX,qqgame.qq.com"
+      - "DOMAIN-SUFFIX,ams.game.qq.com"
+      - "DOMAIN-SUFFIX,comm.ams.game.qq.com"
+      - "DOMAIN-SUFFIX,dnf.qq.com"
+      - "DOMAIN-SUFFIX,dnf.lv.game.qq.com"
+      - "DOMAIN-SUFFIX,dnf2.game.qq.com"
+      - "DOMAIN-SUFFIX,game.gtimg.cn"
+      - "DOMAIN-SUFFIX,vm.gtimg.cn"
+      - "DOMAIN-SUFFIX,ied-tqos.qq.com"
+      - "DOMAIN-SUFFIX,ied-tqos-tgp.qq.com"
+      - "DOMAIN-SUFFIX,tqos.anticheatexpert.com"
+      - "DOMAIN-SUFFIX,anticheatexpert.com"
+      - "DOMAIN-SUFFIX,gamesafe.qq.com"
+      - "DOMAIN-SUFFIX,courtreport.gamesafe.qq.com"
+      - "DOMAIN-SUFFIX,down.qq.com"
+      - "DOMAIN-SUFFIX,cdn.gbot.qq.com"
+      - "DOMAIN-SUFFIX,static.o2.qq.com"
+      - "DOMAIN-SUFFIX,staticfile.qq.com"
+      - "DOMAIN-SUFFIX,ossweb-img.qq.com"
+
+  tencent_process_direct:
+    type: inline
+    behavior: classical
+    payload:
+      # Windows 进程兜底直连：覆盖部分游戏 UDP 直接连接 IP、日志中无域名的场景。
+      - "PROCESS-NAME,WeChat.exe"
+      - "PROCESS-NAME,WeChatAppEx.exe"
+      - "PROCESS-NAME,WeChatPlayer.exe"
+      - "PROCESS-NAME,QQ.exe"
+      - "PROCESS-NAME,QQGuild.exe"
+      - "PROCESS-NAME,WeGame.exe"
+      - "PROCESS-NAME,wegame.exe"
+      - "PROCESS-NAME,tgp_daemon.exe"
+      - "PROCESS-NAME,tgp_web.exe"
+      - "PROCESS-NAME,TenioDL.exe"
+      - "PROCESS-NAME,TQMCenter.exe"
+      - "PROCESS-NAME,TPHelper.exe"
+      - "PROCESS-NAME,TGuard.exe"
+      - "PROCESS-NAME,DNF.exe"
+      - "PROCESS-NAME,dnf.exe"
+
   ads_domain:
     type: http
     behavior: domain
@@ -730,6 +804,11 @@ rules:
   # 国内支付 / 银行 / 政务 / 中国 AI 服务优先直连，避免风控和绕路。
   - "RULE-SET,domestic_sensitive,🎯 全球直连"
   - "RULE-SET,domestic_ai_domain,🎯 全球直连"
+
+  # 腾讯 / 微信 / 中国网游优先直连；位于广告规则前，避免安全检测、TQOS、诊断域名被误拦截。
+  - "RULE-SET,tencent_services,🎯 全球直连"
+  - "RULE-SET,tencent_games_static,🎯 全球直连"
+  - "RULE-SET,tencent_process_direct,🎯 全球直连"
 
   # 广告
   - "RULE-SET,ads_domain,🛑 广告拦截"

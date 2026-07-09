@@ -7,6 +7,8 @@
 - 中国大陆域名和中国 IP 直连
 - 海外 AI、Google、GitHub、Telegram、YouTube、流媒体解锁走代理
 - 国内支付、银行、政务、中国 AI 服务明确直连
+- 腾讯 / 微信安全检测、登录、诊断域名优先直连，避免被广告规则误拦截
+- 腾讯游戏 / WeGame / TQOS / 反作弊域名和常见腾讯进程优先直连，降低网游 UDP 被兜底代理影响
 - 未匹配流量默认走代理
 - Clash Party 使用 fake-ip、TUN DNS hijack、strict-route、respect-rules 和 no-resolve 降低 DNS 泄露风险
 - Shadowrocket 使用独立 `.conf` 配置，兼容单节点、多节点和 Shadowrocket 支持的多种代理协议
@@ -94,6 +96,9 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 - `ipv6: false`
 - `tcp-concurrent: true`
 - `respect-rules: true`
+- `RULE-SET,tencent_services,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
+- `RULE-SET,tencent_games_static,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
+- `RULE-SET,tencent_process_direct,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
 - `RULE-SET,google_proxy_static,🚀 节点选择` 位于 `RULE-SET,google_cn_domain,🎯 全球直连` 前面
 
 ### 规则命中检查
@@ -115,6 +120,12 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 | `deepseek.com` | `🎯 全球直连` | 中国 AI 直连 |
 | `alipay.com` | `🎯 全球直连` | 国内支付直连 |
 | `gov.cn` | `🎯 全球直连` | 政务服务直连 |
+| `szshort.weixin.qq.com` | `🎯 全球直连` | 微信主链路直连 |
+| `badjs.weixinbridge.com` | `🎯 全球直连` | 微信 JS / 安全检测链路直连 |
+| `beacon.cdn.qq.com` | `🎯 全球直连` | 腾讯诊断链路直连，不再被广告规则优先拦截 |
+| `h.trace.qq.com` | `🎯 全球直连` | 腾讯追踪 / 诊断链路直连 |
+| `tqos.anticheatexpert.com` | `🎯 全球直连` | 腾讯游戏 TQOS / 反作弊 UDP 直连 |
+| `ied-tqos.qq.com` | `🎯 全球直连` | 腾讯游戏 TQOS UDP 直连 |
 | `netflix.com` | `🎬 流媒体解锁` | 流媒体走代理 |
 
 如果日志里看不到规则命中，先确认订阅是否已经绑定覆写，并且是否更新过订阅。
@@ -195,6 +206,30 @@ match RuleSet/google_cn_domain) ... update.googleapis.com:443 error: connect fai
 这些域名会在 `google_cn_domain` 前提前命中 `🚀 节点选择`。这样不会把整个 `google-cn` 都改成代理，只修复日志中确认高频超时的 Google CDN/API 域名。
 
 如果日志中 `www.example.edu.cn`、`192.0.2.100:445` 等国内域名、学校域名或内网地址直连超时，通常不是代理规则问题。这类流量命中 `cn_domain`、`cn_ip` 或 `private_ip` 后直连是预期行为，真正原因更可能是目标服务、校园网、局域网或本机网络不可达。
+
+## 腾讯 / 微信 / 网游 UDP 优化
+
+日志中如果出现下面这类记录：
+
+```text
+badjs.weixinbridge.com:443 match RuleSet(ads_domain) using 🛑 广告拦截[REJECT]
+beacon.cdn.qq.com:443 match RuleSet(ads_domain) using 🛑 广告拦截[REJECT]
+h.trace.qq.com:443 match RuleSet(ads_domain) using 🛑 广告拦截[REJECT]
+tqos.anticheatexpert.com:8081 match RuleSet(cn_domain) using 🎯 全球直连[DIRECT]
+ied-tqos.qq.com:8000 match RuleSet(cn_domain) using 🎯 全球直连[DIRECT]
+```
+
+说明微信、WeGame 或腾讯游戏主链路基本已经直连，但部分腾讯诊断、安全检测、埋点或 TQOS 相关域名可能被广告规则优先拦截。微信弹出“不安全”提示、WeGame 反复探测或游戏客户端网络状态异常时，这类误拦截会增加排查成本。
+
+本配置使用三层保守优化：
+
+- `tencent_services`：微信、QQ、登录、微信桥接 JS、腾讯诊断域名优先直连。
+- `tencent_games_static`：WeGame、腾讯游戏、反作弊、TQOS、DNF 相关域名优先直连。
+- `tencent_process_direct`：Windows 上常见微信、QQ、WeGame、腾讯反作弊和 DNF 进程直连，用来覆盖部分没有域名、直接连接 IP 的游戏 UDP 流量。
+
+这三组规则都放在 `ads_domain` 前面，目标是减少腾讯生态内误拦截。它不会把所有 UDP 都改成直连；Google、Cloudflare、海外 WebRTC / STUN、海外游戏和未匹配海外域名仍按原规则走代理。
+
+如果 `test.wegame.gtimg.com` 直连超时，但 TCP 端口可通、代理访问也超时，通常不是规则分流错误，更可能是腾讯测试端点、运营商链路或客户端探测行为本身的问题。
 
 ## 策略组说明
 
