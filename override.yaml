@@ -8,6 +8,7 @@ mode: rule
 ipv6: false
 unified-delay: true
 tcp-concurrent: true
+find-process-mode: strict
 
 profile:
   store-selected: true
@@ -31,6 +32,7 @@ tun!:
 
 dns!:
   enable: true
+  cache-algorithm: arc
   listen: 0.0.0.0:1053
   ipv6: false
   prefer-h3: false
@@ -699,9 +701,13 @@ rule-providers!:
       - "DOMAIN-SUFFIX,wechat.com"
       - "DOMAIN-SUFFIX,wechatpay.cn"
       - "DOMAIN-SUFFIX,wechatpay.com.cn"
+      - "DOMAIN-SUFFIX,weixin110.qq.com"
       - "DOMAIN-SUFFIX,ptlogin2.qq.com"
       - "DOMAIN-SUFFIX,ptlogin2.game.qq.com"
       - "DOMAIN-SUFFIX,ptlogin2.wegame.com.cn"
+      - "DOMAIN-SUFFIX,urlsec.qq.com"
+      - "DOMAIN-SUFFIX,captcha.gtimg.com"
+      - "DOMAIN-SUFFIX,qqweb.qq.com"
       - "DOMAIN-SUFFIX,beacon.qq.com"
       - "DOMAIN-SUFFIX,beaconcdn.qq.com"
       - "DOMAIN-SUFFIX,beacon.cdn.qq.com"
@@ -717,6 +723,7 @@ rule-providers!:
       # 腾讯游戏 / WeGame / 反作弊 / TQOS 优先直连，降低 UDP 被广告集或兜底代理影响。
       - "DOMAIN-SUFFIX,wegame.com.cn"
       - "DOMAIN-SUFFIX,wegame.gtimg.com"
+      - "DOMAIN-SUFFIX,wegamex.com.hk"
       - "DOMAIN-SUFFIX,test.wegame.gtimg.com"
       - "DOMAIN-SUFFIX,game.qq.com"
       - "DOMAIN-SUFFIX,qqgame.qq.com"
@@ -738,17 +745,24 @@ rule-providers!:
       - "DOMAIN-SUFFIX,static.o2.qq.com"
       - "DOMAIN-SUFFIX,staticfile.qq.com"
       - "DOMAIN-SUFFIX,ossweb-img.qq.com"
+      - "DOMAIN-SUFFIX,tplay.qq.com"
 
   tencent_process_direct:
     type: inline
     behavior: classical
     payload:
-      # Windows 进程兜底直连：覆盖部分游戏 UDP 直接连接 IP、日志中无域名的场景。
+      # Windows / macOS 进程兜底直连：覆盖部分腾讯应用和游戏 UDP 直接连接 IP 的场景。
       - "PROCESS-NAME,WeChat.exe"
+      - "PROCESS-NAME,Weixin.exe"
       - "PROCESS-NAME,WeChatAppEx.exe"
+      - "PROCESS-NAME,WeixinAppEx.exe"
       - "PROCESS-NAME,WeChatPlayer.exe"
+      - "PROCESS-NAME,WeixinPlayer.exe"
       - "PROCESS-NAME,QQ.exe"
       - "PROCESS-NAME,QQGuild.exe"
+      - "PROCESS-NAME,WeChat"
+      - "PROCESS-NAME,Weixin"
+      - "PROCESS-NAME,QQ"
       - "PROCESS-NAME,WeGame.exe"
       - "PROCESS-NAME,wegame.exe"
       - "PROCESS-NAME,tgp_daemon.exe"
@@ -757,8 +771,12 @@ rule-providers!:
       - "PROCESS-NAME,TQMCenter.exe"
       - "PROCESS-NAME,TPHelper.exe"
       - "PROCESS-NAME,TGuard.exe"
+      - "PROCESS-NAME,CrossProxy.exe"
+      - "PROCESS-NAME,pallas.exe"
+      - "PROCESS-NAME,tcls_core.exe"
       - "PROCESS-NAME,DNF.exe"
       - "PROCESS-NAME,dnf.exe"
+      - "PROCESS-NAME,dnf_asura.exe"
 
   ads_domain:
     type: http

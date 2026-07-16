@@ -50,17 +50,20 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 
 ### 第 4 步：检查 Clash Party 应用设置
 
-进入 Clash Party 的「应用设置」，按下面设置检查。
+进入 Clash Party 的「应用设置」，按系统检查下面的值。Clash Party 的应用级常用配置优先级高于 YAML 覆写，因此这里设置错误时，`override.yaml` 中的同名值仍可能被覆盖。
 
-| 设置项 | 建议值 | 原因 |
-| --- | --- | --- |
-| TUN 模式 | 开启 | 接管系统流量和 DNS，降低 DNS 泄露概率 |
-| DNS 覆写 / 接管 DNS | 关闭 | 避免 Clash Party GUI 默认 DNS 覆盖本项目的 `dns!` |
-| IPv6 | 关闭 | 当前规则以 IPv4 稳定性优先，减少 IPv6 直连超时噪声 |
-| TCP Concurrent | 开启 | 优先选择更快可用连接，降低单一路径超时影响 |
-| 嗅探覆写 / 接管嗅探 | 默认即可 | 只有日志显示嗅探误判时再单独调整 |
-| 以管理员权限运行 | 建议开启 | Windows 上 TUN 通常需要管理员权限 |
-| 订阅更新使用代理 | 规则集下载失败时开启 | 某些网络无法直连 GitHub 或 CDN |
+| 设置项 | Windows | macOS | 原因 |
+| --- | --- | --- | --- |
+| 运行模式 | 规则 | 规则 | 保证分流规则参与匹配 |
+| TUN 模式 | 开启 | 开启 | 接管系统流量和 DNS |
+| TUN Stack | `mixed` | `mixed` | mihomo 推荐的通用组合；TCP 使用系统栈，UDP 使用 gVisor |
+| DNS 覆写 / 接管 DNS | 关闭 | 关闭 | 避免 GUI 默认 DNS 覆盖本项目的 `dns!` |
+| IPv6 | 关闭 | 关闭 | 本项目优先 IPv4 稳定性，避免无可用 IPv6 出口时反复超时 |
+| TCP Concurrent | 开启 | 开启 | 并发尝试域名解析得到的地址，优先使用先成功的连接 |
+| 嗅探覆写 / 接管嗅探 | 默认 | 默认 | 当前日志只有少量嗅探噪声，不需要激进调整 |
+| 以管理员权限运行 | 开启 | 不适用 | Windows 上 TUN 和 strict-route 防泄露需要足够权限 |
+| macOS 防火墙 | 不适用 | 允许 Mihomo | 防火墙开启且 TUN 异常时，允许 Mihomo 出站 |
+| 订阅更新使用代理 | 按需开启 | 按需开启 | 仅在规则集或订阅直连更新失败时使用 |
 
 最重要的是关闭「DNS 覆写」。如果它开启，可能导致本项目的 DNS 防泄露配置被覆盖。
 
@@ -84,7 +87,7 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 - 重启 mihomo 内核
 - 重启 Clash Party
 
-重载后再开始验证。
+重载会重建连接，不要在游戏、语音通话或大文件传输过程中执行。重载后再开始验证。
 
 ## 成功标准
 
@@ -95,6 +98,10 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 - `controlDns: false`
 - `ipv6: false`
 - `tcp-concurrent: true`
+- `find-process-mode: strict`
+- `tun.stack: mixed`
+- `tun.strict-route: true`
+- `dns.cache-algorithm: arc`
 - `respect-rules: true`
 - `RULE-SET,tencent_services,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
 - `RULE-SET,tencent_games_static,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
@@ -124,6 +131,9 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 | `badjs.weixinbridge.com` | `🎯 全球直连` | 微信 JS / 安全检测链路直连 |
 | `beacon.cdn.qq.com` | `🎯 全球直连` | 腾讯诊断链路直连，不再被广告规则优先拦截 |
 | `h.trace.qq.com` | `🎯 全球直连` | 腾讯追踪 / 诊断链路直连 |
+| `weixin110.qq.com` | `🎯 全球直连` | 微信安全中心链路直连 |
+| `safebrowsing.urlsec.qq.com` | `🎯 全球直连` | 腾讯 URL 安全检测链路直连 |
+| `report.qqweb.qq.com` | `🎯 全球直连` | 腾讯报告链路不再被广告规则误拦截 |
 | `tqos.anticheatexpert.com` | `🎯 全球直连` | 腾讯游戏 TQOS / 反作弊 UDP 直连 |
 | `ied-tqos.qq.com` | `🎯 全球直连` | 腾讯游戏 TQOS UDP 直连 |
 | `netflix.com` | `🎬 流媒体解锁` | 流媒体走代理 |
@@ -223,13 +233,34 @@ ied-tqos.qq.com:8000 match RuleSet(cn_domain) using 🎯 全球直连[DIRECT]
 
 本配置使用三层保守优化：
 
-- `tencent_services`：微信、QQ、登录、微信桥接 JS、腾讯诊断域名优先直连。
-- `tencent_games_static`：WeGame、腾讯游戏、反作弊、TQOS、DNF 相关域名优先直连。
-- `tencent_process_direct`：Windows 上常见微信、QQ、WeGame、腾讯反作弊和 DNF 进程直连，用来覆盖部分没有域名、直接连接 IP 的游戏 UDP 流量。
+- `tencent_services`：微信、QQ、登录、微信桥接 JS、URL 安全、验证码和腾讯诊断域名优先直连。
+- `tencent_games_static`：WeGame、腾讯游戏、反作弊、TQOS、DNF 和 TPlay 相关域名优先直连。
+- `tencent_process_direct`：Windows / macOS 常见微信、QQ，以及 Windows 上 WeGame、腾讯反作弊和 DNF 辅助进程直连，用来覆盖部分没有域名、直接连接 IP 的游戏 UDP 流量。
 
 这三组规则都放在 `ads_domain` 前面，目标是减少腾讯生态内误拦截。它不会把所有 UDP 都改成直连；Google、Cloudflare、海外 WebRTC / STUN、海外游戏和未匹配海外域名仍按原规则走代理。
 
 如果 `test.wegame.gtimg.com` 直连超时，但 TCP 端口可通、代理访问也超时，通常不是规则分流错误，更可能是腾讯测试端点、运营商链路或客户端探测行为本身的问题。
+
+### 多设备日志结论
+
+2026-07-16 对一台 Windows 和一台 macOS 设备的有效配置、核心日志进行对比后，结论如下：
+
+- Windows 上 DNF 的游戏 UDP 已命中 `tencent_process_direct -> DIRECT`，腾讯 TQOS、反作弊和微信主链路也稳定命中腾讯直连规则。少量腾讯测试端点超时不代表 UDP 被送进代理。
+- Windows 日志中大量 `receive ICMP echo reply ... i/o timeout`、网易云探测、局域网地址超时属于探测或目标不可达，不能直接当成网游丢包证据。
+- macOS 曾在网络接口异常期间大量出现 `Auto detect interface ... empty name`、`interface not found`；后续日志中该异常已经消失。若再次持续出现，先重启 Clash Party 内核并检查 Wi-Fi、以太网、其他 VPN 是否同时改变默认路由。
+- macOS 最终配置一度被应用级设置改成 `ipv6: true`、`tcp-concurrent: false`。这会在没有稳定 IPv6 出口时产生 `network is unreachable`，必须在 GUI 中关闭 IPv6 并开启 TCP Concurrent。
+- 两台设备都出现过代理节点自身的连接超时。规则只能保证选对出口，不能修复节点线路抖动；若多个海外服务同时超时并且日志都显示节点连接失败，应优先检查节点而不是继续增加规则。
+
+### 游戏加速器不要与 TUN 叠加
+
+本机日志出现了 WeGame 网络加速相关进程，Mac 日志出现了网易 UU 相关进程。游戏加速器、其他 VPN 和 Clash Party TUN 都可能修改系统默认路由或虚拟网卡；同时开启时，即使域名规则命中正确，也可能产生接口切换、回环或延迟波动。
+
+玩国服游戏时建议二选一：
+
+1. 使用 Clash Party TUN，并关闭 WeGame / 网易 UU 的网络加速功能；腾讯和中国游戏流量由本规则直连。
+2. 使用游戏加速器，并在游戏期间关闭 Clash Party TUN；只保留系统代理时，不能保证所有游戏 UDP 和 DNS 都被 Clash Party 接管。
+
+不要同时运行两个 TUN/VPN 加速链路。若必须共存，需要针对实际物理网卡固定 `interface-name`，这属于单机配置，不应写入通用覆写。
 
 ## 策略组说明
 
@@ -479,6 +510,7 @@ DNS 泄露测试：
 - Clash Party 覆写说明：https://clashparty.org/docs/guide/override
 - Clash Party YAML 覆写语法：https://clashparty.org/docs/guide/override/yaml
 - Clash Party override-hub：https://github.com/mihomo-party-org/override-hub
+- mihomo 通用配置文档：https://wiki.metacubex.one/en/config/general/
 - mihomo DNS 文档：https://wiki.metacubex.one/en/config/dns/
 - mihomo TUN 文档：https://wiki.metacubex.one/en/config/inbound/tun/
 - mihomo Rule Providers 文档：https://wiki.metacubex.one/en/config/rule-providers/
