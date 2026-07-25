@@ -102,7 +102,7 @@ dns!:
     "rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static":
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
-    "rule-set:ai_static,ai_acl4ssr,openai_acl4ssr,ai_domain,openai_domain,anthropic_domain,telegram_domain,youtube_domain,google_proxy_static,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn":
+    "rule-set:ai_static,ai_acl4ssr,openai_acl4ssr,ai_domain,openai_domain,anthropic_domain,telegram_domain,youtube_domain,academic_platforms,google_proxy_static,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn":
       - https://cloudflare-dns.com/dns-query
       - https://dns.google/dns-query
 
@@ -350,6 +350,105 @@ rule-providers!:
     interval: 86400
     path: ./ruleset/override/geolocation_not_cn.mrs
     url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/geolocation-!cn.mrs"
+
+  academic_platforms:
+    type: inline
+    behavior: classical
+    payload:
+      # 检索、索引、DOI 与科研身份
+      - "DOMAIN-SUFFIX,scholar.google.com"
+      - "DOMAIN-SUFFIX,semanticscholar.org"
+      - "DOMAIN-SUFFIX,scopus.com"
+      - "DOMAIN-SUFFIX,webofscience.com"
+      - "DOMAIN-SUFFIX,clarivate.com"
+      - "DOMAIN-SUFFIX,researcherid.com"
+      - "DOMAIN-SUFFIX,dimensions.ai"
+      - "DOMAIN-SUFFIX,lens.org"
+      - "DOMAIN-SUFFIX,doi.org"
+      - "DOMAIN-SUFFIX,crossref.org"
+      - "DOMAIN-SUFFIX,openalex.org"
+      - "DOMAIN-SUFFIX,orcid.org"
+      - "DOMAIN-SUFFIX,openathens.net"
+      - "DOMAIN-SUFFIX,worldcat.org"
+      - "DOMAIN-SUFFIX,oclc.org"
+      # Elsevier: Engineering Village、ScienceDirect、Scopus、Mendeley 与认证
+      - "DOMAIN-SUFFIX,engineeringvillage.com"
+      - "DOMAIN-SUFFIX,elsevier.com"
+      - "DOMAIN-SUFFIX,sciencedirect.com"
+      - "DOMAIN-SUFFIX,sciencedirectassets.com"
+      - "DOMAIN-SUFFIX,els-cdn.com"
+      - "DOMAIN-SUFFIX,mendeley.com"
+      - "DOMAIN-SUFFIX,ssrn.com"
+      - "DOMAIN-SUFFIX,knovel.com"
+      - "DOMAIN-SUFFIX,embase.com"
+      # 综合数据库与主要出版社
+      - "DOMAIN-SUFFIX,proquest.com"
+      - "DOMAIN-SUFFIX,ebscohost.com"
+      - "DOMAIN-SUFFIX,ebsco.com"
+      - "DOMAIN-SUFFIX,ovid.com"
+      - "DOMAIN-SUFFIX,wolterskluwer.com"
+      - "DOMAIN-SUFFIX,jstor.org"
+      - "DOMAIN-SUFFIX,ieee.org"
+      - "DOMAIN-SUFFIX,acm.org"
+      - "DOMAIN-SUFFIX,springer.com"
+      - "DOMAIN-SUFFIX,springernature.com"
+      - "DOMAIN-SUFFIX,nature.com"
+      - "DOMAIN-SUFFIX,biomedcentral.com"
+      - "DOMAIN-SUFFIX,wiley.com"
+      - "DOMAIN-SUFFIX,tandfonline.com"
+      - "DOMAIN-SUFFIX,taylorfrancis.com"
+      - "DOMAIN-SUFFIX,sagepub.com"
+      - "DOMAIN-SUFFIX,cambridge.org"
+      - "DOMAIN-SUFFIX,oup.com"
+      - "DOMAIN-SUFFIX,oxfordjournals.org"
+      - "DOMAIN-SUFFIX,science.org"
+      - "DOMAIN-SUFFIX,aaas.org"
+      - "DOMAIN-SUFFIX,cell.com"
+      - "DOMAIN-SUFFIX,thelancet.com"
+      - "DOMAIN-SUFFIX,bmj.com"
+      - "DOMAIN-SUFFIX,nejm.org"
+      - "DOMAIN-SUFFIX,jamanetwork.com"
+      - "DOMAIN-SUFFIX,pnas.org"
+      - "DOMAIN-SUFFIX,aps.org"
+      - "DOMAIN-SUFFIX,aip.org"
+      - "DOMAIN-SUFFIX,iop.org"
+      - "DOMAIN-SUFFIX,rsc.org"
+      - "DOMAIN-SUFFIX,acs.org"
+      - "DOMAIN-SUFFIX,plos.org"
+      - "DOMAIN-SUFFIX,frontiersin.org"
+      - "DOMAIN-SUFFIX,mdpi.com"
+      - "DOMAIN-SUFFIX,hindawi.com"
+      - "DOMAIN-SUFFIX,degruyter.com"
+      - "DOMAIN-SUFFIX,emerald.com"
+      - "DOMAIN-SUFFIX,brill.com"
+      - "DOMAIN-SUFFIX,projectmuse.org"
+      - "DOMAIN-SUFFIX,ingentaconnect.com"
+      - "DOMAIN-SUFFIX,annualreviews.org"
+      - "DOMAIN-SUFFIX,siam.org"
+      - "DOMAIN-SUFFIX,ams.org"
+      # 开放文献、预印本、医学数据库与科研数据
+      - "DOMAIN-SUFFIX,arxiv.org"
+      - "DOMAIN-SUFFIX,biorxiv.org"
+      - "DOMAIN-SUFFIX,medrxiv.org"
+      - "DOMAIN-SUFFIX,ncbi.nlm.nih.gov"
+      - "DOMAIN-SUFFIX,nih.gov"
+      - "DOMAIN-SUFFIX,europepmc.org"
+      - "DOMAIN-SUFFIX,clinicaltrials.gov"
+      - "DOMAIN-SUFFIX,cochranelibrary.com"
+      - "DOMAIN-SUFFIX,doaj.org"
+      - "DOMAIN-SUFFIX,core.ac.uk"
+      - "DOMAIN-SUFFIX,osf.io"
+      - "DOMAIN-SUFFIX,zenodo.org"
+      - "DOMAIN-SUFFIX,figshare.com"
+      - "DOMAIN-SUFFIX,dryad.org"
+      - "DOMAIN-SUFFIX,dataverse.org"
+      - "DOMAIN,dataverse.harvard.edu"
+      # 学术社交、文献管理与写作
+      - "DOMAIN-SUFFIX,researchgate.net"
+      - "DOMAIN-SUFFIX,rgstatic.net"
+      - "DOMAIN-SUFFIX,academia.edu"
+      - "DOMAIN-SUFFIX,zotero.org"
+      - "DOMAIN-SUFFIX,overleaf.com"
 
   ai_domain:
     type: http
@@ -862,6 +961,8 @@ rules:
   - "RULE-SET,biliintl_domain,🎬 流媒体解锁"
 
   - "RULE-SET,github_domain,🚀 节点选择"
+  # 国际学术平台优先代理，避免被通用中国域名规则误判为直连。
+  - "RULE-SET,academic_platforms,🚀 节点选择"
   # google-cn 中部分 CDN/API 域名在国内直连容易超时，先精确送代理。
   - "RULE-SET,google_proxy_static,🚀 节点选择"
   - "RULE-SET,google_cn_domain,🎯 全球直连"

@@ -6,6 +6,7 @@
 
 - 中国大陆域名和中国 IP 直连
 - 海外 AI、Google、GitHub、Telegram、YouTube、流媒体解锁走代理
+- 国际学术检索、出版社、文献管理与开放科研平台走代理
 - 国内支付、银行、政务、中国 AI 服务明确直连
 - 腾讯 / 微信安全检测、登录、诊断域名优先直连，避免被广告规则误拦截
 - 腾讯游戏 / WeGame / TQOS / 反作弊域名和常见腾讯进程优先直连，降低网游 UDP 被兜底代理影响
@@ -107,6 +108,7 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 - `RULE-SET,tencent_games_static,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
 - `RULE-SET,tencent_process_direct,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
 - `RULE-SET,google_proxy_static,🚀 节点选择` 位于 `RULE-SET,google_cn_domain,🎯 全球直连` 前面
+- `RULE-SET,academic_platforms,🚀 节点选择` 位于 `RULE-SET,cn_domain,🎯 全球直连` 前面
 
 ### 规则命中检查
 
@@ -122,6 +124,13 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/overri
 | `update.googleapis.com` | `🚀 节点选择` | Google API 走代理 |
 | `c.pki.goog` | `🚀 节点选择` | Google 证书链路走代理 |
 | `github.com` | `🚀 节点选择` | GitHub 走代理 |
+| `www.engineeringvillage.com` | `🚀 节点选择` | EI / Compendex 走代理 |
+| `scopus.com` | `🚀 节点选择` | Scopus 走代理 |
+| `webofscience.com` | `🚀 节点选择` | Web of Science 走代理 |
+| `ieeexplore.ieee.org` | `🚀 节点选择` | IEEE Xplore 走代理 |
+| `arxiv.org` | `🚀 节点选择` | arXiv 走代理 |
+| `pubmed.ncbi.nlm.nih.gov` | `🚀 节点选择` | PubMed 走代理 |
+| `doi.org` | `🚀 节点选择` | DOI 跳转走代理 |
 | `chatgpt.com` | `🤖 AI 平台` | 海外 AI 走代理 |
 | `claude.ai` | `🤖 AI 平台` | 海外 AI 走代理 |
 | `deepseek.com` | `🎯 全球直连` | 中国 AI 直连 |
@@ -216,6 +225,20 @@ match RuleSet/google_cn_domain) ... update.googleapis.com:443 error: connect fai
 这些域名会在 `google_cn_domain` 前提前命中 `🚀 节点选择`。这样不会把整个 `google-cn` 都改成代理，只修复日志中确认高频超时的 Google CDN/API 域名。
 
 如果日志中 `www.example.edu.cn`、`192.0.2.100:445` 等国内域名、学校域名或内网地址直连超时，通常不是代理规则问题。这类流量命中 `cn_domain`、`cn_ip` 或 `private_ip` 后直连是预期行为，真正原因更可能是目标服务、校园网、局域网或本机网络不可达。
+
+## 国际学术平台
+
+`academic_platforms` 会将常用国际学术服务在 `cn_domain` 之前送入 `🚀 节点选择`，并使用海外 DoH。它覆盖以下类型的主域名：
+
+- 检索和索引：Google Scholar、Semantic Scholar、Scopus、Web of Science、Dimensions、Lens、Crossref、DOI、OpenAlex、ORCID、WorldCat。
+- Elsevier：Engineering Village、ScienceDirect、Scopus、Mendeley、SSRN、Knovel、Embase，以及 `id.elsevier.com` 所属认证链路。
+- 数据库和出版社：ProQuest、EBSCOhost、Ovid、JSTOR、IEEE Xplore、ACM Digital Library、Springer Nature、Wiley、Taylor & Francis、SAGE、Cambridge、Oxford、Science、Cell、Lancet、BMJ、NEJM、JAMA、PNAS、APS、AIP、IOP、RSC、ACS、PLOS、Frontiers、MDPI 等。
+- 开放科研：arXiv、bioRxiv、medRxiv、PubMed/NCBI、Europe PMC、ClinicalTrials.gov、DOAJ、CORE、OSF、Zenodo、Figshare、Dryad、Harvard Dataverse。
+- 研究工作流：ResearchGate、Academia.edu、Zotero、Overleaf。
+
+该规则只处理网络路径，不提供或绕过内容授权。EI、Scopus、Web of Science、ProQuest、EBSCOhost 等数据库仍需要学校或机构订阅。校外访问应优先从图书馆提供的 CARSI、SAML/OpenAthens 或 EZproxy 入口登录；若学校仅按校园出口 IP 授权，则美国节点不能替代学校 IP。
+
+不要把学校图书馆的 EZproxy、WebVPN、统一认证或校内域名泛化加入本规则集。它们通常是学校自有域名，必须按学校的访问说明保留直连或由学校远程访问系统处理。遇到新平台时，先根据 Clash Party 日志确认实际请求域名，再做最小范围补充。
 
 ## 腾讯 / 微信 / 网游 UDP 优化
 
