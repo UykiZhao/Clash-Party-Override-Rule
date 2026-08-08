@@ -1,545 +1,112 @@
 # Clash Party Override Rule
 
-这是给 Clash Party / mihomo 使用的订阅覆写规则，也提供适配 Shadowrocket 的 iOS 配置。适合希望简化为“中国直连、海外代理”的场景。
+mihomo / Clash Party 订阅覆写：国内直连、海外代理、DNS 防泄露。附带 Shadowrocket iOS 配置。本项目只提供规则和 DNS 配置，不提供节点。
 
-配置重点：
+## Clash Party 使用
 
-- 中国大陆域名和中国 IP 直连
-- 海外 AI、Google、GitHub、Telegram、YouTube、流媒体解锁走代理
-- 国际学术检索、出版社、文献管理与开放科研平台走代理
-- 国内支付、银行、政务、中国 AI 服务明确直连
-- 腾讯 / 微信安全检测、登录、诊断域名优先直连，避免被广告规则误拦截
-- 腾讯游戏 / WeGame / TQOS / 反作弊域名和常见腾讯进程优先直连，降低网游 UDP 被兜底代理影响
-- 未匹配流量默认走代理
-- Clash Party 使用 fake-ip、TUN DNS hijack、strict-route、respect-rules 和 no-resolve 降低 DNS 泄露风险
-- Shadowrocket 使用独立 `.conf` 配置，兼容单节点、多节点和 Shadowrocket 支持的多种代理协议
+### 1. 选择覆写文件
 
-如果使用 Clash Party，按下面的“Clash Party 快速配置步骤”操作。若使用 Shadowrocket，直接跳到“Shadowrocket iOS 配置”。
+| 文件 | 场景 |
+| --- | --- |
+| `rule_single.yaml` | 单节点或少量节点（推荐） |
+| `rule_multi.yaml` | 多节点，按地区自动分组（香港/台湾/日本/新加坡/美国） |
 
-## Clash Party 快速配置步骤
-
-### 第 1 步：准备订阅
-
-先确认你的代理订阅在 Clash Party 中可以正常导入，并且节点本身可用。
-
-本项目只提供规则和 DNS 配置，不提供节点。如果某个节点或订阅协议本身连不上，先检查订阅、节点字段或客户端对该协议的支持。
-
-### 第 2 步：导入覆写文件
-
-在 Clash Party 中进入「覆写」页面，添加 YAML 覆写。
-
-推荐直接使用 raw 链接导入：
+raw 链接：
 
 ```text
-https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/override.yaml
+https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rule_single.yaml
+https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rule_multi.yaml
 ```
 
-也可以下载仓库中的 `override.yaml` 后本地导入。
+注意：这是 Clash Party YAML 覆写文件，不是完整 mihomo 配置，不要当普通配置直接导入。
 
-注意：`override.yaml` 不是完整的 mihomo 配置文件，不要把它当成普通配置文件直接启动。文件中的 `dns!`、`tun!`、`geox-url!` 是 Clash Party 的 YAML 覆写语法。
+### 2. 导入并绑定覆写
 
-### 第 3 步：把覆写绑定到订阅
+1. Clash Party → 「覆写」→ 新建 → 输入上面的 raw 链接（或下载后本地导入）。
+2. 「订阅管理」→ 编辑你的订阅 → 底部「覆写」→ 选择刚导入的文件 → 保存。
+3. 手动更新一次订阅。
 
-1. 打开「订阅管理」。
-2. 编辑你的目标订阅。
-3. 在订阅编辑窗口底部找到「覆写」选项。
-4. 选择刚才导入的 `override.yaml`。
-5. 保存订阅。
-6. 手动更新一次订阅。
+只导入覆写不绑定订阅不会生效。
 
-只导入覆写文件还不够，必须把它绑定到具体订阅上，否则订阅不会应用这套规则。
+### 3. 应用设置检查
 
-### 第 4 步：检查 Clash Party 应用设置
+「应用设置」中确认（应用级设置优先级高于覆写）：
 
-进入 Clash Party 的「应用设置」，按系统检查下面的值。Clash Party 的应用级常用配置优先级高于 YAML 覆写，因此这里设置错误时，`override.yaml` 中的同名值仍可能被覆盖。
-
-| 设置项 | Windows | macOS | 原因 |
-| --- | --- | --- | --- |
-| 运行模式 | 规则 | 规则 | 保证分流规则参与匹配 |
-| TUN 模式 | 开启 | 开启 | 接管系统流量和 DNS |
-| TUN Stack | `mixed` | `mixed` | mihomo 推荐的通用组合；TCP 使用系统栈，UDP 使用 gVisor |
-| DNS 覆写 / 接管 DNS | 关闭 | 关闭 | 避免 GUI 默认 DNS 覆盖本项目的 `dns!` |
-| IPv6 | 关闭 | 关闭 | 本项目优先 IPv4 稳定性，避免无可用 IPv6 出口时反复超时 |
-| TCP Concurrent | 开启 | 开启 | 并发尝试域名解析得到的地址，优先使用先成功的连接 |
-| 嗅探覆写 / 接管嗅探 | 默认 | 默认 | 当前日志只有少量嗅探噪声，不需要激进调整 |
-| 以管理员权限运行 | 开启 | 不适用 | Windows 上 TUN 和 strict-route 防泄露需要足够权限 |
-| macOS 防火墙 | 不适用 | 允许 Mihomo | 防火墙开启且 TUN 异常时，允许 Mihomo 出站 |
-| 订阅更新使用代理 | 按需开启 | 按需开启 | 仅在规则集或订阅直连更新失败时使用 |
-
-最重要的是关闭「DNS 覆写」。如果它开启，可能导致本项目的 DNS 防泄露配置被覆盖。
-
-### 第 5 步：关闭浏览器内置安全 DNS
-
-如果浏览器开启了内置 Secure DNS / DoH，可能绕过 Clash Party 的 DNS。
-
-建议在常用浏览器中关闭内置安全 DNS：
-
-- Chrome：设置 -> 隐私和安全 -> 安全 -> 使用安全 DNS
-- Edge：设置 -> 隐私、搜索和服务 -> 安全性 -> 使用安全 DNS
-- Firefox：设置 -> 隐私与安全 -> DNS over HTTPS
-
-如果你明确知道浏览器 DoH 域名会被 Clash Party 接管，也可以保持开启。但普通用户建议先关闭，方便排查。
-
-### 第 6 步：重载配置
-
-完成上面设置后，执行下面任意一种操作：
-
-- 在 Clash Party 中手动更新订阅
-- 重启 mihomo 内核
-- 重启 Clash Party
-
-重载会重建连接，不要在游戏、语音通话或大文件传输过程中执行。重载后再开始验证。
-
-## 成功标准
-
-### 有效配置检查
-
-在 Clash Party 重载配置后，最终生效配置应满足：
-
-- `controlDns: false`
-- `ipv6: false`
-- `tcp-concurrent: true`
-- `find-process-mode: strict`
-- `tun.stack: mixed`
-- `tun.strict-route: true`
-- `dns.cache-algorithm: arc`
-- `respect-rules: true`
-- `RULE-SET,tencent_services,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
-- `RULE-SET,tencent_games_static,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
-- `RULE-SET,tencent_process_direct,🎯 全球直连` 位于 `RULE-SET,ads_domain,🛑 广告拦截` 前面
-- `RULE-SET,google_proxy_static,🚀 节点选择` 位于 `RULE-SET,google_cn_domain,🎯 全球直连` 前面
-- `RULE-SET,academic_platforms,🚀 节点选择` 位于 `RULE-SET,cn_domain,🎯 全球直连` 前面
-
-### 规则命中检查
-
-打开 Clash Party 日志，访问下面域名，看命中的策略是否符合预期。
-
-| 测试域名 | 预期策略 | 说明 |
+| 设置项 | 值 | 说明 |
 | --- | --- | --- |
-| `baidu.com` | `🎯 全球直连` | 中国网站直连 |
-| `bilibili.com` | `🎯 全球直连` | 中国网站直连 |
-| `google.com` | `🚀 节点选择` | 海外网站走代理 |
-| `ssl.gstatic.com` | `🚀 节点选择` | Google 静态资源走代理 |
-| `fonts.gstatic.com` | `🚀 节点选择` | Google 字体静态资源走代理 |
-| `update.googleapis.com` | `🚀 节点选择` | Google API 走代理 |
-| `c.pki.goog` | `🚀 节点选择` | Google 证书链路走代理 |
-| `github.com` | `🚀 节点选择` | GitHub 走代理 |
-| `www.engineeringvillage.com` | `🚀 节点选择` | EI / Compendex 走代理 |
-| `scopus.com` | `🚀 节点选择` | Scopus 走代理 |
-| `webofscience.com` | `🚀 节点选择` | Web of Science 走代理 |
-| `ieeexplore.ieee.org` | `🚀 节点选择` | IEEE Xplore 走代理 |
-| `arxiv.org` | `🚀 节点选择` | arXiv 走代理 |
-| `pubmed.ncbi.nlm.nih.gov` | `🚀 节点选择` | PubMed 走代理 |
-| `doi.org` | `🚀 节点选择` | DOI 跳转走代理 |
-| `chatgpt.com` | `🤖 AI 平台` | 海外 AI 走代理 |
-| `claude.ai` | `🤖 AI 平台` | 海外 AI 走代理 |
-| `deepseek.com` | `🎯 全球直连` | 中国 AI 直连 |
-| `alipay.com` | `🎯 全球直连` | 国内支付直连 |
-| `gov.cn` | `🎯 全球直连` | 政务服务直连 |
-| `szshort.weixin.qq.com` | `🎯 全球直连` | 微信主链路直连 |
-| `badjs.weixinbridge.com` | `🎯 全球直连` | 微信 JS / 安全检测链路直连 |
-| `beacon.cdn.qq.com` | `🎯 全球直连` | 腾讯诊断链路直连，不再被广告规则优先拦截 |
-| `h.trace.qq.com` | `🎯 全球直连` | 腾讯追踪 / 诊断链路直连 |
-| `weixin110.qq.com` | `🎯 全球直连` | 微信安全中心链路直连 |
-| `safebrowsing.urlsec.qq.com` | `🎯 全球直连` | 腾讯 URL 安全检测链路直连 |
-| `report.qqweb.qq.com` | `🎯 全球直连` | 腾讯报告链路不再被广告规则误拦截 |
-| `tqos.anticheatexpert.com` | `🎯 全球直连` | 腾讯游戏 TQOS / 反作弊 UDP 直连 |
-| `ied-tqos.qq.com` | `🎯 全球直连` | 腾讯游戏 TQOS UDP 直连 |
-| `netflix.com` | `🎬 流媒体解锁` | 流媒体走代理 |
+| 运行模式 | 规则 | 保证分流规则生效 |
+| TUN 模式 | 开启 | 接管系统流量和 DNS |
+| DNS 覆写 | **关闭** | 最重要，开启会覆盖本文件的 DNS 防泄露配置 |
+| IPv6 | 关闭 | 避免无可用 IPv6 出口时超时 |
+| TCP Concurrent | 开启 | |
+| 以管理员权限运行 | 开启（Windows） | TUN 和 strict-route 需要权限 |
 
-如果日志里看不到规则命中，先确认订阅是否已经绑定覆写，并且是否更新过订阅。
+### 4. 关闭浏览器内置安全 DNS
 
-### DNS 泄露检查
+Chrome / Edge / Firefox 设置中关闭「使用安全 DNS / DNS over HTTPS」，否则浏览器可能绕过 Clash Party 的 DNS。
 
-访问下面网站：
+### 5. 重载并验证
 
-- https://ipleak.net/
-- https://www.dnsleaktest.com/
-- https://browserleaks.com/dns
-
-正常结果：
-
-- 出口 IP 应显示代理节点 IP。
-- DNS 服务器不应显示中国电信、联通、移动、阿里、腾讯等中国 DNS。
-
-如果仍显示中国 DNS，按顺序检查：
-
-1. Clash Party 是否开启 TUN。
-2. Clash Party 是否关闭「DNS 覆写」。
-3. 浏览器内置 Secure DNS / DoH 是否关闭。
-4. 订阅是否已经绑定 `override.yaml`。
-5. Clash Party 日志中 DNS 泄露测试域名是否命中代理规则。
-
-## DNS 覆写异常处理
-
-如果导入 `override.yaml` 后仍然出现大量下面的日志：
-
-```text
-dns resolve failed: couldn't find ip
-can't resolve ip: couldn't find ip
-```
-
-优先检查 Clash Party 的「应用设置」。
-
-已验证的异常特征：
-
-- Clash Party 应用级「DNS 覆写」开启后，可能覆盖本文件的 `dns!` 配置。
-- 最终生效配置中可能出现 `fake-ip-filter: ["*"]`、`direct-nameserver: []`、`respect-rules: false`。
-- 这会导致 DNS 分流和 fake-ip 过滤行为不符合本文件预期，从而在日志中出现大量解析失败。
-
-修复方式：
-
-1. 打开 Clash Party。
-2. 进入「应用设置」。
-3. 关闭「DNS 覆写」。
-4. 保存后等待 Clash Party 热重载，或手动重启 mihomo 内核。
-
-修复后应确认：
-
-- Clash Party 配置中的 `controlDns` 为 `false`。
-- 最终生效配置中的 `fake-ip-filter` 不再是单独的 `*`。
-- `direct-nameserver` 包含国内 DNS，例如 `https://doh.pub/dns-query`、`https://dns.alidns.com/dns-query`。
-- `respect-rules: true` 生效。
-- 日志热重载完成后，不再持续出现 DNS 解析失败告警。
-
-「嗅探覆写」不需要因为 DNS 问题直接关闭。只有当日志明确显示 sniffer 造成错误识别、错误分流或访问异常时，再单独调整嗅探相关设置。
-
-## Google CN 误直连优化
-
-日志中如果大量出现下面这类记录：
-
-```text
-match RuleSet/google_cn_domain) ... ssl.gstatic.com:443 error: connect failed: ... i/o timeout
-match RuleSet/google_cn_domain) ... fonts.gstatic.com:443 error: connect failed: ... i/o timeout
-match RuleSet/google_cn_domain) ... update.googleapis.com:443 error: connect failed: ... i/o timeout
-```
-
-说明 `google-cn` 规则集中有部分 Google 静态资源或 API 域名被直连，但当前网络无法稳定直连这些地址。
-
-本配置使用 `google_proxy_static` 精确修复这类高频误直连：
-
-- `gstatic.com`
-- `googleapis.com`
-- `pki.goog`
-
-这些域名会在 `google_cn_domain` 前提前命中 `🚀 节点选择`。这样不会把整个 `google-cn` 都改成代理，只修复日志中确认高频超时的 Google CDN/API 域名。
-
-如果日志中 `www.example.edu.cn`、`192.0.2.100:445` 等国内域名、学校域名或内网地址直连超时，通常不是代理规则问题。这类流量命中 `cn_domain`、`cn_ip` 或 `private_ip` 后直连是预期行为，真正原因更可能是目标服务、校园网、局域网或本机网络不可达。
-
-## 国际学术平台
-
-`academic_platforms` 会将常用国际学术服务在 `cn_domain` 之前送入 `🚀 节点选择`，并使用海外 DoH。它覆盖以下类型的主域名：
-
-- 检索和索引：Google Scholar、Semantic Scholar、Scopus、Web of Science、Dimensions、Lens、Crossref、DOI、OpenAlex、ORCID、WorldCat。
-- Elsevier：Engineering Village、ScienceDirect、Scopus、Mendeley、SSRN、Knovel、Embase，以及 `id.elsevier.com` 所属认证链路。
-- 数据库和出版社：ProQuest、EBSCOhost、Ovid、JSTOR、IEEE Xplore、ACM Digital Library、Springer Nature、Wiley、Taylor & Francis、SAGE、Cambridge、Oxford、Science、Cell、Lancet、BMJ、NEJM、JAMA、PNAS、APS、AIP、IOP、RSC、ACS、PLOS、Frontiers、MDPI 等。
-- 开放科研：arXiv、bioRxiv、medRxiv、PubMed/NCBI、Europe PMC、ClinicalTrials.gov、DOAJ、CORE、OSF、Zenodo、Figshare、Dryad、Harvard Dataverse。
-- 研究工作流：ResearchGate、Academia.edu、Zotero、Overleaf。
-
-该规则只处理网络路径，不提供或绕过内容授权。EI、Scopus、Web of Science、ProQuest、EBSCOhost 等数据库仍需要学校或机构订阅。校外访问应优先从图书馆提供的 CARSI、SAML/OpenAthens 或 EZproxy 入口登录；若学校仅按校园出口 IP 授权，则美国节点不能替代学校 IP。
-
-不要把学校图书馆的 EZproxy、WebVPN、统一认证或校内域名泛化加入本规则集。它们通常是学校自有域名，必须按学校的访问说明保留直连或由学校远程访问系统处理。遇到新平台时，先根据 Clash Party 日志确认实际请求域名，再做最小范围补充。
-
-## 腾讯 / 微信 / 网游 UDP 优化
-
-日志中如果出现下面这类记录：
-
-```text
-badjs.weixinbridge.com:443 match RuleSet(ads_domain) using 🛑 广告拦截[REJECT]
-beacon.cdn.qq.com:443 match RuleSet(ads_domain) using 🛑 广告拦截[REJECT]
-h.trace.qq.com:443 match RuleSet(ads_domain) using 🛑 广告拦截[REJECT]
-tqos.anticheatexpert.com:8081 match RuleSet(cn_domain) using 🎯 全球直连[DIRECT]
-ied-tqos.qq.com:8000 match RuleSet(cn_domain) using 🎯 全球直连[DIRECT]
-```
-
-说明微信、WeGame 或腾讯游戏主链路基本已经直连，但部分腾讯诊断、安全检测、埋点或 TQOS 相关域名可能被广告规则优先拦截。微信弹出“不安全”提示、WeGame 反复探测或游戏客户端网络状态异常时，这类误拦截会增加排查成本。
-
-本配置使用三层保守优化：
-
-- `tencent_services`：微信、QQ、登录、微信桥接 JS、URL 安全、验证码和腾讯诊断域名优先直连。
-- `tencent_games_static`：WeGame、腾讯游戏、反作弊、TQOS、DNF 和 TPlay 相关域名优先直连。
-- `tencent_process_direct`：Windows / macOS 常见微信、QQ，以及 Windows 上 WeGame、腾讯反作弊和 DNF 辅助进程直连，用来覆盖部分没有域名、直接连接 IP 的游戏 UDP 流量。
-
-这三组规则都放在 `ads_domain` 前面，目标是减少腾讯生态内误拦截。它不会把所有 UDP 都改成直连；Google、Cloudflare、海外 WebRTC / STUN、海外游戏和未匹配海外域名仍按原规则走代理。
-
-如果 `test.wegame.gtimg.com` 直连超时，但 TCP 端口可通、代理访问也超时，通常不是规则分流错误，更可能是腾讯测试端点、运营商链路或客户端探测行为本身的问题。
-
-### 多设备日志结论
-
-2026-07-16 对一台 Windows 和一台 macOS 设备的有效配置、核心日志进行对比后，结论如下：
-
-- Windows 上 DNF 的游戏 UDP 已命中 `tencent_process_direct -> DIRECT`，腾讯 TQOS、反作弊和微信主链路也稳定命中腾讯直连规则。少量腾讯测试端点超时不代表 UDP 被送进代理。
-- Windows 日志中大量 `receive ICMP echo reply ... i/o timeout`、网易云探测、局域网地址超时属于探测或目标不可达，不能直接当成网游丢包证据。
-- macOS 曾在网络接口异常期间大量出现 `Auto detect interface ... empty name`、`interface not found`；后续日志中该异常已经消失。若再次持续出现，先重启 Clash Party 内核并检查 Wi-Fi、以太网、其他 VPN 是否同时改变默认路由。
-- macOS 最终配置一度被应用级设置改成 `ipv6: true`、`tcp-concurrent: false`。这会在没有稳定 IPv6 出口时产生 `network is unreachable`，必须在 GUI 中关闭 IPv6 并开启 TCP Concurrent。
-- 两台设备都出现过代理节点自身的连接超时。规则只能保证选对出口，不能修复节点线路抖动；若多个海外服务同时超时并且日志都显示节点连接失败，应优先检查节点而不是继续增加规则。
-
-### 游戏加速器不要与 TUN 叠加
-
-本机日志出现了 WeGame 网络加速相关进程，Mac 日志出现了网易 UU 相关进程。游戏加速器、其他 VPN 和 Clash Party TUN 都可能修改系统默认路由或虚拟网卡；同时开启时，即使域名规则命中正确，也可能产生接口切换、回环或延迟波动。
-
-玩国服游戏时建议二选一：
-
-1. 使用 Clash Party TUN，并关闭 WeGame / 网易 UU 的网络加速功能；腾讯和中国游戏流量由本规则直连。
-2. 使用游戏加速器，并在游戏期间关闭 Clash Party TUN；只保留系统代理时，不能保证所有游戏 UDP 和 DNS 都被 Clash Party 接管。
-
-不要同时运行两个 TUN/VPN 加速链路。若必须共存，需要针对实际物理网卡固定 `interface-name`，这属于单机配置，不应写入通用覆写。
-
-## 策略组说明
-
-| 策略组 | 默认 | 用途 |
-| --- | --- | --- |
-| 🚀 节点选择 | ♻️ 自动选择 | 主代理出口 |
-| ♻️ 自动选择 | 自动测速 | 对订阅内节点测速，单节点时等同于使用该节点 |
-| 🌐 全部节点 | 手动选择 | 显示订阅内全部真实节点 |
-| 🤖 AI 平台 | 代理 | OpenAI、ChatGPT、Claude、Anthropic 等海外 AI |
-| 📲 电报消息 | 代理 | Telegram 域名和 IP |
-| 📹 油管视频 | 代理 | YouTube |
-| 🎬 流媒体解锁 | 代理 | Netflix、Disney+、HBO/Max、Hulu、Prime Video、Spotify、TikTok、Apple TV+ 等 |
-| Ⓜ️ 微软服务 | DIRECT | 默认直连，可手动切代理 |
-| 🍎 苹果服务 | DIRECT | 默认直连，可手动切代理 |
-| 🛑 广告拦截 | REJECT | 拦截常见广告域名 |
-| 🎯 全球直连 | DIRECT | 中国和局域网直连 |
-| 🐟 漏网之鱼 | 代理 | 未匹配流量默认走代理节点 |
-
-单美国节点场景下没有香港、日本、新加坡等地区组。这样更稳定，也避免节点名不匹配导致策略组为空。
-
-## 分流规则说明
-
-### AI 平台
-
-海外 AI 默认走 `🤖 AI 平台`，覆盖：
-
-- OpenAI / ChatGPT / OpenAI API
-- Anthropic / Claude
-- Google Gemini / AI Studio / NotebookLM / DeepMind
-- Microsoft Copilot / Bing AI
-- GitHub Copilot
-- Perplexity / Poe / xAI Grok / OpenRouter / Mistral / Cohere
-- Hugging Face / Replicate
-- Cursor / Windsurf / Codeium
-- Midjourney / Stability AI / Runway / Ideogram / Leonardo / ElevenLabs / Suno / Udio
-
-同时保留 `MetaCubeX category-ai-!cn`、`OpenAI`、`Anthropic` 和 ACL4SSR 的 AI/OpenAI 规则集自动更新。静态域名用于补齐规则集滞后的新平台，规则集用于长期维护。
-
-中国 AI 服务默认走 `🎯 全球直连`，覆盖 DeepSeek、Kimi、通义千问、豆包、腾讯元宝/混元、百度文心/一言、智谱、MiniMax、硅基流动、讯飞等。这样可以减少美国出口导致的风控、验证码和绕路。
-
-### 国内支付 / 银行 / 政务
-
-`domestic_sensitive` 规则集明确直连：
-
-- `gov.cn` 及常见政务服务域名
-- 支付宝、微信支付、银联、云闪付、京东支付、拉卡拉、易宝、快钱等支付链路
-- 工农中建交邮储、招商、浦发、兴业、中信、光大、平安、华夏、广发、民生、北京银行、上海银行、浙商等银行域名
-
-这类服务不建议走海外节点，因为容易触发登录风控、短信校验异常、支付失败或地区异常。
-
-### 流媒体解锁
-
-`🎬 流媒体解锁` 默认走代理节点，覆盖：
-
-- Netflix
-- Disney+
-- HBO / Max
-- Hulu
-- Prime Video
-- Apple TV+
-- Spotify
-- TikTok
-- Discovery+
-- Paramount+ / Peacock / Crunchyroll 等静态补充
-
-能否解锁取决于节点 IP 质量，不是规则本身能完全决定。
-
-## DNS 防泄露原理
-
-本配置采用以下组合：
-
-- `fake-ip`：客户端查询域名时返回 `198.18.0.0/16` 虚拟 IP，由 mihomo 保留域名映射。
-- `tun.dns-hijack`：TUN 模式下劫持 UDP/TCP 53 查询到 mihomo DNS。
-- `strict-route`：Windows 下可降低多宿主 DNS 行为导致的泄露。
-- `respect-rules`：DNS 连接也遵守路由规则。
-- `proxy-server-nameserver`：代理节点自身域名只用国内 DNS 解析，避免递归代理。
-- `no-resolve`：所有 IP 类规则都带 `no-resolve`，避免为了匹配 IP 规则提前解析域名。
-
-## 常见问题
-
-### 导入后订阅更新失败
-
-常见原因：
-
-- 把覆写文件当成普通配置文件导入。
-- 只导入了覆写文件，但没有把它绑定到订阅。
-- GUI 的应用级 DNS 覆写覆盖了本文件。
-- TUN 需要管理员权限。
-- 规则集下载失败。
-
-### 策略组里没有节点
-
-本配置使用 `include-all: true` 自动包含订阅内真实节点，并排除了“流量、到期、官网”等信息节点。
-
-如果真实节点名称刚好包含这些词，删除 `exclude-filter` 后再更新订阅。
-
-### 某个协议节点连不上
-
-这通常不是规则问题。以 VLESS + Reality + Vision 为例，检查订阅转换后的节点字段：
-
-- `type: vless`
-- `tls: true`
-- `flow: xtls-rprx-vision`
-- `servername`
-- `reality-opts.public-key`
-- `reality-opts.short-id`
-- `client-fingerprint: chrome`
-- Clash Party 使用的 mihomo 内核版本足够新
-
-如果使用 Shadowrocket，则由 Shadowrocket 自己负责解析节点或订阅。VMess、Trojan、Shadowsocks、Hysteria、TUIC、WireGuard 等协议同理：先确认客户端版本支持该协议，再确认订阅字段没有在转换过程中丢失。
-
-### 微软或苹果服务访问异常
-
-默认策略是直连，因为这些服务在中国大陆通常有可用接入点。
-
-如果某个微软或苹果服务需要代理，在 Clash Party 的代理页面把 `Ⓜ️ 微软服务` 或 `🍎 苹果服务` 手动切到 `🚀 节点选择`。
-
-### Copilot 或 Bing AI 为什么没有走微软直连
-
-Copilot、Bing AI、GitHub Copilot 属于海外 AI 服务，规则优先级高于微软服务规则，所以会走 `🤖 AI 平台`。这是有意设计。
-
-### 中国 AI 为什么直连
-
-DeepSeek、Kimi、通义千问、豆包、腾讯元宝、文心一言等中国 AI 服务通常使用中国接入点。直连更稳定，也更不容易触发异常登录或地区风控。
-
-### 流媒体仍然无法解锁
-
-规则只能保证流媒体域名走代理节点，不能保证该节点 IP 被流媒体平台认可。
-
-如果 Netflix、Disney+、Hulu 仍提示地区不可用，需要更换可解锁的节点。
-
-### 规则集下载失败
-
-本配置主要使用 `testingcf.jsdelivr.net` 拉取 MetaCubeX `.mrs` 规则集。
-
-如果所在网络无法访问该 CDN，可以把 URL 改为 `raw.githubusercontent.com`，并在 Clash Party 中开启“订阅更新使用代理”。
-
-### 使用机场订阅时会覆盖机场自带规则吗
-
-把本项目的 `override.yaml` 绑定到订阅后，Clash Party 会按覆写逻辑合并并替换订阅配置中的对应部分。通常情况下，本项目的策略组、规则、DNS 和 TUN 配置会优先生效。
-
-但需要注意：
-
-- Clash Party GUI 的应用级设置仍可能覆盖订阅覆写，尤其是「DNS 覆写」。
-- 不同机场订阅的节点命名不同，如果策略组为空，优先检查节点是否被 `exclude-filter` 过滤。
-- 机场订阅更新后，确认该订阅仍然绑定了本项目覆写。
-
-## Shadowrocket iOS 配置
-
-Shadowrocket 不能直接导入 `override.yaml`。`override.yaml` 使用的是 Clash Party / mihomo 覆写语法，里面的 `dns!`、`tun!`、`rule-providers!`、`.mrs`、`GEOSITE` 等能力不属于 Shadowrocket 配置格式。
-
-本项目为 Shadowrocket 提供两份独立配置：
-
-| 文件 | 推荐场景 | DNS 策略 |
-| --- | --- | --- |
-| `shadowrocket-strict.conf` | 默认推荐，优先防 DNS 泄露 | 使用显式公共 DNS，禁用系统 DNS fallback，核心代理域名强制远程解析，劫持常见 53 端口 DNS，UDP 不支持时拒绝 |
-| `shadowrocket-compatible.conf` | 某些 App、局域网发现、Apple 服务或 UDP 兼容性异常时使用 | 仍禁用系统 DNS fallback 和保留 DNS 劫持，但放宽 UDP fallback 和 real-ip 例外 |
-
-Shadowrocket 配置不内置节点。VLESS、VMess、Trojan、Shadowsocks、Hysteria、TUIC、WireGuard 等协议由 Shadowrocket 自己的节点或订阅导入能力负责。本项目只负责规则、DNS 和策略组。
-
-### 导入方式
-
-先在 Shadowrocket 中导入你的节点或机场订阅，确认节点本身可用。然后导入下面任意一份配置：
-
-```text
-https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadowrocket-strict.conf
-```
-
-或兼容版：
-
-```text
-https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadowrocket-compatible.conf
-```
-
-导入后检查策略组：
-
-- `ALL`：显示 Shadowrocket 中已导入的全部节点。
-- `AUTO`：对全部节点做 URL 测速。
-- `AI`、`Telegram`、`YouTube`、`Streaming`：默认走 `PROXY` / `AUTO` / `ALL`，也可以手动切 `DIRECT`。
-- `Microsoft`、`Apple`：默认直连优先；Copilot、Bing AI、GitHub Copilot 会被更高优先级的 AI 规则送去代理。
-
-如果你的订阅里有“流量、到期、官网”等信息节点，Shadowrocket 可能也会把它们显示到 `ALL` 或 `AUTO` 中。此时在 Shadowrocket 内手动选择真实节点，或按自己的节点命名习惯调整 `policy-regex-filter`。
-
-### Shadowrocket DNS 防泄露重点
-
-严格版的目标是先避免 DNS 回落到路由器、系统 DNS 或运营商自动下发 DNS，同时让海外代理域名通过代理侧远程解析：
-
-- 使用显式 DNS 服务器，不使用 `system` 或路由器 DNS。
-- `dns-direct-system = false`，避免直连域名使用系统 DNS。
-- `dns-fallback-system = false`，避免解析失败时回落系统 DNS。
-- `dns-direct-fallback-proxy = true`，直连解析异常时允许通过代理兜底。
-- `hijack-dns` 劫持 `:53` 以及常见公共 DNS 的 53 端口。
-- `dnsleaktest.com`、`ipleak.net`、`browserleaks.com`、`dns.google`、`cloudflare-dns.com` 等域名强制走代理并使用 `force-remote-dns`。
-- Google、GitHub、YouTube、OpenAI、Claude、Gemini、Perplexity、Copilot 等核心代理域名也显式使用 `force-remote-dns`，减少本地 DNS 污染和泄露。
-
-兼容版仍然保留上面的关键防泄露设置，但允许更多 real-ip 例外，并把 UDP 不支持时的行为从拒绝改为直连。它更容易兼容部分 App、局域网服务、Apple 推送和银行支付链路，但隐私强度低于严格版。
-
-如果启用了 iCloud Private Relay、某些 App 内置 DoH、浏览器安全 DNS、第三方 DNS 描述文件或企业 VPN 描述文件，DNS 行为可能绕过 Shadowrocket。排查 DNS 泄露时建议先关闭这些额外 DNS/VPN 功能。
-
-如果日志里只有 `gateway.icloud.com` 的 AAAA 查询偶发使用本地网关、运营商 DNS 或链路本地 IPv6 DNS，优先检查 iCloud Private Relay、限制 IP 地址跟踪、DNS 描述文件、企业 VPN 描述文件，以及 Shadowrocket 是否已经刷新到最新配置。
-
-### Shadowrocket 验证
-
-导入后在 Shadowrocket 日志中检查规则命中：
+更新订阅或重启内核后，看日志命中是否符合预期：
 
 | 测试域名 | 预期策略 |
 | --- | --- |
-| `baidu.com` | `DIRECT` |
-| `bilibili.com` | `DIRECT` |
-| `deepseek.com` | `DIRECT` |
-| `alipay.com` | `DIRECT` |
-| `gov.cn` | `DIRECT` |
-| `google.com` | `PROXY` |
-| `c.pki.goog` | `PROXY` |
-| `github.com` | `PROXY` |
-| `chatgpt.com` | `AI` |
-| `claude.ai` | `AI` |
-| `gemini.google.com` | `AI` |
-| `perplexity.ai` | `AI` |
-| `copilot.microsoft.com` | `AI` |
-| `youtube.com` | `YouTube` / `PROXY` |
-| `netflix.com` | `Streaming` / `PROXY` |
-| `gateway-asset.icloud-content.com` | `Apple` |
-| `cabana-server.cdn-apple.com` | `Apple` |
-| `dns.google` | `PROXY` |
-| `cloudflare-dns.com` | `PROXY` |
+| `baidu.com` / `bilibili.com` | 🎯 全球直连 |
+| `deepseek.com` / `alipay.com` | 🎯 全球直连 |
+| `google.com` / `github.com` | 🚀 节点选择 |
+| `chatgpt.com` / `claude.ai` | 🤖 AI 平台 |
+| `netflix.com` | 🎬 流媒体解锁 |
 
-DNS 泄露测试：
+DNS 泄露测试：访问 <https://ipleak.net/> 或 <https://www.dnsleaktest.com/>，结果中不应出现本地网关或运营商 DNS。若出现，按顺序检查：TUN 是否开启 → DNS 覆写是否关闭 → 浏览器安全 DNS 是否关闭 → 订阅是否已绑定覆写。
 
-- https://ipleak.net/
-- https://www.dnsleaktest.com/
-- https://browserleaks.com/dns
+## rule_multi.yaml 地区分组说明
 
-严格版的通过标准：DNS 泄露测试页面中不应出现路由器、本地网关、系统 DNS、校园网或运营商自动下发 DNS。因为配置中显式包含国内公共 DNS，普通直连域名可能会使用阿里 / 腾讯 / 114 DNS；但 `dnsleaktest.com`、`ipleak.net`、`browserleaks.com` 这类测试域名本身应命中 `PROXY,force-remote-dns`。如果测试页仍显示 `192.168.x.x`、本地路由器或运营商 DNS，需要继续排查 Shadowrocket 是否启用了当前配置。
+节点通过名称关键词自动分组（`include-all` + `filter` 正则），无硬编码节点名。节点名含「日本 / Japan / JP / Tokyo」等关键词即自动进入日本组，香港、台湾、新加坡、美国同理。
 
-## 项目文件
+如果你的机场节点命名不含常见地区关键词，改对应代理组的 `filter` 正则即可，无需修改其他内容。
 
-- `override.yaml`：Clash Party YAML 覆写文件
-- `shadowrocket-strict.conf`：Shadowrocket 严格防 DNS 泄露配置
-- `shadowrocket-compatible.conf`：Shadowrocket 兼容性优先配置
-- `rules/shadowrocket/direct-supplement.list`：Shadowrocket 国内支付、银行、政务、中国 AI 直连补充规则
-- `rules/shadowrocket/proxy-supplement.list`：Shadowrocket DNS 泄露检测、公共 DoH/DoT、海外 AI、流媒体代理补充规则
-- `.gitignore`：忽略本地日志软链、系统文件和临时文件
+## Shadowrocket 使用
 
-## 参考资料
+1. 先在 Shadowrocket 中导入节点或订阅，确认节点可用。
+2. 导入配置：
 
-- Clash Party 覆写说明：https://clashparty.org/docs/guide/override
-- Clash Party YAML 覆写语法：https://clashparty.org/docs/guide/override/yaml
-- Clash Party override-hub：https://github.com/mihomo-party-org/override-hub
-- mihomo 通用配置文档：https://wiki.metacubex.one/en/config/general/
-- mihomo DNS 文档：https://wiki.metacubex.one/en/config/dns/
-- mihomo TUN 文档：https://wiki.metacubex.one/en/config/inbound/tun/
-- mihomo Rule Providers 文档：https://wiki.metacubex.one/en/config/rule-providers/
-- mihomo VLESS 文档：https://wiki.metacubex.one/en/config/proxies/vless/
+```text
+https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadowrocket.conf
+```
+
+说明：
+
+- 策略组 `ALL` / `AUTO` 会自动过滤「流量、到期、官网」等信息节点；如果你的真实节点名恰好含这些词，改一下组里的 `policy-regex-filter`。
+- `Microsoft`、`Apple` 默认直连，可在策略组手动切代理。
+- 节点不支持 UDP 时语音/游戏类 UDP 会被拒绝（防静默泄露）；如受影响，把 `udp-policy-not-supported-behaviour` 改为 `DIRECT`。
+- 若使用 iCloud Private Relay、第三方 DNS 描述文件或其他 VPN，可能绕过 Shadowrocket 的 DNS，排查泄露时先关闭。
+
+DNS 泄露测试：访问 <https://ipleak.net/> 或 <https://www.dnsleaktest.com/>，结果中不应出现本地网关或运营商 DNS。
+
+## 常见问题
+
+| 问题 | 处理 |
+| --- | --- |
+| 策略组为空 | 节点名被 `exclude-filter`（流量/到期/官网等）过滤，删除该字段后更新订阅 |
+| 日志大量 `couldn't find ip` | 「应用设置」里关闭「DNS 覆写」 |
+| 规则集下载失败 | 开启「订阅更新使用代理」后更新订阅 |
+| 流媒体不解锁 | 规则只保证走代理，解锁取决于节点 IP，换节点 |
+| 某协议节点连不上 | 检查订阅转换字段和内核版本，与覆写无关 |
+| 游戏 UDP 异常 | 不要同时开游戏加速器和 TUN，二选一 |
+
+## 文件说明
+
+- `rule_single.yaml`：Clash Party 单节点覆写
+- `rule_multi.yaml`：Clash Party 多节点地区分组覆写
+- `override.yaml`：旧版覆写（保留兼容，建议改用 `rule_single.yaml`）
+- `shadowrocket.conf`：Shadowrocket 配置
+- `rules/shadowrocket/direct-supplement.list`：国内支付/银行/政务/中国 AI/腾讯防误拦直连补充（置于广告规则前）
+- `rules/shadowrocket/proxy-supplement.list`：DNS 防泄露补充（境外 DoH 端点、泄露测试镜像、公共 DNS IP）
+- `rules/shadowrocket/ai-supplement.list`：海外 AI 静态域名补充（补齐上游规则集未收录的新平台）
+- `rules/shadowrocket/streaming-supplement.list`：流媒体静态域名补充
+
+## 参考
+
+- Clash Party 覆写文档：https://clashparty.org/docs/guide/override
+- mihomo 配置文档：https://wiki.metacubex.one/
 - MetaCubeX 规则数据：https://github.com/MetaCubeX/meta-rules-dat
-- ACL4SSR 规则集：https://github.com/ACL4SSR/ACL4SSR
-- Shadowrocket App Store：https://apps.apple.com/app/shadowrocket/id932747118
-- Shadowrocket 默认配置示例：https://github.com/Shadowrocket/config
-- blackmatrix7 iOS 规则集：https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Shadowrocket

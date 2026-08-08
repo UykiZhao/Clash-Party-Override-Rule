@@ -1,0 +1,23 @@
+# NAME: StreamingSupplement
+# AUTHOR: UykiZhao
+# REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
+# UPDATED: 2026-08-08
+# PURPOSE: Static streaming domains not covered (or only slowly covered) by the
+#          auto-updated blackmatrix7 streaming rule-sets.
+
+DOMAIN-SUFFIX,max.com
+DOMAIN-SUFFIX,hbomax.com
+DOMAIN-SUFFIX,maxgo.com
+DOMAIN-SUFFIX,peacocktv.com
+DOMAIN-SUFFIX,paramountplus.com
+DOMAIN-SUFFIX,cbsaavideo.com
+DOMAIN-SUFFIX,pluto.tv
+DOMAIN-SUFFIX,tubi.tv
+DOMAIN-SUFFIX,crunchyroll.com
+DOMAIN-SUFFIX,funimation.com
+DOMAIN-SUFFIX,discoveryplus.com
+DOMAIN-SUFFIX,dplus.com
+DOMAIN-SUFFIX,tv.apple.com
+DOMAIN-SUFFIX,atv-ps.amazon.com
+DOMAIN-SUFFIX,primevideo.com
+DOMAIN-SUFFIX,pv-cdn.net

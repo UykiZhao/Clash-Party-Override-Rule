@@ -1,8 +1,10 @@
 # NAME: DirectSupplement
 # AUTHOR: UykiZhao
 # REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-06-21
-# PURPOSE: China-sensitive direct rules for payment, banking, government, and domestic AI.
+# UPDATED: 2026-08-08
+# PURPOSE: China-sensitive direct rules. Placed BEFORE the ad rule-set so
+#          payment, banking, government, domestic AI and Tencent diagnostic
+#          domains are never swallowed by REJECT.
 
 # Government and public services
 DOMAIN-SUFFIX,gov.cn
@@ -65,7 +67,7 @@ DOMAIN-SUFFIX,bankofshanghai.com
 DOMAIN-SUFFIX,nbcb.com.cn
 DOMAIN-SUFFIX,czbank.com
 
-# Domestic AI
+# Domestic AI (direct avoids overseas-exit risk control)
 DOMAIN-SUFFIX,deepseek.com
 DOMAIN-SUFFIX,deepseek.ai
 DOMAIN-SUFFIX,moonshot.cn
@@ -90,3 +92,32 @@ DOMAIN-SUFFIX,minimaxi.com
 DOMAIN-SUFFIX,siliconflow.cn
 DOMAIN-SUFFIX,tiangong.cn
 DOMAIN-SUFFIX,xfyun.cn
+
+# Tencent services: login, URL security, captcha, diagnostics.
+# These are frequently miscaptured by ad lists and break WeChat/QQ flows.
+DOMAIN-SUFFIX,weixin.qq.com
+DOMAIN-SUFFIX,weixinbridge.com
+DOMAIN-SUFFIX,wx.qq.com
+DOMAIN-SUFFIX,weixin110.qq.com
+DOMAIN-SUFFIX,ptlogin2.qq.com
+DOMAIN-SUFFIX,urlsec.qq.com
+DOMAIN-SUFFIX,captcha.gtimg.com
+DOMAIN-SUFFIX,qqweb.qq.com
+DOMAIN-SUFFIX,beacon.qq.com
+DOMAIN-SUFFIX,beaconcdn.qq.com
+DOMAIN-SUFFIX,beacon.cdn.qq.com
+DOMAIN-SUFFIX,trace.qq.com
+DOMAIN-SUFFIX,h.trace.qq.com
+DOMAIN-SUFFIX,pingjs.qq.com
+DOMAIN-SUFFIX,tdm.qq.com
+
+# Tencent games / WeGame / anti-cheat / TQOS
+DOMAIN-SUFFIX,wegame.com.cn
+DOMAIN-SUFFIX,wegame.gtimg.com
+DOMAIN-SUFFIX,game.qq.com
+DOMAIN-SUFFIX,gamesafe.qq.com
+DOMAIN-SUFFIX,anticheatexpert.com
+DOMAIN-SUFFIX,ied-tqos.qq.com
+DOMAIN-SUFFIX,down.qq.com
+DOMAIN-SUFFIX,staticfile.qq.com
+DOMAIN-SUFFIX,ossweb-img.qq.com
