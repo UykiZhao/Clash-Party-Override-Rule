@@ -8,14 +8,16 @@ mihomo / Clash Party 订阅覆写：国内直连、海外代理、DNS 防泄露�
 
 | 文件 | 场景 |
 | --- | --- |
-| `rule_single.yaml` | 单节点或少量节点（推荐） |
-| `rule_multi.yaml` | 多节点，按地区自动分组（香港/台湾/日本/新加坡/美国） |
+| `rule_single.yaml` | 大陆使用，单节点或少量节点（推荐） |
+| `rule_multi.yaml` | 大陆使用，多节点按地区自动分组（香港/台湾/日本/新加坡/美国） |
+| `rule_special.yaml` | **港澳地区使用**，默认直连，仅港澳不可用的服务走节点 |
 
 raw 链接：
 
 ```text
 https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rule_single.yaml
 https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rule_multi.yaml
+https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rule_special.yaml
 ```
 
 注意：这是 Clash Party YAML 覆写文件，不是完整 mihomo 配置，不要当普通配置直接导入。
@@ -68,11 +70,15 @@ DNS 泄露测试：访问 <https://ipleak.net/> 或 <https://www.dnsleaktest.com
 ## Shadowrocket 使用
 
 1. 先在 Shadowrocket 中导入节点或订阅，确认节点可用。
-2. 导入配置：
+2. 导入配置（按所在地区二选一）：
 
 ```text
 https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadowrocket.conf
+https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadowrocket_special.conf
 ```
+
+- `shadowrocket.conf`：大陆使用，国内直连 / 海外代理。
+- `shadowrocket_special.conf`：**港澳地区使用**，默认直连，仅港澳不可用的服务走节点。
 
 说明：
 
@@ -82,6 +88,20 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadow
 - 若使用 iCloud Private Relay、第三方 DNS 描述文件或其他 VPN，可能绕过 Shadowrocket 的 DNS，排查泄露时先关闭。
 
 DNS 泄露测试：访问 <https://ipleak.net/> 或 <https://www.dnsleaktest.com/>，结果中不应出现本地网关或运营商 DNS。
+
+## 港澳 Special 版说明
+
+`rule_special.yaml` 和 `shadowrocket_special.conf` 适用于香港/澳门本地网络（以澳门为主）。港澳网络开放，Google、YouTube、Telegram、Gemini 网页版、Grok、Copilot、Perplexity、Poe 等均可直连，因此 Special 版**默认全部直连**，只有以下「港澳也无法访问」的服务走节点：
+
+| 服务 | 原因 |
+| --- | --- |
+| OpenAI / ChatGPT / Sora | OpenAI 主动封锁港澳，不在支持地区列表 |
+| Anthropic / Claude | 封锁港澳 IP |
+| Google AI 开发者工具 | AI Studio、Gemini API、NotebookLM、Gemini CLI、Antigravity 仍封锁（Gemini 网页版 2026-03 已对港开放，保持直连） |
+| TikTok | 字节跳动退出香港，但**澳门可直连**，默认不代理；赴港使用时取消配置文件中的对应注释即可 |
+| Hulu / Peacock / Paramount+ 美区 / BBC iPlayer / Pluto TV / Tubi | 平台区域限制（HBO Max 2024-11 已上线香港，无需代理） |
+
+代理组只有两个：`🤖 AI 解锁` 和 `🎬 流媒体解锁`，默认走 `🚀 节点选择`。策略组、DNS、TUN 等基础配置与大陆版一致，国内支付/银行/腾讯防误拦规则同样保留在广告规则之前。
 
 ## 常见问题
 
@@ -96,10 +116,12 @@ DNS 泄露测试：访问 <https://ipleak.net/> 或 <https://www.dnsleaktest.com
 
 ## 文件说明
 
-- `rule_single.yaml`：Clash Party 单节点覆写
-- `rule_multi.yaml`：Clash Party 多节点地区分组覆写
+- `rule_single.yaml`：Clash Party 单节点覆写（大陆）
+- `rule_multi.yaml`：Clash Party 多节点地区分组覆写（大陆）
+- `rule_special.yaml`：Clash Party 港澳 Special 覆写
 - `override.yaml`：旧版覆写（保留兼容，建议改用 `rule_single.yaml`）
-- `shadowrocket.conf`：Shadowrocket 配置
+- `shadowrocket.conf`：Shadowrocket 配置（大陆）
+- `shadowrocket_special.conf`：Shadowrocket 配置（港澳）
 - `rules/shadowrocket/direct-supplement.list`：国内支付/银行/政务/中国 AI/腾讯防误拦直连补充（置于广告规则前）
 - `rules/shadowrocket/proxy-supplement.list`：DNS 防泄露补充（境外 DoH 端点、泄露测试镜像、公共 DNS IP）
 - `rules/shadowrocket/ai-supplement.list`：海外 AI 静态域名补充（补齐上游规则集未收录的新平台）

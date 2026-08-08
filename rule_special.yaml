@@ -1,0 +1,496 @@
+# ============================================================
+# Clash Party 覆写配置 - 港澳地区 Special 版 (rule_special.yaml)
+# 适用：香港 / 澳门本地网络（以澳门为主），单节点场景
+# 逻辑：默认全部直连（港澳网络开放），仅「港澳也无法访问」的服务走节点：
+#   - OpenAI / ChatGPT / Sora（OpenAI 主动封锁港澳，2026-06 确认）
+#   - Anthropic / Claude（封锁港澳 IP）
+#   - Google AI 开发者工具（AI Studio / Gemini API / NotebookLM /
+#     Gemini CLI / Antigravity 仍封锁；Gemini 网页版已开放，直连）
+#   - Hulu / Peacock / Paramount+ 美区 / BBC iPlayer / Pluto TV / Tubi
+# 备注：TikTok 澳门可直连，默认不代理（香港不可用，赴港时取消文末注释即可）。
+# 无需 DNS 防泄露组件的反向堆叠：港澳无 DNS 污染，代理域名由 fake-ip
+# + respect-rules 自动远端解析。
+# ============================================================
+
+mode: rule
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# ============================================================
+# 域名嗅探
+# ============================================================
+sniffer!:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  sniff:
+    HTTP:
+      ports:
+        - 80
+        - 8080-8880
+      override-destination: true
+    TLS:
+      ports:
+        - 443
+        - 8443
+    QUIC:
+      ports:
+        - 443
+        - 8443
+  skip-domain:
+    - "Mijia Cloud"
+    - "+.push.apple.com"
+
+# ============================================================
+# TUN 与 DNS
+# ============================================================
+tun!:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+  strict-route: true
+
+dns!:
+  enable: true
+  cache-algorithm: arc
+  listen: 0.0.0.0:1053
+  ipv6: false
+  prefer-h3: false
+  use-hosts: true
+  use-system-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - "geosite:private"
+    - "geosite:cn"
+    - "geosite:apple-cn"
+    - "geosite:microsoft@cn"
+    - "geosite:steam@cn"
+    - "geosite:category-games@cn"
+    - "+.lan"
+    - "+.local"
+    - "+.localhost"
+    - "localhost.ptlogin2.qq.com"
+    - "dns.msftncsi.com"
+    - "www.msftconnecttest.com"
+    - "*.msftconnecttest.com"
+    - "*.msftncsi.com"
+    - "+.market.xiaomi.com"
+    - "+.push.apple.com"
+    - "time.*.com"
+    - "time.*.gov"
+    - "time.*.edu.cn"
+    - "time.*.apple.com"
+    - "time1.*.com"
+    - "time2.*.com"
+    - "time3.*.com"
+    - "time4.*.com"
+    - "time5.*.com"
+    - "time6.*.com"
+    - "time7.*.com"
+    - "*.ntp.org.cn"
+    - "*.pool.ntp.org"
+
+  # 仅用于解析 DNS 服务器域名，必须是 IP 或基于 IP 的加密 DNS。
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+    - 1.1.1.1
+    - 8.8.8.8
+
+  # 港澳无 DNS 污染，默认用公共加密 DNS 即可。
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+
+  # 节点域名解析走公共 DNS（港澳无污染，无需递归保护）。
+  proxy-server-nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+
+  # 国内域名仍用国内 DoH，保证微信/支付宝/B站等 CN CDN 命中；
+  # 代理域名走海外 DoH，与规则出口保持一致。
+  nameserver-policy:
+    "geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn":
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    "rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static":
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    "rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special":
+      - https://1.1.1.1/dns-query
+      - https://8.8.8.8/dns-query
+
+  respect-rules: true
+
+# ============================================================
+# Geo 数据库
+# ============================================================
+geodata-mode: true
+geox-url!:
+  geoip: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
+  asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
+geo-auto-update: true
+geo-update-interval: 24
+
+# ============================================================
+# 代理组：单节点场景精简
+# ============================================================
+proxy-groups:
+  - name: "🚀 节点选择"
+    type: select
+    include-all: true
+    exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
+    proxies:
+      - "♻️ 自动选择"
+      - DIRECT
+
+  - name: "♻️ 自动选择"
+    type: url-test
+    include-all: true
+    exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+    tolerance: 50
+    timeout: 5000
+
+  - name: "🤖 AI 解锁"
+    type: select
+    proxies:
+      - "🚀 节点选择"
+      - DIRECT
+
+  - name: "🎬 流媒体解锁"
+    type: select
+    proxies:
+      - "🚀 节点选择"
+      - DIRECT
+
+  - name: "🛑 广告拦截"
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: "🎯 全球直连"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 节点选择"
+
+# ============================================================
+# 规则集
+# 港澳场景大幅精简：不需要 cn/geolocation 兜底（MATCH 即直连），
+# 只保留「广告拦截」+「直连保护」+「港澳不可用的代理集」。
+# ============================================================
+rule-providers!:
+  private_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/private_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs"
+
+  private_ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/private_ip.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs"
+
+  # 以下国内直连集不是为分流（MATCH 已是直连），而是必须排在广告规则前，
+  # 防止支付/银行/腾讯诊断域名被广告集误拦截。
+  domestic_sensitive:
+    type: inline
+    behavior: classical
+    payload:
+      # 政务 / 公共服务
+      - "DOMAIN-SUFFIX,gov.cn"
+      - "DOMAIN-SUFFIX,12306.cn"
+      - "DOMAIN-SUFFIX,12333.gov.cn"
+      - "DOMAIN-SUFFIX,chinatax.gov.cn"
+      - "DOMAIN-SUFFIX,nhsa.gov.cn"
+      - "DOMAIN-SUFFIX,mohrss.gov.cn"
+      - "DOMAIN-SUFFIX,mps.gov.cn"
+      - "DOMAIN-SUFFIX,miit.gov.cn"
+      - "DOMAIN-SUFFIX,samr.gov.cn"
+      - "DOMAIN-SUFFIX,nmpa.gov.cn"
+      - "DOMAIN-SUFFIX,customs.gov.cn"
+      - "DOMAIN-SUFFIX,pbc.gov.cn"
+      - "DOMAIN-SUFFIX,safe.gov.cn"
+      - "DOMAIN-SUFFIX,gjj.gov.cn"
+      - "DOMAIN-SUFFIX,creditchina.gov.cn"
+      # 支付 / 清算
+      - "DOMAIN-SUFFIX,alipay.com"
+      - "DOMAIN-SUFFIX,alipayobjects.com"
+      - "DOMAIN-SUFFIX,tenpay.com"
+      - "DOMAIN-SUFFIX,wechatpay.cn"
+      - "DOMAIN-SUFFIX,wechatpay.com.cn"
+      - "DOMAIN-SUFFIX,unionpay.com"
+      - "DOMAIN-SUFFIX,unionpayintl.com"
+      - "DOMAIN-SUFFIX,95516.com"
+      - "DOMAIN-SUFFIX,chinaums.com"
+      - "DOMAIN-SUFFIX,lakala.com"
+      - "DOMAIN-SUFFIX,duxiaoman.com"
+      - "DOMAIN-SUFFIX,jdpay.com"
+      - "DOMAIN-SUFFIX,chinapay.com"
+      - "DOMAIN-SUFFIX,netpay.com.cn"
+      - "DOMAIN-SUFFIX,yeepay.com"
+      - "DOMAIN-SUFFIX,99bill.com"
+      # 银行
+      - "DOMAIN-SUFFIX,icbc.com.cn"
+      - "DOMAIN-SUFFIX,abchina.com"
+      - "DOMAIN-SUFFIX,boc.cn"
+      - "DOMAIN-SUFFIX,bankofchina.com"
+      - "DOMAIN-SUFFIX,ccb.com"
+      - "DOMAIN-SUFFIX,ccb.cn"
+      - "DOMAIN-SUFFIX,cmbchina.com"
+      - "DOMAIN-SUFFIX,bankcomm.com"
+      - "DOMAIN-SUFFIX,psbc.com"
+      - "DOMAIN-SUFFIX,spdb.com.cn"
+      - "DOMAIN-SUFFIX,cib.com.cn"
+      - "DOMAIN-SUFFIX,citicbank.com"
+      - "DOMAIN-SUFFIX,cebbank.com"
+      - "DOMAIN-SUFFIX,bank.pingan.com"
+      - "DOMAIN-SUFFIX,pingan.com"
+      - "DOMAIN-SUFFIX,hxb.com.cn"
+      - "DOMAIN-SUFFIX,cgbchina.com.cn"
+      - "DOMAIN-SUFFIX,cmbc.com.cn"
+      - "DOMAIN-SUFFIX,bob.com.cn"
+      - "DOMAIN-SUFFIX,srcb.com"
+      - "DOMAIN-SUFFIX,bankofbeijing.com.cn"
+      - "DOMAIN-SUFFIX,bankofshanghai.com"
+      - "DOMAIN-SUFFIX,nbcb.com.cn"
+      - "DOMAIN-SUFFIX,czbank.com"
+
+  domestic_ai_domain:
+    type: inline
+    behavior: classical
+    payload:
+      # 中国 AI 服务直连（DeepSeek/Kimi/豆包等在港澳可直接使用）。
+      - "DOMAIN-SUFFIX,deepseek.com"
+      - "DOMAIN-SUFFIX,deepseek.ai"
+      - "DOMAIN-SUFFIX,moonshot.cn"
+      - "DOMAIN-SUFFIX,kimi.moonshot.cn"
+      - "DOMAIN-SUFFIX,qwen.ai"
+      - "DOMAIN-SUFFIX,tongyi.aliyun.com"
+      - "DOMAIN-SUFFIX,dashscope.aliyun.com"
+      - "DOMAIN-SUFFIX,modelscope.cn"
+      - "DOMAIN-SUFFIX,doubao.com"
+      - "DOMAIN-SUFFIX,volcengine.com"
+      - "DOMAIN-SUFFIX,coze.cn"
+      - "DOMAIN-SUFFIX,yuanbao.tencent.com"
+      - "DOMAIN-SUFFIX,hunyuan.tencent.com"
+      - "DOMAIN-SUFFIX,ima.qq.com"
+      - "DOMAIN-SUFFIX,wenxin.baidu.com"
+      - "DOMAIN-SUFFIX,yiyan.baidu.com"
+      - "DOMAIN-SUFFIX,zhipuai.cn"
+      - "DOMAIN-SUFFIX,chatglm.cn"
+      - "DOMAIN-SUFFIX,bigmodel.cn"
+      - "DOMAIN-SUFFIX,minimax.chat"
+      - "DOMAIN-SUFFIX,minimaxi.com"
+      - "DOMAIN-SUFFIX,siliconflow.cn"
+      - "DOMAIN-SUFFIX,tiangong.cn"
+      - "DOMAIN-SUFFIX,xfyun.cn"
+
+  tencent_services:
+    type: inline
+    behavior: classical
+    payload:
+      # 微信 / QQ / 腾讯服务直连，放在广告规则前，避免诊断与安全检测域名被误拦截。
+      - "DOMAIN-SUFFIX,weixin.qq.com"
+      - "DOMAIN-SUFFIX,weixin.qq.com.cn"
+      - "DOMAIN-SUFFIX,weixinbridge.com"
+      - "DOMAIN-SUFFIX,wx.qq.com"
+      - "DOMAIN-SUFFIX,wxs.qq.com"
+      - "DOMAIN-SUFFIX,wechat.com"
+      - "DOMAIN-SUFFIX,wechatpay.cn"
+      - "DOMAIN-SUFFIX,wechatpay.com.cn"
+      - "DOMAIN-SUFFIX,weixin110.qq.com"
+      - "DOMAIN-SUFFIX,ptlogin2.qq.com"
+      - "DOMAIN-SUFFIX,ptlogin2.game.qq.com"
+      - "DOMAIN-SUFFIX,ptlogin2.wegame.com.cn"
+      - "DOMAIN-SUFFIX,urlsec.qq.com"
+      - "DOMAIN-SUFFIX,captcha.gtimg.com"
+      - "DOMAIN-SUFFIX,qqweb.qq.com"
+      - "DOMAIN-SUFFIX,beacon.qq.com"
+      - "DOMAIN-SUFFIX,beaconcdn.qq.com"
+      - "DOMAIN-SUFFIX,beacon.cdn.qq.com"
+      - "DOMAIN-SUFFIX,trace.qq.com"
+      - "DOMAIN-SUFFIX,h.trace.qq.com"
+      - "DOMAIN-SUFFIX,pingjs.qq.com"
+      - "DOMAIN-SUFFIX,tdm.qq.com"
+
+  tencent_games_static:
+    type: inline
+    behavior: classical
+    payload:
+      # 腾讯游戏 / WeGame / 反作弊 / TQOS 优先直连。
+      - "DOMAIN-SUFFIX,wegame.com.cn"
+      - "DOMAIN-SUFFIX,wegame.gtimg.com"
+      - "DOMAIN-SUFFIX,wegamex.com.hk"
+      - "DOMAIN-SUFFIX,test.wegame.gtimg.com"
+      - "DOMAIN-SUFFIX,game.qq.com"
+      - "DOMAIN-SUFFIX,qqgame.qq.com"
+      - "DOMAIN-SUFFIX,ams.game.qq.com"
+      - "DOMAIN-SUFFIX,comm.ams.game.qq.com"
+      - "DOMAIN-SUFFIX,dnf.qq.com"
+      - "DOMAIN-SUFFIX,dnf.lv.game.qq.com"
+      - "DOMAIN-SUFFIX,dnf2.game.qq.com"
+      - "DOMAIN-SUFFIX,game.gtimg.cn"
+      - "DOMAIN-SUFFIX,vm.gtimg.cn"
+      - "DOMAIN-SUFFIX,ied-tqos.qq.com"
+      - "DOMAIN-SUFFIX,ied-tqos-tgp.qq.com"
+      - "DOMAIN-SUFFIX,tqos.anticheatexpert.com"
+      - "DOMAIN-SUFFIX,anticheatexpert.com"
+      - "DOMAIN-SUFFIX,gamesafe.qq.com"
+      - "DOMAIN-SUFFIX,courtreport.gamesafe.qq.com"
+      - "DOMAIN-SUFFIX,down.qq.com"
+      - "DOMAIN-SUFFIX,cdn.gbot.qq.com"
+      - "DOMAIN-SUFFIX,static.o2.qq.com"
+      - "DOMAIN-SUFFIX,staticfile.qq.com"
+      - "DOMAIN-SUFFIX,ossweb-img.qq.com"
+      - "DOMAIN-SUFFIX,tplay.qq.com"
+
+  tencent_process_direct:
+    type: inline
+    behavior: classical
+    payload:
+      # Windows / macOS 进程兜底直连：覆盖部分腾讯应用和游戏 UDP 直接连接 IP 的场景。
+      - "PROCESS-NAME,WeChat.exe"
+      - "PROCESS-NAME,Weixin.exe"
+      - "PROCESS-NAME,WeChatAppEx.exe"
+      - "PROCESS-NAME,WeixinAppEx.exe"
+      - "PROCESS-NAME,WeChatPlayer.exe"
+      - "PROCESS-NAME,WeixinPlayer.exe"
+      - "PROCESS-NAME,QQ.exe"
+      - "PROCESS-NAME,QQGuild.exe"
+      - "PROCESS-NAME,WeChat"
+      - "PROCESS-NAME,Weixin"
+      - "PROCESS-NAME,QQ"
+      - "PROCESS-NAME,WeGame.exe"
+      - "PROCESS-NAME,wegame.exe"
+      - "PROCESS-NAME,tgp_daemon.exe"
+      - "PROCESS-NAME,tgp_web.exe"
+      - "PROCESS-NAME,TenioDL.exe"
+      - "PROCESS-NAME,TQMCenter.exe"
+      - "PROCESS-NAME,TPHelper.exe"
+      - "PROCESS-NAME,TGuard.exe"
+      - "PROCESS-NAME,CrossProxy.exe"
+      - "PROCESS-NAME,pallas.exe"
+      - "PROCESS-NAME,tcls_core.exe"
+      - "PROCESS-NAME,DNF.exe"
+      - "PROCESS-NAME,dnf.exe"
+      - "PROCESS-NAME,dnf_asura.exe"
+
+  # 港澳不可用的 AI 服务
+  openai_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/openai_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/openai.mrs"
+
+  anthropic_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/anthropic_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/anthropic.mrs"
+
+  google_ai_dev:
+    type: inline
+    behavior: classical
+    payload:
+      # Google AI 开发者工具在港澳仍封锁（2026-08 确认）。
+      # 注意：gemini.google.com 网页版已对香港开放，不在此列，保持直连。
+      - "DOMAIN-SUFFIX,aistudio.google.com"
+      - "DOMAIN-SUFFIX,generativelanguage.googleapis.com"
+      - "DOMAIN-SUFFIX,ai.google.dev"
+      - "DOMAIN-SUFFIX,notebooklm.google.com"
+      - "DOMAIN-SUFFIX,notebooklm.google"
+      - "DOMAIN-SUFFIX,labs.google"
+      - "DOMAIN-SUFFIX,antigravity.google"
+
+  # 港澳不可用的流媒体 / 应用
+  hulu_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/hulu_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/hulu.mrs"
+
+  streaming_special:
+    type: inline
+    behavior: classical
+    payload:
+      # 美国限定流媒体（HBO Max 已于 2024-11 上线香港，无需代理，不在此列）。
+      - "DOMAIN-SUFFIX,peacocktv.com"
+      - "DOMAIN-SUFFIX,paramountplus.com"
+      - "DOMAIN-SUFFIX,cbsaavideo.com"
+      - "DOMAIN-SUFFIX,pluto.tv"
+      - "DOMAIN-SUFFIX,tubi.tv"
+      # BBC iPlayer（仅英国）；只代理 iPlayer 专用域名，bbc.com 新闻主站保持直连。
+      - "DOMAIN-SUFFIX,bbci.co.uk"
+      - "DOMAIN-KEYWORD,iplayer"
+
+  ads_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    path: ./ruleset/override/ads_domain.mrs
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs"
+
+# ============================================================
+# 路由规则：港澳场景 = 默认直连，仅特例走节点。
+# ============================================================
+rules:
+  # 内网直连
+  - "RULE-SET,private_domain,🎯 全球直连"
+  - "RULE-SET,private_ip,🎯 全球直连,no-resolve"
+
+  # 国内敏感服务 / 腾讯生态直连保护，必须在广告规则之前。
+  - "RULE-SET,domestic_sensitive,🎯 全球直连"
+  - "RULE-SET,domestic_ai_domain,🎯 全球直连"
+  - "RULE-SET,tencent_services,🎯 全球直连"
+  - "RULE-SET,tencent_games_static,🎯 全球直连"
+  - "RULE-SET,tencent_process_direct,🎯 全球直连"
+
+  # 广告
+  - "RULE-SET,ads_domain,🛑 广告拦截"
+
+  # 港澳不可用的 AI：OpenAI / Claude / Google AI 开发者工具走节点。
+  # Gemini 网页版、Grok、Copilot、Perplexity、Poe、Meta AI 港澳均可直连，无需规则。
+  - "RULE-SET,google_ai_dev,🤖 AI 解锁"
+  - "RULE-SET,openai_domain,🤖 AI 解锁"
+  - "RULE-SET,anthropic_domain,🤖 AI 解锁"
+  - "DOMAIN-SUFFIX,chat.com,🤖 AI 解锁"
+
+  # 港澳不可用的流媒体 / 应用。
+  # TikTok 澳门可直连，默认不代理；赴港使用时取消下面两行注释（并把上面对应的
+  # tiktok_domain 规则集和 nameserver-policy 中的 tiktok_domain 一并恢复）。
+  # - "RULE-SET,tiktok_domain,🎬 流媒体解锁"
+  - "RULE-SET,hulu_domain,🎬 流媒体解锁"
+  - "RULE-SET,streaming_special,🎬 流媒体解锁"
+
+  # 其余全部直连。
+  - "MATCH,🎯 全球直连"
