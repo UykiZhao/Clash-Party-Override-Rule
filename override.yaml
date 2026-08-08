@@ -8,7 +8,6 @@ mode: rule
 ipv6: false
 unified-delay: true
 tcp-concurrent: true
-find-process-mode: strict
 
 profile:
   store-selected: true
@@ -846,37 +845,6 @@ rule-providers!:
       - "DOMAIN-SUFFIX,ossweb-img.qq.com"
       - "DOMAIN-SUFFIX,tplay.qq.com"
 
-  tencent_process_direct:
-    type: inline
-    behavior: classical
-    payload:
-      # Windows / macOS 进程兜底直连：覆盖部分腾讯应用和游戏 UDP 直接连接 IP 的场景。
-      - "PROCESS-NAME,WeChat.exe"
-      - "PROCESS-NAME,Weixin.exe"
-      - "PROCESS-NAME,WeChatAppEx.exe"
-      - "PROCESS-NAME,WeixinAppEx.exe"
-      - "PROCESS-NAME,WeChatPlayer.exe"
-      - "PROCESS-NAME,WeixinPlayer.exe"
-      - "PROCESS-NAME,QQ.exe"
-      - "PROCESS-NAME,QQGuild.exe"
-      - "PROCESS-NAME,WeChat"
-      - "PROCESS-NAME,Weixin"
-      - "PROCESS-NAME,QQ"
-      - "PROCESS-NAME,WeGame.exe"
-      - "PROCESS-NAME,wegame.exe"
-      - "PROCESS-NAME,tgp_daemon.exe"
-      - "PROCESS-NAME,tgp_web.exe"
-      - "PROCESS-NAME,TenioDL.exe"
-      - "PROCESS-NAME,TQMCenter.exe"
-      - "PROCESS-NAME,TPHelper.exe"
-      - "PROCESS-NAME,TGuard.exe"
-      - "PROCESS-NAME,CrossProxy.exe"
-      - "PROCESS-NAME,pallas.exe"
-      - "PROCESS-NAME,tcls_core.exe"
-      - "PROCESS-NAME,DNF.exe"
-      - "PROCESS-NAME,dnf.exe"
-      - "PROCESS-NAME,dnf_asura.exe"
-
   ads_domain:
     type: http
     behavior: domain
@@ -923,9 +891,9 @@ rules:
   - "RULE-SET,domestic_ai_domain,🎯 全球直连"
 
   # 腾讯 / 微信 / 中国网游优先直连；位于广告规则前，避免安全检测、TQOS、诊断域名被误拦截。
+  # 腾讯系 UDP 直连 IP 的流量无域名可匹配，最终由下方 cn_ip / GEOIP 中国规则覆盖，无需进程名规则。
   - "RULE-SET,tencent_services,🎯 全球直连"
   - "RULE-SET,tencent_games_static,🎯 全球直连"
-  - "RULE-SET,tencent_process_direct,🎯 全球直连"
 
   # 广告
   - "RULE-SET,ads_domain,🛑 广告拦截"
