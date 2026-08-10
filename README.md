@@ -119,7 +119,6 @@ DNS 泄露测试：访问 <https://ipleak.net/> 或 <https://www.dnsleaktest.com
 - `rule_single.yaml`：Clash Party 单节点覆写（大陆）
 - `rule_multi.yaml`：Clash Party 多节点地区分组覆写（大陆）
 - `rule_special.yaml`：Clash Party 港澳 Special 覆写
-- `override.yaml`：旧版覆写（保留兼容，建议改用 `rule_single.yaml`）
 - `shadowrocket.conf`：Shadowrocket 配置（大陆）
 - `shadowrocket_special.conf`：Shadowrocket 配置（港澳）
 - `rules/shadowrocket/direct-supplement.list`：国内支付/银行/政务/中国 AI/腾讯防误拦直连补充（置于广告规则前）
