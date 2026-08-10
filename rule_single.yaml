@@ -1,6 +1,7 @@
 # ============================================================
-# Clash Party 覆写配置 - 单节点精简版 (rule_single.yaml)
+# Clash Party 覆写配置 - 单地区多节点版 (rule_single.yaml)
 # 目标：国内直连 / 海外代理 / DNS 防泄露 / 规则集自动更新
+# 场景：同一地区有多个节点（如日常节点 + 家宽节点），AI 默认走家宽。
 # 兼容：系统代理 / TUN / mix(TUN+系统代理) 三种模式
 # 说明：这是 Clash Party YAML 覆写文件，不是独立 mihomo 配置文件。
 # 优化：去除同源 GEOSITE/GEOIP 重复、AI 规则集过度堆叠、单节点冗余分组；
@@ -152,9 +153,10 @@ geo-auto-update: true
 geo-update-interval: 24
 
 # ============================================================
-# 代理组：单节点场景精简
-# "节点选择" 含 include-all，单节点自动纳入、多节点可手动切换；
-# 移除了单节点下冗余的"全部节点"组，子组统一引用"节点选择"。
+# 代理组：单地区多节点场景
+# "节点选择" 含 include-all，节点自动纳入、可手动切换。
+# "家宽" 组通过 filter 正则匹配家宽/住宅 IP 节点，AI 默认走家宽，
+# 家宽无节点时自动回退到"节点选择"。
 # ============================================================
 proxy-groups:
   - name: "🚀 节点选择"
@@ -174,9 +176,18 @@ proxy-groups:
     tolerance: 50
     timeout: 5000
 
+  - name: "🏠 家宽"
+    type: select
+    include-all: true
+    filter: "(?i)(家宽|Home|Residential|ISP|原生|静态|Static)"
+    exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
+    proxies:
+      - "🚀 节点选择"
+
   - name: "🤖 AI 平台"
     type: select
     proxies:
+      - "🏠 家宽"
       - "🚀 节点选择"
       - DIRECT
 
