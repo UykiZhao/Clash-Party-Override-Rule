@@ -1,6 +1,7 @@
 # ============================================================
 # Clash Party 覆写配置 - 港澳地区 Special 版 (rule_special.yaml)
-# 适用：香港 / 澳门本地网络（以澳门为主），单节点场景
+# 适用：香港 / 澳门本地网络（以澳门为主），单地区多节点场景
+# 场景：同一地区有多个节点（如日常节点 + 家宽节点），AI 默认走家宽。
 # 逻辑：默认全部直连（港澳网络开放），仅「港澳也无法访问」的服务走节点：
 #   - OpenAI / ChatGPT / Sora（OpenAI 主动封锁港澳，2026-06 确认）
 #   - Anthropic / Claude（封锁港澳 IP）
@@ -146,7 +147,9 @@ geo-auto-update: true
 geo-update-interval: 24
 
 # ============================================================
-# 代理组：单节点场景精简
+# 代理组：单地区多节点场景
+# 港澳网络开放，默认全部直连。仅港澳不可用的 AI/流媒体走节点，
+# AI 优先级：家宽 → 节点选择 → 直连。
 # ============================================================
 proxy-groups:
   - name: "🚀 节点选择"
@@ -166,9 +169,18 @@ proxy-groups:
     tolerance: 50
     timeout: 5000
 
+  - name: "🏠 家宽"
+    type: select
+    include-all: true
+    filter: "(?i)(家宽|Home|Residential|ISP|原生|静态|Static)"
+    exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
+    proxies:
+      - "🚀 节点选择"
+
   - name: "🤖 AI 解锁"
     type: select
     proxies:
+      - "🏠 家宽"
       - "🚀 节点选择"
       - DIRECT
 
