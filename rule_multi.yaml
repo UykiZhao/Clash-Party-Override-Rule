@@ -58,7 +58,7 @@ tun!:
 dns!:
   enable: true
   cache-algorithm: arc
-  listen: 0.0.0.0:1053
+  listen: 127.0.0.1:1053
   ipv6: false
   prefer-h3: false
   use-hosts: true
@@ -145,6 +145,8 @@ geo-update-interval: 24
 # 每个地区独立一个组，通过 include-all + filter 正则自动匹配节点。
 # 更换订阅后节点只要名称中包含地区关键词即可自动归入对应分组。
 # 如果你的订阅节点命名习惯不同，调整各组的 filter 正则即可。
+# 已针对旧客户端的 ProxyGroup loop 修复：地区组不得回指节点选择，
+# 地区测速组只纳入实际节点，不引用其他地区组（由 scripts/validate.rb 回归检查）。
 # ============================================================
 proxy-groups:
   # 全球直连
@@ -158,21 +160,17 @@ proxy-groups:
   - name: "🇭🇰 香港"
     type: select
     include-all: true
-    filter: "(?i)(香港|Hong\\s*Kong|HK|HKT|HGC|CMI|WTT|葵涌|沙田|将军澳|大埔)"
+    filter: "(?i)(香港|🇭🇰|Hong\\s*Kong|(^|[^a-z])(HK|HKG)([^a-z]|$)|葵涌|沙田|将军澳|將軍澳|大埔)"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
-    proxies:
-      - "🚀 节点选择"
-      - DIRECT
+    empty-fallback: REJECT
 
   # ── 台湾 ──
   - name: "🇹🇼 台湾"
     type: select
     include-all: true
-    filter: "(?i)(台湾|Taiwan|TW|台北|Taipei|Hinet|CHT|是方|台中|高雄|中华电信|远传)"
+    filter: "(?i)(台湾|台灣|🇹🇼|Taiwan|(^|[^a-z])(TW|TWN|TPE)([^a-z]|$)|台北|臺北|Taipei|台中|臺中|高雄)"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
-    proxies:
-      - "🚀 节点选择"
-      - DIRECT
+    empty-fallback: REJECT
 
   # ── 日本（自动/手动 二级分组）──
   - name: "🇯🇵 日本"
@@ -185,13 +183,9 @@ proxy-groups:
   - name: "🇯🇵 日本-自动"
     type: url-test
     include-all: true
-    filter: "(?i)(日本|Japan|JP|东京|Tokyo|Osaka|大阪|NTT|IIJ|KDDI|软银|Soft[Bb]ank|樱花|Sakura)"
+    filter: "(?i)(日本|🇯🇵|Japan|(^|[^a-z])(JP|JPN|NRT|HND|KIX)([^a-z]|$)|东京|東京|Tokyo|Osaka|大阪)"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
-    proxies:
-      - "🇭🇰 香港"
-      - "🇸🇬 新加坡"
-      - "🇺🇸 美国"
-      - "🚀 节点选择"
+    empty-fallback: REJECT
     url: "http://www.gstatic.com/generate_204"
     interval: 300
     tolerance: 50
@@ -200,11 +194,10 @@ proxy-groups:
   - name: "🇯🇵 日本-手动"
     type: select
     include-all: true
-    filter: "(?i)(日本|Japan|JP|东京|Tokyo|Osaka|大阪|NTT|IIJ|KDDI|软银|Soft[Bb]ank|樱花|Sakura)"
+    filter: "(?i)(日本|🇯🇵|Japan|(^|[^a-z])(JP|JPN|NRT|HND|KIX)([^a-z]|$)|东京|東京|Tokyo|Osaka|大阪)"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
     proxies:
       - "🇯🇵 日本-自动"
-      - "🚀 节点选择"
 
   # ── 新加坡（自动/手动 二级分组）──
   - name: "🇸🇬 新加坡"
@@ -217,13 +210,9 @@ proxy-groups:
   - name: "🇸🇬 新加坡-自动"
     type: url-test
     include-all: true
-    filter: "(?i)(新加坡|Singapore|SG|星和|StarHub|M1|Sing[Tt]el)"
+    filter: "(?i)(新加坡|🇸🇬|Singapore|(^|[^a-z])(SG|SGP|SIN)([^a-z]|$))"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
-    proxies:
-      - "🇭🇰 香港"
-      - "🇯🇵 日本"
-      - "🇺🇸 美国"
-      - "🚀 节点选择"
+    empty-fallback: REJECT
     url: "http://www.gstatic.com/generate_204"
     interval: 300
     tolerance: 50
@@ -232,11 +221,10 @@ proxy-groups:
   - name: "🇸🇬 新加坡-手动"
     type: select
     include-all: true
-    filter: "(?i)(新加坡|Singapore|SG|星和|StarHub|M1|Sing[Tt]el)"
+    filter: "(?i)(新加坡|🇸🇬|Singapore|(^|[^a-z])(SG|SGP|SIN)([^a-z]|$))"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
     proxies:
       - "🇸🇬 新加坡-自动"
-      - "🚀 节点选择"
 
   # ── 美国（自动/手动 二级分组）──
   - name: "🇺🇸 美国"
@@ -249,14 +237,9 @@ proxy-groups:
   - name: "🇺🇸 美国-自动"
     type: url-test
     include-all: true
-    filter: "(?i)(美国|USA?|US|United\\s*States|洛杉矶|Los\\s*Angeles|圣何塞|San\\s*Jose|西雅图|Seattle|纽约|New\\s*York|芝加哥|Chicago|硅谷|Silicon\\s*Valley|达拉斯|Dallas|凤凰城|Phoenix|亚特兰大|Atlanta|迈阿密|Miami|波特兰|Portland|弗里蒙特|Fremont|圣克拉拉|Santa\\s*Clara|阿什本|Ashburn|丹佛|Denver|休斯顿|Houston|拉斯维加斯|Las\\s*Vegas|弗吉尼亚|Virginia|华盛顿|Washington|水牛城|Buffalo|坦帕|Tampa|盐湖城|Salt\\s*Lake)"
+    filter: "(?i)(美国|美國|🇺🇸|(^|[^a-z])(US|USA|LAX|SJC|SEA|NYC)([^a-z]|$)|United\\s*States|洛杉矶|Los\\s*Angeles|圣何塞|San\\s*Jose|西雅图|Seattle|纽约|New\\s*York|芝加哥|Chicago|硅谷|Silicon\\s*Valley|达拉斯|Dallas|凤凰城|Phoenix|亚特兰大|Atlanta|迈阿密|Miami|波特兰|Portland|弗里蒙特|Fremont|圣克拉拉|Santa\\s*Clara|阿什本|Ashburn|丹佛|Denver|休斯顿|Houston|拉斯维加斯|Las\\s*Vegas|弗吉尼亚|Virginia|华盛顿|Washington|水牛城|Buffalo|坦帕|Tampa|盐湖城|Salt\\s*Lake)"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
-    proxies:
-      - "🇭🇰 香港"
-      - "🇹🇼 台湾"
-      - "🇯🇵 日本"
-      - "🇸🇬 新加坡"
-      - "🚀 节点选择"
+    empty-fallback: REJECT
     url: "http://www.gstatic.com/generate_204"
     interval: 300
     tolerance: 50
@@ -265,11 +248,10 @@ proxy-groups:
   - name: "🇺🇸 美国-手动"
     type: select
     include-all: true
-    filter: "(?i)(美国|USA?|US|United\\s*States|洛杉矶|Los\\s*Angeles|圣何塞|San\\s*Jose|西雅图|Seattle|纽约|New\\s*York|芝加哥|Chicago|硅谷|Silicon\\s*Valley|达拉斯|Dallas|凤凰城|Phoenix|亚特兰大|Atlanta|迈阿密|Miami|波特兰|Portland|弗里蒙特|Fremont|圣克拉拉|Santa\\s*Clara|阿什本|Ashburn|丹佛|Denver|休斯顿|Houston|拉斯维加斯|Las\\s*Vegas|弗吉尼亚|Virginia|华盛顿|Washington|水牛城|Buffalo|坦帕|Tampa|盐湖城|Salt\\s*Lake)"
+    filter: "(?i)(美国|美國|🇺🇸|(^|[^a-z])(US|USA|LAX|SJC|SEA|NYC)([^a-z]|$)|United\\s*States|洛杉矶|Los\\s*Angeles|圣何塞|San\\s*Jose|西雅图|Seattle|纽约|New\\s*York|芝加哥|Chicago|硅谷|Silicon\\s*Valley|达拉斯|Dallas|凤凰城|Phoenix|亚特兰大|Atlanta|迈阿密|Miami|波特兰|Portland|弗里蒙特|Fremont|圣克拉拉|Santa\\s*Clara|阿什本|Ashburn|丹佛|Denver|休斯顿|Houston|拉斯维加斯|Las\\s*Vegas|弗吉尼亚|Virginia|华盛顿|Washington|水牛城|Buffalo|坦帕|Tampa|盐湖城|Salt\\s*Lake)"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
     proxies:
       - "🇺🇸 美国-自动"
-      - "🚀 节点选择"
 
   # 节点选择（所有节点入口）
   - name: "🚀 节点选择"
@@ -288,6 +270,7 @@ proxy-groups:
   - name: "♻️ 自动选择"
     type: url-test
     include-all: true
+    empty-fallback: REJECT
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
@@ -494,9 +477,11 @@ rule-providers!:
       - "DOMAIN-SUFFIX,orcid.org"
       - "DOMAIN-SUFFIX,openathens.net"
       - "DOMAIN-SUFFIX,worldcat.org"
+      - "DOMAIN-SUFFIX,oclc.org"
       - "DOMAIN-SUFFIX,engineeringvillage.com"
       - "DOMAIN-SUFFIX,elsevier.com"
       - "DOMAIN-SUFFIX,sciencedirect.com"
+      - "DOMAIN-SUFFIX,sciencedirectassets.com"
       - "DOMAIN-SUFFIX,els-cdn.com"
       - "DOMAIN-SUFFIX,mendeley.com"
       - "DOMAIN-SUFFIX,ssrn.com"
@@ -527,6 +512,7 @@ rule-providers!:
       - "DOMAIN-SUFFIX,thelancet.com"
       - "DOMAIN-SUFFIX,bmj.com"
       - "DOMAIN-SUFFIX,nejm.org"
+      - "DOMAIN-SUFFIX,jamanetwork.com"
       - "DOMAIN-SUFFIX,pnas.org"
       - "DOMAIN-SUFFIX,aps.org"
       - "DOMAIN-SUFFIX,aip.org"
@@ -581,6 +567,7 @@ rule-providers!:
     payload:
       - "DOMAIN-SUFFIX,openai.com"
       - "DOMAIN-SUFFIX,chatgpt.com"
+      - "DOMAIN-SUFFIX,chat.com"
       - "DOMAIN-SUFFIX,oaistatic.com"
       - "DOMAIN-SUFFIX,oaiusercontent.com"
       - "DOMAIN-SUFFIX,chat.openai.com"
@@ -599,6 +586,7 @@ rule-providers!:
       - "DOMAIN-SUFFIX,generativelanguage.googleapis.com"
       - "DOMAIN-SUFFIX,bard.google.com"
       - "DOMAIN-SUFFIX,labs.google"
+      - "DOMAIN-SUFFIX,antigravity.google"
       - "DOMAIN-SUFFIX,notebooklm.google.com"
       - "DOMAIN-SUFFIX,notebooklm.google"
       - "DOMAIN-SUFFIX,deepmind.com"
@@ -607,7 +595,6 @@ rule-providers!:
       - "DOMAIN-SUFFIX,copilot.cloud.microsoft"
       - "DOMAIN-SUFFIX,sydney.bing.com"
       - "DOMAIN-SUFFIX,bing.com"
-      - "DOMAIN-KEYWORD,copilot"
       - "DOMAIN-SUFFIX,githubcopilot.com"
       - "DOMAIN-SUFFIX,api.githubcopilot.com"
       - "DOMAIN-SUFFIX,copilot-proxy.githubusercontent.com"

@@ -65,7 +65,7 @@ tun!:
 dns!:
   enable: true
   cache-algorithm: arc
-  listen: 0.0.0.0:1053
+  listen: 127.0.0.1:1053
   ipv6: false
   prefer-h3: false
   use-hosts: true
@@ -155,24 +155,22 @@ geo-update-interval: 24
 # ============================================================
 # 代理组：单地区多节点场景
 # "节点选择" 含 include-all，节点自动纳入、可手动切换。
-# "家宽" 组通过 filter 正则匹配家宽/住宅 IP 节点，AI 默认走家宽，
-# 家宽无节点时自动回退到"节点选择"。
+# "家宽" 组按节点名称筛选，AI 默认使用该组，不验证住宅 IP 属性。
+# 空家宽组拒绝连接；没有家宽节点时，在 AI 组手动选择"节点选择"。
 # ============================================================
 proxy-groups:
   - name: "🚀 节点选择"
     type: select
     include-all: true
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
-    proxies:
-      - DIRECT
+    empty-fallback: REJECT
 
   - name: "🏠 家宽"
     type: select
     include-all: true
-    filter: "(?i)(家宽|Home|Residential|ISP|原生|静态|Static)"
+    filter: "(?i)(家宽|家寬|原生|静态|靜態|(^|[^a-z])(Home|Residential|ISP|Static)([^a-z]|$))"
     exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
-    proxies:
-      - "🚀 节点选择"
+    empty-fallback: REJECT
 
   - name: "🤖 AI 平台"
     type: select
@@ -483,6 +481,7 @@ rule-providers!:
       # OpenAI / ChatGPT
       - "DOMAIN-SUFFIX,openai.com"
       - "DOMAIN-SUFFIX,chatgpt.com"
+      - "DOMAIN-SUFFIX,chat.com"
       - "DOMAIN-SUFFIX,oaistatic.com"
       - "DOMAIN-SUFFIX,oaiusercontent.com"
       - "DOMAIN-SUFFIX,chat.openai.com"
@@ -503,6 +502,7 @@ rule-providers!:
       - "DOMAIN-SUFFIX,generativelanguage.googleapis.com"
       - "DOMAIN-SUFFIX,bard.google.com"
       - "DOMAIN-SUFFIX,labs.google"
+      - "DOMAIN-SUFFIX,antigravity.google"
       - "DOMAIN-SUFFIX,notebooklm.google.com"
       - "DOMAIN-SUFFIX,notebooklm.google"
       - "DOMAIN-SUFFIX,deepmind.com"
@@ -512,7 +512,6 @@ rule-providers!:
       - "DOMAIN-SUFFIX,copilot.cloud.microsoft"
       - "DOMAIN-SUFFIX,sydney.bing.com"
       - "DOMAIN-SUFFIX,bing.com"
-      - "DOMAIN-KEYWORD,copilot"
       # GitHub Copilot
       - "DOMAIN-SUFFIX,githubcopilot.com"
       - "DOMAIN-SUFFIX,api.githubcopilot.com"
