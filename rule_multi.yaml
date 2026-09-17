@@ -49,10 +49,9 @@ tun!:
   enable: true
   stack: mixed
   auto-route: true
-  # 自动探测出口网卡在多网卡 / 网络切换时会返回 <invalid>，导致直连拨号和 mihomo
-  # 自身的 DoH 连接报 "interface not found"（2026-09-15 实测约 8.7k 次，四条 DoH 全挂）。
-  # 关闭后不绑定具体网卡，Wi-Fi 与有线切换均可用。
-  auto-detect-interface: false
+  # 注意：TUN 的开关、栈、DNS 劫持与自动探测均以客户端应用设置为准，此处的
+  # auto-detect-interface 可能被覆盖，保持应用默认（true）。
+  auto-detect-interface: true
   dns-hijack:
     - any:53
     - tcp://any:53

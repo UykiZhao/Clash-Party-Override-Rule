@@ -49,10 +49,10 @@ tun!:
   enable: true
   stack: mixed
   auto-route: true
-  # 自动探测出口网卡在多网卡 / 网络切换时会返回 <invalid>，导致直连拨号和 mihomo
-  # 自身的 DoH 连接报 "interface not found"（2026-09-15 实测约 8.7k 次，四条 DoH 全挂）。
-  # 关闭后不绑定具体网卡，Wi-Fi 与有线切换均可用。
-  auto-detect-interface: false
+  # 注意：TUN 的开关、栈、DNS 劫持与自动探测均以客户端应用设置为准，此处的
+  # auto-detect-interface 可能被覆盖。实测关闭后港澳场景出现全网 DNS 失效，
+  # 因此保持应用默认（true），不在此处改动。
+  auto-detect-interface: true
   dns-hijack:
     - any:53
     - tcp://any:53
@@ -117,12 +117,9 @@ dns!:
     - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
 
-  # 直连兜底 DNS：公共 DoH 不可用时仍能解析，避免 DNS 整体失效。
-  # （内地版 rule_single.yaml 已有同款配置，港澳版此前缺失）
-  direct-nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
-  direct-nameserver-follow-policy: true
+  # 不要在此配置 direct-nameserver：港澳版几乎所有流量都是直连，直连 DNS 一旦
+  # 不可达就是全网瘫痪（2026-09-17 在 CGNAT 网络下 223.5.5.5 / 119.29.29.29 全部
+  # i/o timeout，导致断网且订阅无法更新）。内地两版保留该配置。
 
   # 国内域名仍用国内 DoH，保证微信/支付宝/B站等 CN CDN 命中；
   # 指定代理域名使用公共 DoH，DNS 连接仍按其自身目标匹配路由。

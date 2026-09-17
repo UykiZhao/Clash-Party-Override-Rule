@@ -76,7 +76,9 @@ Chrome / Edge / Firefox 设置中关闭「使用安全 DNS / DNS over HTTPS」�
 
 港澳版另有 `custom_proxy_domain` 内联规则集，用于放置用户指定要走家宽出口、但不属于任何 AI / 流媒体分类的域名。新增域名时记得同时把它加进 `nameserver-policy` 中对应的海外 DoH 分组，否则解析仍走默认 DoH。
 
-TUN 的「自动探测接口」（`auto-detect-interface`）在四份 YAML 中均已关闭：多网卡或网络切换时探测会返回 `<invalid>`，导致直连拨号与 mihomo 自身 DoH 连接报 `interface not found`（2026-09-15 单日实测约 8.7k 次，四条 DoH 上游全部中断）。若客户端应用设置中仍开启该开关，需在应用设置里一并关闭，否则以应用设置为准。
+TUN 的「自动探测接口」（`auto-detect-interface`）**不要在 YAML 里改**：TUN 开关、栈、DNS 劫持与自动探测一律以客户端应用设置为准，实测写入 `false` 后港澳场景出现全网 DNS 失效（已恢复默认 `true`）。即便需要调整，也只能在应用设置里改——应用重启时会按自身状态重写 `mihomo.yaml`，手改该文件会被覆盖。
+
+港澳两版同样**不要配置 `direct-nameserver`**：这两版几乎所有流量都走直连，直连 DNS 一旦不可达就是全网瘫痪。2026-09-17 在 CGNAT 网段（`10.244.x.x`）下 `223.5.5.5` / `119.29.29.29` 全部 `i/o timeout`，表现为断网且订阅无法更新。内地两版 `rule_single.yaml` / `rule_multi.yaml` 保留该配置，因为内地到阿里/腾讯 DNS 可达。
 
 ### 海外 AI 补充组 `🧪 AI 备选`
 
