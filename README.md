@@ -74,6 +74,25 @@ Chrome / Edge / Firefox 设置中关闭「使用安全 DNS / DNS over HTTPS」�
 
 港澳版将泄露测试网站作为普通流量直连，不要求它们显示代理出口。检查时应区分直连业务与代理业务，不能把测试网站的直连结果作为所有业务都泄露的结论。港澳 YAML 的公共 DoH 连接按自身目标匹配规则、默认直连；`respect-rules` 不意味着每个业务的 DNS 查询都使用该业务的代理出口。四份 YAML 的 DNS 监听地址均限制为 `127.0.0.1:1053`，不对局域网提供 DNS 服务。
 
+港澳版另有 `custom_proxy_domain` 内联规则集，用于放置用户指定要走家宽出口、但不属于任何 AI / 流媒体分类的域名。新增域名时记得同时把它加进 `nameserver-policy` 中对应的海外 DoH 分组，否则解析仍走默认 DoH。
+
+TUN 的「自动探测接口」（`auto-detect-interface`）在四份 YAML 中均已关闭：多网卡或网络切换时探测会返回 `<invalid>`，导致直连拨号与 mihomo 自身 DoH 连接报 `interface not found`（2026-09-15 单日实测约 8.7k 次，四条 DoH 上游全部中断）。若客户端应用设置中仍开启该开关，需在应用设置里一并关闭，否则以应用设置为准。
+
+### 海外 AI 补充组 `🧪 AI 备选`
+
+四份 YAML 均新增 `overseas_ai_extra` 内联规则集，收录 `ai_static` / `category-ai-!cn` 未覆盖或近期新增的服务（OpenRouter、Grok / x.ai、Perplexity、Mistral、Hugging Face、Replicate、Groq、Together、Fireworks、Poe、Cohere、Lovable、v0 等）。
+
+- 港澳两版：路由到 `🧪 AI 备选`，**默认直连**。港澳网络对这些服务没有网络层限制，只有个别服务会按账号地区拒绝，届时在该组内手动切到 `🏠 家宽` 即可，不必改规则文件。
+- 内地两版：路由到 `🤖 AI 平台`，**默认家宽**，与既有 AI 规则一致。
+
+### 遥测拦截 `telemetry_domain`
+
+四份 YAML 均新增该内联规则集，路由到 `🛑 广告拦截`（默认 REJECT，可在组内切回 DIRECT）。收录 Cline 遥测、PostHog、阿里 ARMS、神策、火山 APM、Sentry、New Relic 等上报域名；日志实测 3 天内约 1.4k 次，其中 `otel.cline.bot` 单域名 1,239 次。规则排在腾讯直连保护之后，`badjs.weixinbridge.com` 等腾讯域名不受影响。
+
+### `rule_multi.yaml` 补齐家宽组
+
+内地多地区版此前缺少 `🏠 家宽` 组，`🤖 AI 平台` 只能选 `🚀 节点选择`。现按单地区版同样规则补齐家宽组，并把 `🤖 AI 平台` 的默认项改为 `🏠 家宽`，使两版内地配置的 AI 出口行为一致。
+
 ## 多地区分组说明
 
 适用于 `rule_multi.yaml` 和 `rule_special_multi.yaml`。节点通过 `include-all` + `filter` 正则按名称分组，不硬编码机场名或节点名；直接列出的节点和订阅中的 proxy-provider 节点均纳入筛选。

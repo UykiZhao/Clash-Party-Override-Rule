@@ -49,7 +49,10 @@ tun!:
   enable: true
   stack: mixed
   auto-route: true
-  auto-detect-interface: true
+  # 自动探测出口网卡在多网卡 / 网络切换时会返回 <invalid>，导致直连拨号和 mihomo
+  # 自身的 DoH 连接报 "interface not found"（2026-09-15 实测约 8.7k 次，四条 DoH 全挂）。
+  # 关闭后不绑定具体网卡，Wi-Fi 与有线切换均可用。
+  auto-detect-interface: false
   dns-hijack:
     - any:53
     - tcp://any:53
@@ -114,6 +117,13 @@ dns!:
     - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
 
+  # 直连兜底 DNS：公共 DoH 不可用时仍能解析，避免 DNS 整体失效。
+  # （内地版 rule_single.yaml 已有同款配置，港澳版此前缺失）
+  direct-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  direct-nameserver-follow-policy: true
+
   # 国内域名仍用国内 DoH，保证微信/支付宝/B站等 CN CDN 命中；
   # 指定代理域名使用公共 DoH，DNS 连接仍按其自身目标匹配路由。
   nameserver-policy:
@@ -123,7 +133,7 @@ dns!:
     "rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static":
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
-    "rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special":
+    "rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special,custom_proxy_domain,overseas_ai_extra":
       - https://1.1.1.1/dns-query
       - https://8.8.8.8/dns-query
 
@@ -166,6 +176,15 @@ proxy-groups:
       - "🏠 家宽"
       - "🚀 节点选择"
       - DIRECT
+
+  # 港澳网络开放，下列海外 AI 默认直连；个别服务若按账号地区拒绝，
+  # 在此组手动切到 🏠 家宽 即可，不必改规则。
+  - name: "🧪 AI 备选"
+    type: select
+    proxies:
+      - DIRECT
+      - "🏠 家宽"
+      - "🚀 节点选择"
 
   - name: "🎬 流媒体解锁"
     type: select
@@ -391,6 +410,62 @@ rule-providers!:
       - "DOMAIN-SUFFIX,notebooklm.google"
       - "DOMAIN-SUFFIX,labs.google"
       - "DOMAIN-SUFFIX,antigravity.google"
+      # 日志实证：AI Studio 实际使用 workspace.google.com，旧域名已不再覆盖。
+      - "DOMAIN-SUFFIX,workspace.google.com"
+
+  # 用户指定走家宽出口的域名（非 AI 服务，按实际需求单独列出）。
+  custom_proxy_domain:
+    type: inline
+    behavior: classical
+    payload:
+      - "DOMAIN-SUFFIX,search.agonygao.top"
+      - "DOMAIN-SUFFIX,luckyg.131518.xyz"
+
+  # 海外 AI 补充域名：category-ai-!cn 未覆盖或近期新增的服务。
+  # 港澳默认直连（🧪 AI 备选），内地两版走 🤖 AI 平台（默认家宽）。
+  overseas_ai_extra:
+    type: inline
+    behavior: classical
+    payload:
+      - "DOMAIN-SUFFIX,openrouter.ai"
+      - "DOMAIN-SUFFIX,x.ai"
+      - "DOMAIN-SUFFIX,grok.com"
+      - "DOMAIN-SUFFIX,perplexity.ai"
+      - "DOMAIN-SUFFIX,mistral.ai"
+      - "DOMAIN-SUFFIX,huggingface.co"
+      - "DOMAIN-SUFFIX,replicate.com"
+      - "DOMAIN-SUFFIX,groq.com"
+      - "DOMAIN-SUFFIX,together.ai"
+      - "DOMAIN-SUFFIX,together.xyz"
+      - "DOMAIN-SUFFIX,fireworks.ai"
+      - "DOMAIN-SUFFIX,poe.com"
+      - "DOMAIN-SUFFIX,cohere.com"
+      - "DOMAIN-SUFFIX,midjourney.com"
+      - "DOMAIN-SUFFIX,suno.com"
+      - "DOMAIN-SUFFIX,udio.com"
+      - "DOMAIN-SUFFIX,elevenlabs.io"
+      - "DOMAIN-SUFFIX,cursor.sh"
+      - "DOMAIN-SUFFIX,cursor.com"
+      - "DOMAIN-SUFFIX,windsurf.com"
+      - "DOMAIN-SUFFIX,codeium.com"
+      - "DOMAIN-SUFFIX,lovable.dev"
+      - "DOMAIN-SUFFIX,v0.dev"
+
+  # 遥测 / 监控上报：日志实证 3 天内约 1.4k 次，其中 otel.cline.bot 单域名 1,239 次
+  # （全站第 2）。排在腾讯直连保护之后，不走 🚀 节点选择，可在 🛑 广告拦截 组内切回 DIRECT。
+  telemetry_domain:
+    type: inline
+    behavior: classical
+    payload:
+      - "DOMAIN-SUFFIX,otel.cline.bot"
+      - "DOMAIN-SUFFIX,i.posthog.com"
+      - "DOMAIN-SUFFIX,arms-retcode.aliyuncs.com"
+      - "DOMAIN-SUFFIX,shence-api.mumu.163.com"
+      - "DOMAIN-SUFFIX,apmplus.volces.com"
+      - "DOMAIN-SUFFIX,ingest.sentry.io"
+      - "DOMAIN-SUFFIX,ingest.us.sentry.io"
+      - "DOMAIN-SUFFIX,ingest.de.sentry.io"
+      - "DOMAIN-SUFFIX,js-agent.newrelic.com"
 
   # 港澳不可用的流媒体 / 应用
   hulu_domain:
@@ -440,6 +515,8 @@ rules:
 
   # 广告
   - "RULE-SET,ads_domain,🛑 广告拦截"
+  # 遥测 / 监控上报，放在国内直连保护与广告之后。
+  - "RULE-SET,telemetry_domain,🛑 广告拦截"
 
   # 港澳不可用的 AI：OpenAI / Claude / Google AI 开发者工具走节点。
   # 其余 AI 服务未单独列出，按当前配置默认直连，不保证服务可用性。
@@ -447,6 +524,12 @@ rules:
   - "RULE-SET,openai_domain,🤖 AI 解锁"
   - "RULE-SET,anthropic_domain,🤖 AI 解锁"
   - "DOMAIN-SUFFIX,chat.com,🤖 AI 解锁"
+
+  # 用户指定走家宽出口的域名；排在流媒体之前，便于日后单独调整。
+  - "RULE-SET,custom_proxy_domain,🤖 AI 解锁"
+
+  # 海外 AI 补充域名：港澳默认直连，需要时在 🧪 AI 备选 组内切换。
+  - "RULE-SET,overseas_ai_extra,🧪 AI 备选"
 
   # 港澳不可用的流媒体 / 应用。
   # TikTok 默认直连；启用代理前需添加 tiktok_domain 规则集、对应 DNS 策略和路由。

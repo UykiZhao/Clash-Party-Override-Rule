@@ -56,7 +56,10 @@ tun!:
   enable: true
   stack: mixed
   auto-route: true
-  auto-detect-interface: true
+  # 自动探测出口网卡在多网卡 / 网络切换时会返回 <invalid>，导致直连拨号和 mihomo
+  # 自身的 DoH 连接报 "interface not found"（2026-09-15 实测约 8.7k 次，四条 DoH 全挂）。
+  # 关闭后不绑定具体网卡，Wi-Fi 与有线切换均可用。
+  auto-detect-interface: false
   dns-hijack:
     - any:53
     - tcp://any:53
@@ -134,7 +137,7 @@ dns!:
     "rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static":
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
-    "rule-set:ai_static,ai_domain,telegram_domain,youtube_domain,academic_platforms,google_proxy_static,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn":
+    "rule-set:ai_static,ai_domain,telegram_domain,youtube_domain,academic_platforms,google_proxy_static,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn,overseas_ai_extra":
       - https://cloudflare-dns.com/dns-query
       - https://dns.google/dns-query
 
@@ -551,6 +554,44 @@ rule-providers!:
       - "DOMAIN-SUFFIX,suno.ai"
       - "DOMAIN-SUFFIX,udio.com"
 
+  # 海外 AI 补充域名：ai_static / ai_domain 未覆盖或近期新增的服务。
+  # 内地场景走 🤖 AI 平台（默认家宽），港澳两版走 🧪 AI 备选（默认直连）。
+  overseas_ai_extra:
+    type: inline
+    behavior: classical
+    payload:
+      - "DOMAIN-SUFFIX,openrouter.ai"
+      - "DOMAIN-SUFFIX,x.ai"
+      - "DOMAIN-SUFFIX,grok.com"
+      - "DOMAIN-SUFFIX,perplexity.ai"
+      - "DOMAIN-SUFFIX,mistral.ai"
+      - "DOMAIN-SUFFIX,huggingface.co"
+      - "DOMAIN-SUFFIX,replicate.com"
+      - "DOMAIN-SUFFIX,groq.com"
+      - "DOMAIN-SUFFIX,together.ai"
+      - "DOMAIN-SUFFIX,together.xyz"
+      - "DOMAIN-SUFFIX,fireworks.ai"
+      - "DOMAIN-SUFFIX,poe.com"
+      - "DOMAIN-SUFFIX,cohere.com"
+      - "DOMAIN-SUFFIX,lovable.dev"
+      - "DOMAIN-SUFFIX,v0.dev"
+
+  # 遥测 / 监控上报：日志实证 3 天内约 1.4k 次，其中 otel.cline.bot 单域名 1,239 次
+  # （全站第 2）。排在腾讯直连保护之后，可在 🛑 广告拦截 组内切回 DIRECT。
+  telemetry_domain:
+    type: inline
+    behavior: classical
+    payload:
+      - "DOMAIN-SUFFIX,otel.cline.bot"
+      - "DOMAIN-SUFFIX,i.posthog.com"
+      - "DOMAIN-SUFFIX,arms-retcode.aliyuncs.com"
+      - "DOMAIN-SUFFIX,shence-api.mumu.163.com"
+      - "DOMAIN-SUFFIX,apmplus.volces.com"
+      - "DOMAIN-SUFFIX,ingest.sentry.io"
+      - "DOMAIN-SUFFIX,ingest.us.sentry.io"
+      - "DOMAIN-SUFFIX,ingest.de.sentry.io"
+      - "DOMAIN-SUFFIX,js-agent.newrelic.com"
+
   telegram_domain:
     type: http
     behavior: domain
@@ -882,11 +923,15 @@ rules:
 
   # 广告
   - "RULE-SET,ads_domain,🛑 广告拦截"
+  # 遥测 / 监控上报，放在国内直连保护与广告之后。
+  - "RULE-SET,telemetry_domain,🛑 广告拦截"
 
   # AI / 通讯 / 视频 / 开发服务：默认走代理
   - "RULE-SET,ai_static,🤖 AI 平台"
   - "RULE-SET,ai_domain,🤖 AI 平台"
   - "DOMAIN-SUFFIX,ai.com,🤖 AI 平台"
+  # 海外 AI 补充域名：内地走 🤖 AI 平台，默认家宽出口。
+  - "RULE-SET,overseas_ai_extra,🤖 AI 平台"
   - "RULE-SET,telegram_domain,📲 电报消息"
   - "RULE-SET,telegram_ip,📲 电报消息,no-resolve"
   - "RULE-SET,youtube_domain,📹 油管视频"
