@@ -1,14 +1,16 @@
 # NAME: AISupplement
 # AUTHOR: UykiZhao
 # REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-08-08
+# UPDATED: 2026-09-22
 # PURPOSE: Static AI domains. Precise fallback for platforms the auto-updated
 #          OpenAI/Claude/Gemini rule-sets lag behind. Kept deliberately small:
 #          broad coverage comes from the upstream sets, this only fills gaps.
+#          Synced with ai_static + overseas_ai_extra of the Clash YAML overrides.
 
 # OpenAI / ChatGPT
 DOMAIN-SUFFIX,openai.com
 DOMAIN-SUFFIX,chatgpt.com
+DOMAIN-SUFFIX,chat.com
 DOMAIN-SUFFIX,oaistatic.com
 DOMAIN-SUFFIX,oaiusercontent.com
 DOMAIN-SUFFIX,openaiapi-site.azureedge.net
@@ -27,6 +29,7 @@ DOMAIN-SUFFIX,ai.google.dev
 DOMAIN-SUFFIX,generativelanguage.googleapis.com
 DOMAIN-SUFFIX,bard.google.com
 DOMAIN-SUFFIX,labs.google
+DOMAIN-SUFFIX,antigravity.google
 DOMAIN-SUFFIX,notebooklm.google.com
 DOMAIN-SUFFIX,notebooklm.google
 DOMAIN-SUFFIX,deepmind.com
@@ -59,6 +62,12 @@ DOMAIN-SUFFIX,huggingface.co
 DOMAIN-SUFFIX,hf.co
 DOMAIN-SUFFIX,replicate.com
 DOMAIN-SUFFIX,replicate.delivery
+DOMAIN-SUFFIX,groq.com
+DOMAIN-SUFFIX,together.ai
+DOMAIN-SUFFIX,together.xyz
+DOMAIN-SUFFIX,fireworks.ai
+DOMAIN-SUFFIX,lovable.dev
+DOMAIN-SUFFIX,v0.dev
 
 # AI coding
 DOMAIN-SUFFIX,cursor.com

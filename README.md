@@ -13,7 +13,7 @@ mihomo / Clash Party 订阅覆写：内地版国内直连、海外代理；港�
 | `rule_special.yaml` | **港澳单地区**，默认直连，AI 首选家宽组；保留原文件名和链接 |
 | `rule_special_multi.yaml` | **港澳多地区**，默认直连，按香港/台湾/日本/新加坡/美国分组，AI 和流媒体可独立选择地区 |
 
-澳门日常使用、多地区机场订阅，选择 `rule_special_multi.yaml`；同一地区的日常节点 + 家宽组合，继续使用 `rule_special.yaml`。本仓库共四份 Clash Party 覆写；另附两份 Shadowrocket 配置，包含应用策略组以及 ALL/AUTO 节点选择组，本次不改动 iOS 配置。
+澳门日常使用、多地区机场订阅，选择 `rule_special_multi.yaml`；同一地区的日常节点 + 家宽组合，继续使用 `rule_special.yaml`。本仓库共四份 Clash Party 覆写；另附两份 Shadowrocket 配置（iOS 为单节点语义：应用组选 PROXY 即首页当前节点），包含应用策略组以及 ALL/AUTO 节点选择组。
 
 raw 链接：
 
@@ -134,11 +134,13 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadow
 
 说明：
 
-- 两份配置均含 `[Proxy Group]`，提供 ALL 手动选择、AUTO 测速及 AI/Streaming 等应用组；应用组选 PROXY 时使用首页当前节点，选 AUTO/ALL 时按对应组选择出口。
+- 两份配置均含 `[Proxy Group]`，提供 ALL 手动选择、AUTO 测速及 AI/AI_EXTRA/Streaming 等应用组；应用组选 PROXY 时使用首页当前节点，选 AUTO/ALL 时按对应组选择出口。
 - 内地版 Microsoft、Apple 路由到同名策略组，默认 DIRECT，可在组中手动切换代理；AI 与流媒体规则在它们之前匹配。
 - 两份配置均无脚本、重写或生效的 MITM 主机列表（保留空 `[MITM]` 段），不需要为本配置安装 MITM 证书。
-- 直连补充表在广告规则之前匹配；修改本地 `.list` 后需要一并发布，才能通过远程引用生效。本次未校验其内容与 YAML 完全一致。
-- 当前两份 CONF 都使用国内 DoH 和明文 DNS/备用 DNS，且 `dns-direct-fallback-proxy = true`，直连解析失败可能转代理；与港澳 YAML 的公共 DoH 方案不同。本次未修改或实机验证 Shadowrocket。
+- 直连补充表在广告规则之前匹配；自建补充清单已与 Clash YAML 同名内联规则集逐条对齐（含腾讯/游戏直连、AI 静态补充、遥测拦截、国际学术平台、海外 AI 补充）。修改本地 `.list` 后需要一并发布，才能通过远程引用生效。
+- 上游 blackmatrix7 已将 AdvertisingLite / China / Apple 拆分为 `.list`（关键词/IP/UA）+ `_Domain.list`（域名集）两个文件，本配置按官方要求同时以 `RULE-SET` 与 `DOMAIN-SET` 双引用，缺一会导致对应覆盖面静默缩水。若上游对其他清单做同样拆分，需要同样补 `DOMAIN-SET` 引用。
+- `[General]` 已按 Shadowrocket 使用手册修正：`bypass-tun` 更名 `tun-excluded-routes`（旧参数名被静默忽略），移除已弃用的 `bypass-system`。
+- 当前两份 CONF 都使用国内 DoH 和明文 DNS/备用 DNS，且 `dns-direct-fallback-proxy = true`，直连解析失败可能转代理；与港澳 YAML 的公共 DoH 方案不同。本轮未改动 DNS 架构，Shadowrocket 侧仍需实机验证。
 - 节点不支持 UDP 时语音/游戏类 UDP 会被拒绝（防静默泄露）；如受影响，把 `udp-policy-not-supported-behaviour` 改为 `DIRECT`。
 - 若使用 iCloud Private Relay、第三方 DNS 描述文件或其他 VPN，可能绕过 Shadowrocket 的 DNS，排查泄露时先关闭。
 
@@ -160,7 +162,7 @@ https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/shadow
 
 以上是仓库当前分流策略，不是各平台实时地区可用性保证。是否可用仍取决于平台政策、账号和具体出口；本次拆分不扩大原 Special 版的代理服务范围。
 
-港澳 YAML 的 BBC 对应规则明确匹配 `bbc.co.uk` 和 `bbci.co.uk`，不再用 `iplayer` 关键词，避免误匹配包含该字符串的无关域名（Shadowrocket 旧配置仍使用关键词，两者尚未统一）。域名分流无法只匹配 `/iplayer` 路径，因此 BBC 英国站的其他页面也使用流媒体出口；`bbc.com` 按默认规则直连。不配置 HTTPS 解密来区分页面路径。
+港澳 YAML 的 BBC 对应规则明确匹配 `bbc.co.uk` 和 `bbci.co.uk`，不再用 `iplayer` 关键词，避免误匹配包含该字符串的无关域名；Shadowrocket 配置自 2026-09-22 起已同步为相同的后缀匹配。域名分流无法只匹配 `/iplayer` 路径，因此 BBC 英国站的其他页面也使用流媒体出口；`bbc.com` 按默认规则直连。不配置 HTTPS 解密来区分页面路径。
 
 单地区版保留原六个策略组，AI 首选 `🏠 家宽` 组；该组只按节点名称筛选，不验证家宽 IP，也不自动故障切换。空组拒绝连接，没有家宽节点时手动选择节点选择入口。多地区版增加地区组、全局测速和可单独选择的家宽组，AI 首次默认美国组，流媒体默认节点选择。
 
@@ -186,7 +188,7 @@ ruby scripts/validate.rb --mihomo '/Applications/Clash Party.app/Contents/Resour
 
 1. **Clash Party**：绑定且仅绑定一份覆写，更新订阅后导出完整配置。用客户端实际使用的 mihomo 内核运行 `mihomo -t -f ./exported-config.yaml`，检查字段支持、节点配置、Geo 数据及规则集下载。不要直接把含 `dns!` 等覆写字段的原文件交给内核测试。
 2. **Shadowrocket**：分别导入两份 `.conf`，确认能启用、远程规则集全部下载成功、全局路由为「配置」。依次验证国内支付直连、AI 走当前节点，以及内地版普通海外业务代理／港澳版普通业务直连。
-3. **发布完整性**：同时发布两份 `.conf` 和 `rules/shadowrocket/` 下四份 `.list`；本地导入配置也会使用其中写明的远程规则集地址。文件存在于工作区不代表远程 raw 地址已发布或可访问。
+3. **发布完整性**：同时发布两份 `.conf` 和 `rules/shadowrocket/` 下七份 `.list`；本地导入配置也会使用其中写明的远程规则集地址。文件存在于工作区不代表远程 raw 地址已发布或可访问。
 4. **连通性**：YAML / CONF 语法、远程规则集下载、节点可用性和平台解锁是不同验证环节；测试通过一个环节不能替代其他环节。
 
 ## 常见问题
@@ -213,6 +215,9 @@ ruby scripts/validate.rb --mihomo '/Applications/Clash Party.app/Contents/Resour
 - `rules/shadowrocket/proxy-supplement.list`：DNS 防泄露补充（境外 DoH 端点、泄露测试镜像、公共 DNS IP）
 - `rules/shadowrocket/ai-supplement.list`：海外 AI 静态域名补充（补齐上游规则集未收录的新平台）
 - `rules/shadowrocket/streaming-supplement.list`：流媒体静态域名补充
+- `rules/shadowrocket/telemetry.list`：遥测/监控上报拦截（对应 YAML telemetry_domain）
+- `rules/shadowrocket/academic.list`：国际学术平台（对应 YAML academic_platforms，须排在国内清单前）
+- `rules/shadowrocket/overseas-ai-extra.list`：海外 AI 补充（对应 YAML overseas_ai_extra，港澳版默认直连）
 
 ## 参考
 

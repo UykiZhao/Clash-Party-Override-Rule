@@ -1,10 +1,12 @@
 # NAME: DirectSupplement
 # AUTHOR: UykiZhao
 # REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-08-08
+# UPDATED: 2026-09-22
 # PURPOSE: China-sensitive direct rules. Placed BEFORE the ad rule-set so
 #          payment, banking, government, domestic AI and Tencent diagnostic
-#          domains are never swallowed by REJECT.
+#          domains are never swallowed by REJECT. Synced with the
+#          domestic_sensitive + domestic_ai_domain + tencent_services +
+#          tencent_games_static inline rulesets of the Clash YAML overrides.
 
 # Government and public services
 DOMAIN-SUFFIX,gov.cn
@@ -96,10 +98,15 @@ DOMAIN-SUFFIX,xfyun.cn
 # Tencent services: login, URL security, captcha, diagnostics.
 # These are frequently miscaptured by ad lists and break WeChat/QQ flows.
 DOMAIN-SUFFIX,weixin.qq.com
+DOMAIN-SUFFIX,weixin.qq.com.cn
 DOMAIN-SUFFIX,weixinbridge.com
 DOMAIN-SUFFIX,wx.qq.com
+DOMAIN-SUFFIX,wxs.qq.com
+DOMAIN-SUFFIX,wechat.com
 DOMAIN-SUFFIX,weixin110.qq.com
 DOMAIN-SUFFIX,ptlogin2.qq.com
+DOMAIN-SUFFIX,ptlogin2.game.qq.com
+DOMAIN-SUFFIX,ptlogin2.wegame.com.cn
 DOMAIN-SUFFIX,urlsec.qq.com
 DOMAIN-SUFFIX,captcha.gtimg.com
 DOMAIN-SUFFIX,qqweb.qq.com
@@ -114,10 +121,26 @@ DOMAIN-SUFFIX,tdm.qq.com
 # Tencent games / WeGame / anti-cheat / TQOS
 DOMAIN-SUFFIX,wegame.com.cn
 DOMAIN-SUFFIX,wegame.gtimg.com
+DOMAIN-SUFFIX,wegamex.com.hk
+DOMAIN-SUFFIX,test.wegame.gtimg.com
 DOMAIN-SUFFIX,game.qq.com
+DOMAIN-SUFFIX,qqgame.qq.com
+DOMAIN-SUFFIX,ams.game.qq.com
+DOMAIN-SUFFIX,comm.ams.game.qq.com
+DOMAIN-SUFFIX,dnf.qq.com
+DOMAIN-SUFFIX,dnf.lv.game.qq.com
+DOMAIN-SUFFIX,dnf2.game.qq.com
+DOMAIN-SUFFIX,game.gtimg.cn
+DOMAIN-SUFFIX,vm.gtimg.cn
 DOMAIN-SUFFIX,gamesafe.qq.com
+DOMAIN-SUFFIX,courtreport.gamesafe.qq.com
 DOMAIN-SUFFIX,anticheatexpert.com
+DOMAIN-SUFFIX,tqos.anticheatexpert.com
 DOMAIN-SUFFIX,ied-tqos.qq.com
+DOMAIN-SUFFIX,ied-tqos-tgp.qq.com
 DOMAIN-SUFFIX,down.qq.com
+DOMAIN-SUFFIX,cdn.gbot.qq.com
+DOMAIN-SUFFIX,static.o2.qq.com
 DOMAIN-SUFFIX,staticfile.qq.com
 DOMAIN-SUFFIX,ossweb-img.qq.com
+DOMAIN-SUFFIX,tplay.qq.com
