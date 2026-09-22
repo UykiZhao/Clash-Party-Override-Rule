@@ -130,7 +130,7 @@ dns!:
     "rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static":
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
-    "rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special,overseas_ai_extra":
+    "rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special,custom_proxy_domain,overseas_ai_extra":
       - https://1.1.1.1/dns-query
       - https://8.8.8.8/dns-query
 
@@ -538,6 +538,16 @@ rule-providers!:
       - "DOMAIN-SUFFIX,notebooklm.google"
       - "DOMAIN-SUFFIX,labs.google"
       - "DOMAIN-SUFFIX,antigravity.google"
+      # 日志实证：AI Studio 实际使用 workspace.google.com，旧域名已不再覆盖。
+      - "DOMAIN-SUFFIX,workspace.google.com"
+
+  # 用户指定走家宽出口的域名（非 AI 服务，按实际需求单独列出）。
+  custom_proxy_domain:
+    type: inline
+    behavior: classical
+    payload:
+      - "DOMAIN-SUFFIX,search.agonygao.top"
+      - "DOMAIN-SUFFIX,luckyg.131518.xyz"
 
   # 海外 AI 补充域名：category-ai-!cn 未覆盖或近期新增的服务。
   # 港澳默认直连（🧪 AI 备选），内地两版走 🤖 AI 平台（默认家宽）。
@@ -642,6 +652,9 @@ rules:
   - "RULE-SET,openai_domain,🤖 AI 解锁"
   - "RULE-SET,anthropic_domain,🤖 AI 解锁"
   - "DOMAIN-SUFFIX,chat.com,🤖 AI 解锁"
+
+  # 用户指定走家宽出口的域名；排在流媒体之前，便于日后单独调整。
+  - "RULE-SET,custom_proxy_domain,🤖 AI 解锁"
 
   # 海外 AI 补充域名：港澳默认直连，需要时在 🧪 AI 备选 组内切换。
   - "RULE-SET,overseas_ai_extra,🧪 AI 备选"

@@ -1007,9 +1007,9 @@ rules:
 
   - "RULE-SET,ai_static,🤖 AI 平台"
   - "RULE-SET,ai_domain,🤖 AI 平台"
+  - "DOMAIN-SUFFIX,ai.com,🤖 AI 平台"
   # 海外 AI 补充域名：内地走 🤖 AI 平台，默认家宽出口。
   - "RULE-SET,overseas_ai_extra,🤖 AI 平台"
-  - "DOMAIN-SUFFIX,ai.com,🤖 AI 平台"
   - "RULE-SET,telegram_domain,📲 电报消息"
   - "RULE-SET,telegram_ip,📲 电报消息,no-resolve"
   - "RULE-SET,youtube_domain,📹 油管视频"
