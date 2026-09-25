@@ -287,7 +287,6 @@ proxy-groups:
       - 🇸🇬 新加坡
       - 🇹🇼 台湾
       - 🇭🇰 香港
-      - DIRECT
   - name: 🧪 AI 备选
     type: select
     proxies:

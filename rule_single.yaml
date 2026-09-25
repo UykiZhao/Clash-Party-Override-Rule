@@ -194,7 +194,6 @@ proxy-groups:
       - 🛟 AI 自动回退
       - 🏠 家宽
       - 🚀 节点选择
-      - DIRECT
   - name: 📲 电报消息
     type: select
     proxies:
