@@ -17,7 +17,7 @@ profile:
 # 2.0.3 初始化 controlDns=false，DNS 策略直接随本对象生效。
 # 引导解析、节点解析、业务解析分开；respect-rules 按 DNS 连接自身的目标分流。
 # fake-ip 只保留兼容排除，不使用全匹配 *；监听仅开放给本机。
-# 内地默认/直连/节点使用国内池，指定海外规则使用 Cloudflare/Google DoH。
+# 内地默认/直连/节点使用国内池；指定海外规则的 Cloudflare/Google DoH 随 AI 出口。
 dns!:
   enable: true
   cache-algorithm: arc
@@ -80,9 +80,18 @@ dns!:
     rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static:
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
+    stun.l.google.com:
+      - "https://cloudflare-dns.com/dns-query#🤖 AI 平台"
+      - "https://dns.google/dns-query#🤖 AI 平台"
+    stun1.l.google.com:
+      - "https://cloudflare-dns.com/dns-query#🤖 AI 平台"
+      - "https://dns.google/dns-query#🤖 AI 平台"
+    stun.cloudflare.com:
+      - "https://cloudflare-dns.com/dns-query#🤖 AI 平台"
+      - "https://dns.google/dns-query#🤖 AI 平台"
     rule-set:ai_static,ai_domain,telegram_domain,youtube_domain,academic_platforms,google_proxy_static,google_domain,github_domain,streaming_static,netflix_domain,disney_domain,hbo_domain,hulu_domain,primevideo_domain,spotify_domain,tiktok_domain,apple_tv_domain,discoveryplus_domain,bahamut_domain,biliintl_domain,geolocation_not_cn,overseas_ai_extra:
-      - https://cloudflare-dns.com/dns-query
-      - https://dns.google/dns-query
+      - "https://cloudflare-dns.com/dns-query#🤖 AI 平台"
+      - "https://dns.google/dns-query#🤖 AI 平台"
   respect-rules: true
 
 # 03 · TUN：兼容应用初始化设置
@@ -983,7 +992,12 @@ rules:
   - "RULE-SET,ads_domain,🛑 广告拦截"
   - "RULE-SET,telemetry_domain,🛑 广告拦截"
   # AI、Telegram、YouTube
-  # WebRTC 测试使用的 STUN UDP 明确随 AI 出口，避免港澳直连出口暴露。
+  # STUN 域名是主路径；Safari／TUN 偶尔只把解析后的目标 IP 交给内核，
+  # 因此为当前 Google／Cloudflare STUN 地址增加 no-resolve IP 兜底，避免落入 DIRECT。
+  - "IP-CIDR,74.125.250.129/32,🤖 AI 平台,no-resolve"
+  - "IP-CIDR,162.159.207.0/32,🤖 AI 平台,no-resolve"
+  - "IP-CIDR6,2001:4860:4864:5:8000::1/128,🤖 AI 平台,no-resolve"
+  - "IP-CIDR6,2606:4700:49::/128,🤖 AI 平台,no-resolve"
   - "DOMAIN,stun.l.google.com,🤖 AI 平台"
   - "DOMAIN,stun1.l.google.com,🤖 AI 平台"
   - "DOMAIN,stun.cloudflare.com,🤖 AI 平台"

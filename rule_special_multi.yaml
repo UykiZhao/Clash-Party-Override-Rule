@@ -17,7 +17,7 @@ profile:
 # 2.0.3 初始化 controlDns=false，DNS 策略直接随本对象生效。
 # 引导解析、节点解析、业务解析分开；respect-rules 按 DNS 连接自身的目标分流。
 # fake-ip 只保留兼容排除，不使用全匹配 *；监听仅开放给本机。
-# 港澳默认/节点使用公共 DoH，国内策略仍用国内 DoH；不配置 direct-nameserver。
+# 港澳默认公共 DoH 随 AI 出口，节点解析独立；国内策略仍用国内 DoH；不配置 direct-nameserver。
 dns!:
   enable: true
   cache-algorithm: arc
@@ -65,8 +65,8 @@ dns!:
     - 1.1.1.1
     - 8.8.8.8
   nameserver:
-    - https://1.1.1.1/dns-query
-    - https://8.8.8.8/dns-query
+    - "https://1.1.1.1/dns-query#🤖 AI 解锁"
+    - "https://8.8.8.8/dns-query#🤖 AI 解锁"
   proxy-server-nameserver:
     - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
@@ -77,9 +77,18 @@ dns!:
     rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static:
       - https://doh.pub/dns-query
       - https://dns.alidns.com/dns-query
+    stun.l.google.com:
+      - "https://1.1.1.1/dns-query#🤖 AI 解锁"
+      - "https://8.8.8.8/dns-query#🤖 AI 解锁"
+    stun1.l.google.com:
+      - "https://1.1.1.1/dns-query#🤖 AI 解锁"
+      - "https://8.8.8.8/dns-query#🤖 AI 解锁"
+    stun.cloudflare.com:
+      - "https://1.1.1.1/dns-query#🤖 AI 解锁"
+      - "https://8.8.8.8/dns-query#🤖 AI 解锁"
     rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special,custom_proxy_domain,overseas_ai_extra:
-      - https://1.1.1.1/dns-query
-      - https://8.8.8.8/dns-query
+      - "https://1.1.1.1/dns-query#🤖 AI 解锁"
+      - "https://8.8.8.8/dns-query#🤖 AI 解锁"
   respect-rules: true
 
 # 03 · TUN：兼容应用初始化设置
@@ -598,7 +607,12 @@ rules:
   - "RULE-SET,ads_domain,🛑 广告拦截"
   - "RULE-SET,telemetry_domain,🛑 广告拦截"
   # 指定 AI 开发工具、OpenAI、Anthropic
-  # STUN UDP 随 AI 出口，防止 WebRTC 检测回落到港澳本地直连。
+  # STUN 域名是主路径；Safari／TUN 偶尔只把解析后的目标 IP 交给内核，
+  # 因此为当前 Google／Cloudflare STUN 地址增加 no-resolve IP 兜底，避免落入 DIRECT。
+  - "IP-CIDR,74.125.250.129/32,🤖 AI 解锁,no-resolve"
+  - "IP-CIDR,162.159.207.0/32,🤖 AI 解锁,no-resolve"
+  - "IP-CIDR6,2001:4860:4864:5:8000::1/128,🤖 AI 解锁,no-resolve"
+  - "IP-CIDR6,2606:4700:49::/128,🤖 AI 解锁,no-resolve"
   - "DOMAIN,stun.l.google.com,🤖 AI 解锁"
   - "DOMAIN,stun1.l.google.com,🤖 AI 解锁"
   - "DOMAIN,stun.cloudflare.com,🤖 AI 解锁"
