@@ -1,14 +1,9 @@
-# NAME: DirectSupplement
-# AUTHOR: UykiZhao
-# REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-09-22
-# PURPOSE: China-sensitive direct rules. Placed BEFORE the ad rule-set so
-#          payment, banking, government, domestic AI and Tencent diagnostic
-#          domains are never swallowed by REJECT. Synced with the
-#          domestic_sensitive + domestic_ai_domain + tencent_services +
-#          tencent_games_static inline rulesets of the Clash YAML overrides.
+# direct-supplement.list
+# 四个国内保护内联集去重并集；置于广告之前。
+# 更新：2026-09-25；基线规则条目保持不变。
+# 来源：https://github.com/UykiZhao/Clash-Party-Override-Rule
+# RULE-SET 内容，不携带策略名称；由引用配置指定策略。
 
-# Government and public services
 DOMAIN-SUFFIX,gov.cn
 DOMAIN-SUFFIX,12306.cn
 DOMAIN-SUFFIX,12333.gov.cn
@@ -24,8 +19,6 @@ DOMAIN-SUFFIX,pbc.gov.cn
 DOMAIN-SUFFIX,safe.gov.cn
 DOMAIN-SUFFIX,gjj.gov.cn
 DOMAIN-SUFFIX,creditchina.gov.cn
-
-# Payment and clearing
 DOMAIN-SUFFIX,alipay.com
 DOMAIN-SUFFIX,alipayobjects.com
 DOMAIN-SUFFIX,tenpay.com
@@ -42,8 +35,6 @@ DOMAIN-SUFFIX,chinapay.com
 DOMAIN-SUFFIX,netpay.com.cn
 DOMAIN-SUFFIX,yeepay.com
 DOMAIN-SUFFIX,99bill.com
-
-# Banks
 DOMAIN-SUFFIX,icbc.com.cn
 DOMAIN-SUFFIX,abchina.com
 DOMAIN-SUFFIX,boc.cn
@@ -68,8 +59,6 @@ DOMAIN-SUFFIX,bankofbeijing.com.cn
 DOMAIN-SUFFIX,bankofshanghai.com
 DOMAIN-SUFFIX,nbcb.com.cn
 DOMAIN-SUFFIX,czbank.com
-
-# Domestic AI (direct avoids overseas-exit risk control)
 DOMAIN-SUFFIX,deepseek.com
 DOMAIN-SUFFIX,deepseek.ai
 DOMAIN-SUFFIX,moonshot.cn
@@ -94,9 +83,6 @@ DOMAIN-SUFFIX,minimaxi.com
 DOMAIN-SUFFIX,siliconflow.cn
 DOMAIN-SUFFIX,tiangong.cn
 DOMAIN-SUFFIX,xfyun.cn
-
-# Tencent services: login, URL security, captcha, diagnostics.
-# These are frequently miscaptured by ad lists and break WeChat/QQ flows.
 DOMAIN-SUFFIX,weixin.qq.com
 DOMAIN-SUFFIX,weixin.qq.com.cn
 DOMAIN-SUFFIX,weixinbridge.com
@@ -117,8 +103,6 @@ DOMAIN-SUFFIX,trace.qq.com
 DOMAIN-SUFFIX,h.trace.qq.com
 DOMAIN-SUFFIX,pingjs.qq.com
 DOMAIN-SUFFIX,tdm.qq.com
-
-# Tencent games / WeGame / anti-cheat / TQOS
 DOMAIN-SUFFIX,wegame.com.cn
 DOMAIN-SUFFIX,wegame.gtimg.com
 DOMAIN-SUFFIX,wegamex.com.hk

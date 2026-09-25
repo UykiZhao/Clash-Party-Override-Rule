@@ -1,15 +1,8 @@
-# NAME: OverseasAIExtra
-# AUTHOR: UykiZhao
-# REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-09-22
-# PURPOSE: Overseas AI services not covered (or slowly covered) by the
-#          OpenAI/Claude/Gemini rule-sets. Mirrors the overseas_ai_extra
-#          inline ruleset of the Clash YAML overrides.
-#          shadowrocket_special.conf routes these to the AI_EXTRA group
-#          (default DIRECT; switch the group to PROXY when a service
-#          rejects HK/MO accounts). The mainland shadowrocket.conf does not
-#          reference this file - those domains are folded into
-#          ai-supplement.list and proxied via the AI group there.
+# overseas-ai-extra.list
+# 港澳 overseas_ai_extra 的 23 条；默认 AI_EXTRA / DIRECT。
+# 更新：2026-09-25；基线规则条目保持不变。
+# 来源：https://github.com/UykiZhao/Clash-Party-Override-Rule
+# RULE-SET 内容，不携带策略名称；由引用配置指定策略。
 
 DOMAIN-SUFFIX,openrouter.ai
 DOMAIN-SUFFIX,x.ai

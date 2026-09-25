@@ -1,9 +1,8 @@
-# NAME: StreamingSupplement
-# AUTHOR: UykiZhao
-# REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-08-08
-# PURPOSE: Static streaming domains not covered (or only slowly covered) by the
-#          auto-updated blackmatrix7 streaming rule-sets.
+# streaming-supplement.list
+# 内地 streaming_static 的 16 条；港澳较小清单保留在 CONF 内联。
+# 更新：2026-09-25；基线规则条目保持不变。
+# 来源：https://github.com/UykiZhao/Clash-Party-Override-Rule
+# RULE-SET 内容，不携带策略名称；由引用配置指定策略。
 
 DOMAIN-SUFFIX,max.com
 DOMAIN-SUFFIX,hbomax.com

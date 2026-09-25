@@ -1,0 +1,1324 @@
+{
+  "date": "2026-09-25",
+  "transport": "explicit local proxy (existing client)",
+  "sources": [
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "private_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "private_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special.yaml",
+          "name": "private_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special_multi.yaml",
+          "name": "private_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 742,
+      "sha256": "0f9ba48d4d0b0d192a4e7c3548486dde05e5a92e6e58e8ea8c9cc302712a1420",
+      "entries": 130,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "private_ip",
+          "behavior": "ipcidr",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "private_ip",
+          "behavior": "ipcidr",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special.yaml",
+          "name": "private_ip",
+          "behavior": "ipcidr",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special_multi.yaml",
+          "name": "private_ip",
+          "behavior": "ipcidr",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 155,
+      "sha256": "076ea1da10b442f01c6fb3b86a66411727a15df69d70e8d600a8a458b07a8bb0",
+      "entries": 18,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 538415,
+      "sha256": "6c4f403acc88c339a9aa77ecd7f711bc2506699cf810681b868547fcd1a480a1",
+      "entries": 111031,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "cn_ip",
+          "behavior": "ipcidr",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "cn_ip",
+          "behavior": "ipcidr",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 37588,
+      "sha256": "4cc9ab3b7e2bbd18e0420e09af42818d0748a596dd3daaed470bb2d9958d118d",
+      "entries": 9612,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/geolocation-!cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "geolocation_not_cn",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "geolocation_not_cn",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 197971,
+      "sha256": "a50b9780e81dc82523ae210ed2a5bd3760dc5a80ec5e4503d4fb4c620f2607e2",
+      "entries": 27054,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ai-!cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "ai_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "ai_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1979,
+      "sha256": "4b1ff12acf3555ab212fac0f7d90f027f7a9f35329bd4d5d54c59a91d92cabc6",
+      "entries": 181,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/telegram.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "telegram_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "telegram_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 274,
+      "sha256": "ffa4d1d3e8649965e529c1c570d8add75a0d6f70aa8503ece8add841ce48c0e7",
+      "entries": 21,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/telegram.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "telegram_ip",
+          "behavior": "ipcidr",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "telegram_ip",
+          "behavior": "ipcidr",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 145,
+      "sha256": "d121af95b9aeca3d8c29b2112d5e6685b2a6716383df8ae31b5fbb3408c527b3",
+      "entries": 12,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/youtube.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "youtube_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "youtube_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1366,
+      "sha256": "e212b2ce9f39b30f4e2ab57da9ed0937673606bc56bb46e5d55ad7dd9af00aef",
+      "entries": 178,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/netflix.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "netflix_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "netflix_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 292,
+      "sha256": "a6fea26ce2168e069fe865f269e86e5e031a51b5b3855fe297e1bc004a3170bd",
+      "entries": 24,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/disney.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "disney_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "disney_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 2508,
+      "sha256": "6c6da49c66ab6f8d0c84a969828315199e258cf5316b91aeb8c6bd9259898577",
+      "entries": 224,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/hbo.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "hbo_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "hbo_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 691,
+      "sha256": "accfdd7d91b4bda6b3e98cc5f31187ef6dd66e09da41db4c0fedcc525bba43ed",
+      "entries": 65,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/hulu.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "hulu_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "hulu_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special.yaml",
+          "name": "hulu_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special_multi.yaml",
+          "name": "hulu_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 501,
+      "sha256": "d4c66c0524a125295da0d99eca728622bd9d649f07086b4dd9e84a75458fa58a",
+      "entries": 48,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/primevideo.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "primevideo_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "primevideo_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 407,
+      "sha256": "c75b8864b1d7af5c7f1b4e1700369b9d34f4e39520836cf3d060757784d142f8",
+      "entries": 23,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/spotify.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "spotify_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "spotify_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 424,
+      "sha256": "7eea9d7fd6521c91f2a80ac2fc44a1d541385678c29cf0f7384d954bc23175bc",
+      "entries": 28,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/tiktok.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "tiktok_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "tiktok_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 522,
+      "sha256": "c6c2a01e6fa45f8086242ee2e197e75de3450080132e5bdf198624aced71fcd9",
+      "entries": 37,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/apple-tvplus.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "apple_tv_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "apple_tv_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 143,
+      "sha256": "8cc9cead8cdbc4eeaa37bdbdd64ae8b61a84e4025bd3c7213bae054574217e49",
+      "entries": 8,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/discoveryplus.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "discoveryplus_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "discoveryplus_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 129,
+      "sha256": "c66253d2314e1c7e978bfb19ce3bf6ccec3b23b30bb1384bf1a0e38ee0630498",
+      "entries": 3,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/bahamut.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "bahamut_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "bahamut_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 136,
+      "sha256": "300c2587ab75671f43f5f165149ddf94aa420bb5e8ba92e643d61149a195cf8b",
+      "entries": 5,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/biliintl.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "biliintl_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "biliintl_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 249,
+      "sha256": "0aff4eea0f57500854c5312835dd90f10e971cc565058c69f80578616caf5a93",
+      "entries": 11,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/google.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "google_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "google_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 8934,
+      "sha256": "d59ff002b39401330e3c419a111830223661a813cbaacbf39cd9865e35606d79",
+      "entries": 1047,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/google-cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "google_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "google_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1233,
+      "sha256": "6b06ec3f32f625d4e78007eace9c1e9ccece2d499dd75e101bec53c252f20df0",
+      "entries": 112,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/github.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "github_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "github_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 825,
+      "sha256": "7409141df2e34091427c4dfc880635131b69e33dd4655d0854b67430ce211984",
+      "entries": 64,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/apple.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "apple_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "apple_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 17859,
+      "sha256": "ef067fccb6b336c650703e8126707690e038122598ec813b6edb4dfae8a51823",
+      "entries": 1789,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/apple-cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "apple_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "apple_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1338,
+      "sha256": "ec2428b5d5b56b235631305d605b4007bf7532d67fe264391587826b89f0de19",
+      "entries": 165,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/microsoft.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "microsoft_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "microsoft_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 7777,
+      "sha256": "8a46aaa286d58b16182b6e9084c7cbe533e5e8d847019b927ea78141b0bdd6a9",
+      "entries": 746,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/microsoft@cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "microsoft_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "microsoft_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1983,
+      "sha256": "ba61438136448454859e2eda5e1c0500a2415e6f794c4b0cdc35d2353b0bc009",
+      "entries": 189,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/onedrive.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "onedrive_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "onedrive_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 288,
+      "sha256": "0ecdba8f4bfa5161df4d0923ddba160ce6e85fc0c8cfa0ac5b9bac27384ac8bc",
+      "entries": 16,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/steam@cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "steam_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "steam_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 346,
+      "sha256": "fd88dd091178deb2881b1f3be35d0bd0d0e92d912104e989b8b348e9d607e8d9",
+      "entries": 19,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-games@cn.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "games_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "games_cn_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 574,
+      "sha256": "69277435faafabdc0836cf14901918302efff1f59b6eb107becc16931749c804",
+      "entries": 37,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "ads_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "ads_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special.yaml",
+          "name": "ads_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special_multi.yaml",
+          "name": "ads_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 8350,
+      "sha256": "099db91c6ee1cd8523f1b861d94ed6d10bf67f075dda6131ccc1d19caee0ca09",
+      "entries": 910,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/xishang0128/rules/main/clash%20or%20stash/prevent_dns_leak/prevent_dns_leak_domain.list",
+      "refs": [
+        {
+          "file": "rule_single.yaml",
+          "name": "prevent_dns_leak",
+          "behavior": "domain",
+          "format": "text"
+        },
+        {
+          "file": "rule_multi.yaml",
+          "name": "prevent_dns_leak",
+          "behavior": "domain",
+          "format": "text"
+        }
+      ],
+      "download": "pass",
+      "bytes": 592,
+      "sha256": "3039dcacf4481d9aa6c880363d7fd25fe5703e93333e4f7a7828d78759cd28c2",
+      "entries": 22,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/openai.mrs",
+      "refs": [
+        {
+          "file": "rule_special.yaml",
+          "name": "openai_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special_multi.yaml",
+          "name": "openai_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 415,
+      "sha256": "acc679f1e78844f45fd56d8be9c3e9f15788c15f0417b92156081245233f45ce",
+      "entries": 22,
+      "format": "pass"
+    },
+    {
+      "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/anthropic.mrs",
+      "refs": [
+        {
+          "file": "rule_special.yaml",
+          "name": "anthropic_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        },
+        {
+          "file": "rule_special_multi.yaml",
+          "name": "anthropic_domain",
+          "behavior": "domain",
+          "format": "mrs"
+        }
+      ],
+      "download": "pass",
+      "bytes": 179,
+      "sha256": "d8fca9e903364304ac875d9ceeacb48afdfad461027a4cfb957de83cb749cf93",
+      "entries": 8,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Lan/Lan.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        },
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 4776,
+      "sha256": "e524edec216ed7f2fa2f3eb3fe09fe70121acf88408c2394d19b3e2331c54de7",
+      "entries": 140,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rules/shadowrocket/direct-supplement.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        },
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 4282,
+      "sha256": "ade587663bfd0f5d0a403c58dd0525359fbe224029b62ccfb850f90a20ea2aa8",
+      "entries": 124,
+      "localRawRuleEquality": "pass",
+      "localRawBytesEqual": false,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rules/shadowrocket/proxy-supplement.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1648,
+      "sha256": "fb30af1d9999a82e1a64d155a7b7a2d5c48e1b3d8db875cc344d9f755b4af16c",
+      "entries": 30,
+      "localRawRuleEquality": "pass",
+      "localRawBytesEqual": false,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/AdvertisingLite/AdvertisingLite.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        },
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 12869,
+      "sha256": "43a1fa95f398684cdc2f40a7307e3ed81dc93c870905fa79386a4271b72c4b0a",
+      "entries": 376,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/AdvertisingLite/AdvertisingLite_Domain.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "DOMAIN-SET"
+        },
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "DOMAIN-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 595771,
+      "sha256": "e43ab7970cfa5bde9b222a18c0f5673dcced42e1bfada25f04254a514231ec34",
+      "entries": 37692,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rules/shadowrocket/telemetry.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        },
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 809,
+      "sha256": "59ce12a9b2cd4e6ac83461b6a1b01da1473c449c898fadd6e434394df6fba319",
+      "entries": 9,
+      "localRawRuleEquality": "pass",
+      "localRawBytesEqual": false,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/OpenAI/OpenAI.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        },
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1353,
+      "sha256": "6f4047cdbf6953cf5d9b38c4ccd6da7bc6f1acb91b7a87134f25d5b8f5d2408b",
+      "entries": 35,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Claude/Claude.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        },
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 244,
+      "sha256": "870e7e25d798e7f00338507f773b0eea4dfd15e25e9df0a27d5ae421ae1ab378",
+      "entries": 3,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Gemini/Gemini.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 605,
+      "sha256": "db8f69154426dca76792ab80b3ad6b0e2d078ebe0e52e76faec1724245a4ec49",
+      "entries": 13,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rules/shadowrocket/ai-supplement.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 2566,
+      "sha256": "0df2b60aaa53d9933d30adf2497e02c405a0e9ee26059f099ad5710e503df0d0",
+      "entries": 66,
+      "localRawRuleEquality": "pass",
+      "localRawBytesEqual": false,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Telegram/Telegram.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1338,
+      "sha256": "09f093cce5b3e2994147a2640e03040aac75e1db7bf2103fd1c9a2509b0176ab",
+      "entries": 40,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/YouTube/YouTube.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 5436,
+      "sha256": "f764cd91a779982225b3553ece8033c86a6545f4990f5fefd356805de962aee9",
+      "entries": 190,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/GitHub/GitHub.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1117,
+      "sha256": "ced8ab0ecda5775d04ec8ee6a57b282181108565331a6a1d85e9a26fee25d79b",
+      "entries": 31,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Google/Google.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 19777,
+      "sha256": "c6efe08ab4c0a12ddba20f5e75abfba2dd63a42b810f8cb5c303433a38e93b73",
+      "entries": 698,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Netflix/Netflix.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 40351,
+      "sha256": "ec37f90727e7db062d754487c4bed68ae8bba28f349aef0995f10c06f5e8b231",
+      "entries": 1157,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Disney/Disney.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 5565,
+      "sha256": "65ededc7b608e440f3d918f6e95b19ca52460c8fe368dbd9e840b4bc8669f753",
+      "entries": 173,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/HBO/HBO.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1738,
+      "sha256": "f89c50e9a1f433dc1acb8a75aa2cab27d4e2fd82f4fed6ba2820ce9b923680e2",
+      "entries": 49,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Hulu/Hulu.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        },
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1824,
+      "sha256": "8490ca12309a2fa967ce29178cd6eae19a226b44ddf0b4f3611c8f1377111a13",
+      "entries": 58,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/AmazonPrimeVideo/AmazonPrimeVideo.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1061,
+      "sha256": "d9909aa98066079d66d65f6ad48e03efb35f7851dbe45cc0395b8410ce694429",
+      "entries": 27,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Spotify/Spotify.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1197,
+      "sha256": "577afc9442a38c578e0aa8769b192d2f935e808114c60cbd5afd2294c79b74d0",
+      "entries": 30,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/TikTok/TikTok.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1100,
+      "sha256": "403dccb2d51606d73db9e669e82cc1d9030c7e697756ae13d9f8f5fea53c151a",
+      "entries": 32,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/AppleTV/AppleTV.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 439,
+      "sha256": "765c3689f99b10b2fa8a3910747676ac0a75b98869e1e0f9962bfe1121307f69",
+      "entries": 9,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Bahamut/Bahamut.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 387,
+      "sha256": "5c6618ac00734921dae209bb812c1b61cc88523e158b856548153d1d3d8df2fd",
+      "entries": 8,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/BiliBiliIntl/BiliBiliIntl.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 187,
+      "sha256": "8798f0970e5dfbc3d7f1a5f2000c58daca5e84634eacc28035d63571c17c3fdf",
+      "entries": 1,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rules/shadowrocket/streaming-supplement.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 703,
+      "sha256": "1ac5addfa77675862299b5ab94a9e51286fe13ecbd4b03fca68d0c4e1f5f9e4f",
+      "entries": 16,
+      "localRawRuleEquality": "pass",
+      "localRawBytesEqual": false,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Microsoft/Microsoft.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 20536,
+      "sha256": "22df1a1017ad5d41755bf020ca8eb9afeedc7bdc2c649ed2074b255227a7ed8e",
+      "entries": 671,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Apple/Apple.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1451,
+      "sha256": "523c65bd12018c152a7f7af38ebad7b6a72a345003964b0edb123d6999b73561",
+      "entries": 43,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Apple/Apple_Domain.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "DOMAIN-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 29594,
+      "sha256": "da43be83adf67a00dfa65d883a423251b9a1497d45611f41d07bbb495852c8a4",
+      "entries": 1560,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rules/shadowrocket/academic.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 3228,
+      "sha256": "561d7a6468fa15c037e9804bcb0f2c940b76c1dd2d7250bdd1f7f827432727d9",
+      "entries": 89,
+      "localRawRuleEquality": "pass",
+      "localRawBytesEqual": false,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/SteamCN/SteamCN.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 662,
+      "sha256": "82c144434e9199c524d95caa8e3659c9f6f1de9fd23b223a58b5d3c821923936",
+      "entries": 17,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/China/China.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 2038,
+      "sha256": "65477cd1e2917a8ca09ba08132e9d9131c54c0d9e1cfcba0be2eaa8ea1a04b75",
+      "entries": 63,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/China/China_Domain.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "DOMAIN-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 51067,
+      "sha256": "d35eec789ae09a6d2b6dd48ed2c52d6d811f433b1e73a92b2f9246b778fa7923",
+      "entries": 3689,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/ChinaIPs/ChinaIPs.list",
+      "refs": [
+        {
+          "file": "shadowrocket.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 823217,
+      "sha256": "0f55822dcd60cb2a334032238fa81638532cfd6064178f8b30c0770aa4fe8799",
+      "entries": 23194,
+      "format": "pass"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rules/shadowrocket/overseas-ai-extra.list",
+      "refs": [
+        {
+          "file": "shadowrocket_special.conf",
+          "format": "RULE-SET"
+        }
+      ],
+      "download": "pass",
+      "bytes": 1255,
+      "sha256": "a2da296c943919b2a210e0099a23d52fe92ab49ebdcb3242799baf93663fef79",
+      "entries": 23,
+      "localRawRuleEquality": "pass",
+      "localRawBytesEqual": false,
+      "format": "pass"
+    }
+  ]
+}

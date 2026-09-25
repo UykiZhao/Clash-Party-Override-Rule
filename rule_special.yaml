@@ -1,25 +1,103 @@
-# ============================================================
-# Clash Party 覆写配置 - 港澳地区单地区节点版 (rule_special.yaml)
-# 适用：香港 / 澳门本地网络（以澳门为主），单地区多节点场景
-# 场景：同一地区有多个节点（如日常节点 + 家宽节点），AI 默认走家宽。
-# 逻辑：默认直连，仅配置指定的 AI / 流媒体走节点，不保证实时地区可用性。
-# Gemini 网页域名、TikTok 默认直连；TikTok 启用代理需同时添加规则集、DNS 策略和路由。
-# 默认 DNS 使用公共 DoH；respect-rules 按 DNS 连接自身的目标匹配路由，
-# 不代表 DNS 查询与对应业务使用同一代理出口。
-# ============================================================
+# Clash Party YAML 覆写 · 港澳 · 单地区／少量节点
+# 用法：初始化客户端仅开启 TUN，导入订阅，添加并绑定本文件。
+# 节点来自订阅；本文件不能作为独立订阅。一个订阅只绑定本项目的一份 YAML。
+# 默认直连；指定 AI 与流媒体走代理，AI 备选默认 DIRECT。
+# 源码合并、设备验收边界见 docs/validation-2026-09-25.md。
 
+# 01 · 基础行为与选择记忆
 mode: rule
 ipv6: false
 unified-delay: true
 tcp-concurrent: true
-
 profile:
   store-selected: true
   store-fake-ip: true
 
-# ============================================================
-# 域名嗅探
-# ============================================================
+# 02 · 自包含 DNS：整对象替换订阅 DNS
+# 2.0.3 初始化 controlDns=false，DNS 策略直接随本对象生效。
+# 引导解析、节点解析、业务解析分开；respect-rules 按 DNS 连接自身的目标分流。
+# fake-ip 只保留兼容排除，不使用全匹配 *；监听仅开放给本机。
+# 港澳默认/节点使用公共 DoH，国内策略仍用国内 DoH；不配置 direct-nameserver。
+dns!:
+  enable: true
+  cache-algorithm: arc
+  listen: 127.0.0.1:1053
+  ipv6: false
+  prefer-h3: false
+  use-hosts: true
+  use-system-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - geosite:private
+    - geosite:cn
+    - geosite:apple-cn
+    - geosite:microsoft@cn
+    - geosite:steam@cn
+    - geosite:category-games@cn
+    - +.lan
+    - +.local
+    - +.localhost
+    - localhost.ptlogin2.qq.com
+    - dns.msftncsi.com
+    - www.msftconnecttest.com
+    - "*.msftconnecttest.com"
+    - "*.msftncsi.com"
+    - +.market.xiaomi.com
+    - +.push.apple.com
+    - time.*.com
+    - time.*.gov
+    - time.*.edu.cn
+    - time.*.apple.com
+    - time1.*.com
+    - time2.*.com
+    - time3.*.com
+    - time4.*.com
+    - time5.*.com
+    - time6.*.com
+    - time7.*.com
+    - "*.ntp.org.cn"
+    - "*.pool.ntp.org"
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+    - 1.1.1.1
+    - 8.8.8.8
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+  proxy-server-nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+  nameserver-policy:
+    geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special,custom_proxy_domain,overseas_ai_extra:
+      - https://1.1.1.1/dns-query
+      - https://8.8.8.8/dns-query
+  respect-rules: true
+
+# 03 · TUN：兼容应用初始化设置
+# 应用在覆写后合并，最终协议栈、路由和 DNS 劫持以初始化值为准。
+# 不写机器网卡或设备编号；字段存在不等于已完成系统流量接管验收。
+tun!:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+  strict-route: true
+
+# 04 · 域名嗅探：保留 HTTP / TLS / QUIC 与兼容排除
+# 2.0.3 默认开启嗅探覆写，会覆盖部分端口、HTTP 目的地行为和 skip-domain。
+# Mijia Cloud 保留在源文件中，但该版本合成后仅保留 Apple 推送排除，见验证记录。
 sniffer!:
   enable: true
   force-dns-mapping: true
@@ -39,173 +117,95 @@ sniffer!:
         - 443
         - 8443
   skip-domain:
-    - "Mijia Cloud"
-    - "+.push.apple.com"
+    - Mijia Cloud
+    - +.push.apple.com
 
-# ============================================================
-# TUN 与 DNS
-# ============================================================
-tun!:
-  enable: true
-  stack: mixed
-  auto-route: true
-  # 注意：TUN 的开关、栈、DNS 劫持与自动探测均以客户端应用设置为准，此处的
-  # auto-detect-interface 可能被覆盖。实测关闭后港澳场景出现全网 DNS 失效，
-  # 因此保持应用默认（true），不在此处改动。
-  auto-detect-interface: true
-  dns-hijack:
-    - any:53
-    - tcp://any:53
-  strict-route: true
-
-dns!:
-  enable: true
-  cache-algorithm: arc
-  listen: 127.0.0.1:1053
-  ipv6: false
-  prefer-h3: false
-  use-hosts: true
-  use-system-hosts: true
-  enhanced-mode: fake-ip
-  fake-ip-range: 198.18.0.1/16
-  fake-ip-filter-mode: blacklist
-  fake-ip-filter:
-    - "geosite:private"
-    - "geosite:cn"
-    - "geosite:apple-cn"
-    - "geosite:microsoft@cn"
-    - "geosite:steam@cn"
-    - "geosite:category-games@cn"
-    - "+.lan"
-    - "+.local"
-    - "+.localhost"
-    - "localhost.ptlogin2.qq.com"
-    - "dns.msftncsi.com"
-    - "www.msftconnecttest.com"
-    - "*.msftconnecttest.com"
-    - "*.msftncsi.com"
-    - "+.market.xiaomi.com"
-    - "+.push.apple.com"
-    - "time.*.com"
-    - "time.*.gov"
-    - "time.*.edu.cn"
-    - "time.*.apple.com"
-    - "time1.*.com"
-    - "time2.*.com"
-    - "time3.*.com"
-    - "time4.*.com"
-    - "time5.*.com"
-    - "time6.*.com"
-    - "time7.*.com"
-    - "*.ntp.org.cn"
-    - "*.pool.ntp.org"
-
-  # 仅用于解析 DNS 服务器域名，必须是 IP 或基于 IP 的加密 DNS。
-  default-nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
-    - 1.1.1.1
-    - 8.8.8.8
-
-  # 默认使用公共加密 DNS。
-  nameserver:
-    - https://1.1.1.1/dns-query
-    - https://8.8.8.8/dns-query
-
-  # 节点域名独立使用公共 DNS 解析。
-  proxy-server-nameserver:
-    - https://1.1.1.1/dns-query
-    - https://8.8.8.8/dns-query
-
-  # 不要在此配置 direct-nameserver：港澳版几乎所有流量都是直连，直连 DNS 一旦
-  # 不可达就是全网瘫痪（2026-09-17 在 CGNAT 网络下 223.5.5.5 / 119.29.29.29 全部
-  # i/o timeout，导致断网且订阅无法更新）。内地两版保留该配置。
-
-  # 国内域名仍用国内 DoH，保证微信/支付宝/B站等 CN CDN 命中；
-  # 指定代理域名使用公共 DoH，DNS 连接仍按其自身目标匹配路由。
-  nameserver-policy:
-    "geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn":
-      - https://doh.pub/dns-query
-      - https://dns.alidns.com/dns-query
-    "rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static":
-      - https://doh.pub/dns-query
-      - https://dns.alidns.com/dns-query
-    "rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special,custom_proxy_domain,overseas_ai_extra":
-      - https://1.1.1.1/dns-query
-      - https://8.8.8.8/dns-query
-
-  respect-rules: true
-
-# ============================================================
-# Geo 数据库
-# ============================================================
+# 05 · Geo 数据
+# 保留既有源和更新意图；实际 geox-url/更新开关仍受应用默认值覆盖。
 geodata-mode: true
 geox-url!:
-  geoip: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
-  geosite: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
-  mmdb: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
-  asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
+  geoip: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat
+  geosite: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat
+  mmdb: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb
+  asn: https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb
 geo-auto-update: true
 geo-update-interval: 24
 
-# ============================================================
-# 代理组：单地区多节点场景
-# 港澳网络开放，默认全部直连。仅港澳不可用的 AI/流媒体走节点，
-# AI 默认选择家宽；空组拒绝连接，无家宽节点时手动切换到节点选择。
-# ============================================================
+# 06 · 策略组与自动回退
+# AI fallback 只纳入实际候选，按家宽（港澳多地区按美国）优先，再纳入全部代理。
+# 单个反引号分隔筛选优先级；空偏好不插入 REJECT，不依赖空子组的健康状态。
+# 排序锚点是被信息节点过滤器排除的 REJECT 占位，不提供连接、不修改订阅节点。
+# 它使 1.19.31 对直接节点、provider 及混合布局统一执行跨集合排序和去重。
+# 家宽/地区手动入口仍保留；测速只判断连通，不认证 IP 属性或平台解锁。
+proxy-providers:
+  __override_sort_anchor:
+    type: inline
+    payload:
+      - name: 订阅排序占位（REJECT）
+        type: reject
 proxy-groups:
-  - name: "🚀 节点选择"
+  - name: 🚀 节点选择
     type: select
     include-all: true
-    exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
+    exclude-filter: (?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic
     empty-fallback: REJECT
-
-  - name: "🏠 家宽"
+    proxies:
+      - 🛟 通用自动回退
+  - name: 🛟 通用自动回退
+    type: fallback
+    include-all: true
+    exclude-filter: (?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic
+    empty-fallback: REJECT
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    timeout: 5000
+    lazy: false
+  - name: 🏠 家宽
     type: select
     include-all: true
-    filter: "(?i)(家宽|家寬|原生|静态|靜態|(^|[^a-z])(Home|Residential|ISP|Static)([^a-z]|$))"
-    exclude-filter: "(?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic"
+    filter: (?i)(家宽|家寬|原生|静态|靜態|(^|[^a-z])(Home|Residential|ISP|Static)([^a-z]|$))
+    exclude-filter: (?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic
     empty-fallback: REJECT
-
-  - name: "🤖 AI 解锁"
+  - name: 🛟 AI 自动回退
+    type: fallback
+    empty-fallback: REJECT
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    timeout: 5000
+    lazy: false
+    include-all: true
+    filter: (?i)(家宽|家寬|原生|静态|靜態|(^|[^a-z])(Home|Residential|ISP|Static)([^a-z]|$))`.*
+    exclude-filter: (?i)官网|流量|剩余|到期|套餐|订阅|expire|traffic
+  - name: 🤖 AI 解锁
     type: select
     proxies:
-      - "🏠 家宽"
-      - "🚀 节点选择"
+      - 🛟 AI 自动回退
+      - 🏠 家宽
+      - 🚀 节点选择
       - DIRECT
-
-  # 港澳网络开放，下列海外 AI 默认直连；个别服务若按账号地区拒绝，
-  # 在此组手动切到 🏠 家宽 即可，不必改规则。
-  - name: "🧪 AI 备选"
+  - name: 🧪 AI 备选
     type: select
     proxies:
       - DIRECT
-      - "🏠 家宽"
-      - "🚀 节点选择"
-
-  - name: "🎬 流媒体解锁"
+      - 🏠 家宽
+      - 🚀 节点选择
+  - name: 🎬 流媒体解锁
     type: select
     proxies:
-      - "🚀 节点选择"
+      - 🚀 节点选择
       - DIRECT
-
-  - name: "🛑 广告拦截"
+  - name: 🛑 广告拦截
     type: select
     proxies:
       - REJECT
       - DIRECT
-
-  - name: "🎯 全球直连"
+  - name: 🎯 全球直连
     type: select
     proxies:
       - DIRECT
-      - "🚀 节点选择"
+      - 🚀 节点选择
 
-# ============================================================
-# 规则集
-# 港澳场景大幅精简：不需要 cn/geolocation 兜底（MATCH 即直连），
-# 只保留「广告拦截」+「直连保护」+「港澳不可用的代理集」。
-# ============================================================
+# 07 · 规则集：远程格式、缓存路径和内联覆盖保持基线
 rule-providers!:
   private_domain:
     type: http
@@ -213,7 +213,7 @@ rule-providers!:
     format: mrs
     interval: 86400
     path: ./ruleset/override/private_domain.mrs
-    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs"
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs
 
   private_ip:
     type: http
@@ -221,170 +221,165 @@ rule-providers!:
     format: mrs
     interval: 86400
     path: ./ruleset/override/private_ip.mrs
-    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs"
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs
 
-  # 以下国内直连集不是为分流（MATCH 已是直连），而是必须排在广告规则前，
-  # 防止支付/银行/腾讯诊断域名被广告集误拦截。
+  # 支付、银行、政务：在广告之前保护。
   domestic_sensitive:
     type: inline
     behavior: classical
     payload:
-      # 政务 / 公共服务
-      - "DOMAIN-SUFFIX,gov.cn"
-      - "DOMAIN-SUFFIX,12306.cn"
-      - "DOMAIN-SUFFIX,12333.gov.cn"
-      - "DOMAIN-SUFFIX,chinatax.gov.cn"
-      - "DOMAIN-SUFFIX,nhsa.gov.cn"
-      - "DOMAIN-SUFFIX,mohrss.gov.cn"
-      - "DOMAIN-SUFFIX,mps.gov.cn"
-      - "DOMAIN-SUFFIX,miit.gov.cn"
-      - "DOMAIN-SUFFIX,samr.gov.cn"
-      - "DOMAIN-SUFFIX,nmpa.gov.cn"
-      - "DOMAIN-SUFFIX,customs.gov.cn"
-      - "DOMAIN-SUFFIX,pbc.gov.cn"
-      - "DOMAIN-SUFFIX,safe.gov.cn"
-      - "DOMAIN-SUFFIX,gjj.gov.cn"
-      - "DOMAIN-SUFFIX,creditchina.gov.cn"
-      # 支付 / 清算
-      - "DOMAIN-SUFFIX,alipay.com"
-      - "DOMAIN-SUFFIX,alipayobjects.com"
-      - "DOMAIN-SUFFIX,tenpay.com"
-      - "DOMAIN-SUFFIX,wechatpay.cn"
-      - "DOMAIN-SUFFIX,wechatpay.com.cn"
-      - "DOMAIN-SUFFIX,unionpay.com"
-      - "DOMAIN-SUFFIX,unionpayintl.com"
-      - "DOMAIN-SUFFIX,95516.com"
-      - "DOMAIN-SUFFIX,chinaums.com"
-      - "DOMAIN-SUFFIX,lakala.com"
-      - "DOMAIN-SUFFIX,duxiaoman.com"
-      - "DOMAIN-SUFFIX,jdpay.com"
-      - "DOMAIN-SUFFIX,chinapay.com"
-      - "DOMAIN-SUFFIX,netpay.com.cn"
-      - "DOMAIN-SUFFIX,yeepay.com"
-      - "DOMAIN-SUFFIX,99bill.com"
-      # 银行
-      - "DOMAIN-SUFFIX,icbc.com.cn"
-      - "DOMAIN-SUFFIX,abchina.com"
-      - "DOMAIN-SUFFIX,boc.cn"
-      - "DOMAIN-SUFFIX,bankofchina.com"
-      - "DOMAIN-SUFFIX,ccb.com"
-      - "DOMAIN-SUFFIX,ccb.cn"
-      - "DOMAIN-SUFFIX,cmbchina.com"
-      - "DOMAIN-SUFFIX,bankcomm.com"
-      - "DOMAIN-SUFFIX,psbc.com"
-      - "DOMAIN-SUFFIX,spdb.com.cn"
-      - "DOMAIN-SUFFIX,cib.com.cn"
-      - "DOMAIN-SUFFIX,citicbank.com"
-      - "DOMAIN-SUFFIX,cebbank.com"
-      - "DOMAIN-SUFFIX,bank.pingan.com"
-      - "DOMAIN-SUFFIX,pingan.com"
-      - "DOMAIN-SUFFIX,hxb.com.cn"
-      - "DOMAIN-SUFFIX,cgbchina.com.cn"
-      - "DOMAIN-SUFFIX,cmbc.com.cn"
-      - "DOMAIN-SUFFIX,bob.com.cn"
-      - "DOMAIN-SUFFIX,srcb.com"
-      - "DOMAIN-SUFFIX,bankofbeijing.com.cn"
-      - "DOMAIN-SUFFIX,bankofshanghai.com"
-      - "DOMAIN-SUFFIX,nbcb.com.cn"
-      - "DOMAIN-SUFFIX,czbank.com"
+      - DOMAIN-SUFFIX,gov.cn
+      - DOMAIN-SUFFIX,12306.cn
+      - DOMAIN-SUFFIX,12333.gov.cn
+      - DOMAIN-SUFFIX,chinatax.gov.cn
+      - DOMAIN-SUFFIX,nhsa.gov.cn
+      - DOMAIN-SUFFIX,mohrss.gov.cn
+      - DOMAIN-SUFFIX,mps.gov.cn
+      - DOMAIN-SUFFIX,miit.gov.cn
+      - DOMAIN-SUFFIX,samr.gov.cn
+      - DOMAIN-SUFFIX,nmpa.gov.cn
+      - DOMAIN-SUFFIX,customs.gov.cn
+      - DOMAIN-SUFFIX,pbc.gov.cn
+      - DOMAIN-SUFFIX,safe.gov.cn
+      - DOMAIN-SUFFIX,gjj.gov.cn
+      - DOMAIN-SUFFIX,creditchina.gov.cn
+      - DOMAIN-SUFFIX,alipay.com
+      - DOMAIN-SUFFIX,alipayobjects.com
+      - DOMAIN-SUFFIX,tenpay.com
+      - DOMAIN-SUFFIX,wechatpay.cn
+      - DOMAIN-SUFFIX,wechatpay.com.cn
+      - DOMAIN-SUFFIX,unionpay.com
+      - DOMAIN-SUFFIX,unionpayintl.com
+      - DOMAIN-SUFFIX,95516.com
+      - DOMAIN-SUFFIX,chinaums.com
+      - DOMAIN-SUFFIX,lakala.com
+      - DOMAIN-SUFFIX,duxiaoman.com
+      - DOMAIN-SUFFIX,jdpay.com
+      - DOMAIN-SUFFIX,chinapay.com
+      - DOMAIN-SUFFIX,netpay.com.cn
+      - DOMAIN-SUFFIX,yeepay.com
+      - DOMAIN-SUFFIX,99bill.com
+      - DOMAIN-SUFFIX,icbc.com.cn
+      - DOMAIN-SUFFIX,abchina.com
+      - DOMAIN-SUFFIX,boc.cn
+      - DOMAIN-SUFFIX,bankofchina.com
+      - DOMAIN-SUFFIX,ccb.com
+      - DOMAIN-SUFFIX,ccb.cn
+      - DOMAIN-SUFFIX,cmbchina.com
+      - DOMAIN-SUFFIX,bankcomm.com
+      - DOMAIN-SUFFIX,psbc.com
+      - DOMAIN-SUFFIX,spdb.com.cn
+      - DOMAIN-SUFFIX,cib.com.cn
+      - DOMAIN-SUFFIX,citicbank.com
+      - DOMAIN-SUFFIX,cebbank.com
+      - DOMAIN-SUFFIX,bank.pingan.com
+      - DOMAIN-SUFFIX,pingan.com
+      - DOMAIN-SUFFIX,hxb.com.cn
+      - DOMAIN-SUFFIX,cgbchina.com.cn
+      - DOMAIN-SUFFIX,cmbc.com.cn
+      - DOMAIN-SUFFIX,bob.com.cn
+      - DOMAIN-SUFFIX,srcb.com
+      - DOMAIN-SUFFIX,bankofbeijing.com.cn
+      - DOMAIN-SUFFIX,bankofshanghai.com
+      - DOMAIN-SUFFIX,nbcb.com.cn
+      - DOMAIN-SUFFIX,czbank.com
 
+  # 中国 AI：与腾讯及游戏一起优先直连。
   domestic_ai_domain:
     type: inline
     behavior: classical
     payload:
-      # 中国 AI 服务直连（DeepSeek/Kimi/豆包等在港澳可直接使用）。
-      - "DOMAIN-SUFFIX,deepseek.com"
-      - "DOMAIN-SUFFIX,deepseek.ai"
-      - "DOMAIN-SUFFIX,moonshot.cn"
-      - "DOMAIN-SUFFIX,kimi.moonshot.cn"
-      - "DOMAIN-SUFFIX,qwen.ai"
-      - "DOMAIN-SUFFIX,tongyi.aliyun.com"
-      - "DOMAIN-SUFFIX,dashscope.aliyun.com"
-      - "DOMAIN-SUFFIX,modelscope.cn"
-      - "DOMAIN-SUFFIX,doubao.com"
-      - "DOMAIN-SUFFIX,volcengine.com"
-      - "DOMAIN-SUFFIX,coze.cn"
-      - "DOMAIN-SUFFIX,yuanbao.tencent.com"
-      - "DOMAIN-SUFFIX,hunyuan.tencent.com"
-      - "DOMAIN-SUFFIX,ima.qq.com"
-      - "DOMAIN-SUFFIX,wenxin.baidu.com"
-      - "DOMAIN-SUFFIX,yiyan.baidu.com"
-      - "DOMAIN-SUFFIX,zhipuai.cn"
-      - "DOMAIN-SUFFIX,chatglm.cn"
-      - "DOMAIN-SUFFIX,bigmodel.cn"
-      - "DOMAIN-SUFFIX,minimax.chat"
-      - "DOMAIN-SUFFIX,minimaxi.com"
-      - "DOMAIN-SUFFIX,siliconflow.cn"
-      - "DOMAIN-SUFFIX,tiangong.cn"
-      - "DOMAIN-SUFFIX,xfyun.cn"
+      - DOMAIN-SUFFIX,deepseek.com
+      - DOMAIN-SUFFIX,deepseek.ai
+      - DOMAIN-SUFFIX,moonshot.cn
+      - DOMAIN-SUFFIX,kimi.moonshot.cn
+      - DOMAIN-SUFFIX,qwen.ai
+      - DOMAIN-SUFFIX,tongyi.aliyun.com
+      - DOMAIN-SUFFIX,dashscope.aliyun.com
+      - DOMAIN-SUFFIX,modelscope.cn
+      - DOMAIN-SUFFIX,doubao.com
+      - DOMAIN-SUFFIX,volcengine.com
+      - DOMAIN-SUFFIX,coze.cn
+      - DOMAIN-SUFFIX,yuanbao.tencent.com
+      - DOMAIN-SUFFIX,hunyuan.tencent.com
+      - DOMAIN-SUFFIX,ima.qq.com
+      - DOMAIN-SUFFIX,wenxin.baidu.com
+      - DOMAIN-SUFFIX,yiyan.baidu.com
+      - DOMAIN-SUFFIX,zhipuai.cn
+      - DOMAIN-SUFFIX,chatglm.cn
+      - DOMAIN-SUFFIX,bigmodel.cn
+      - DOMAIN-SUFFIX,minimax.chat
+      - DOMAIN-SUFFIX,minimaxi.com
+      - DOMAIN-SUFFIX,siliconflow.cn
+      - DOMAIN-SUFFIX,tiangong.cn
+      - DOMAIN-SUFFIX,xfyun.cn
 
+  # 腾讯服务：保留诊断与安全域名的直连优先级。
   tencent_services:
     type: inline
     behavior: classical
     payload:
-      # 微信 / QQ / 腾讯服务直连，放在广告规则前，避免诊断与安全检测域名被误拦截。
-      - "DOMAIN-SUFFIX,weixin.qq.com"
-      - "DOMAIN-SUFFIX,weixin.qq.com.cn"
-      - "DOMAIN-SUFFIX,weixinbridge.com"
-      - "DOMAIN-SUFFIX,wx.qq.com"
-      - "DOMAIN-SUFFIX,wxs.qq.com"
-      - "DOMAIN-SUFFIX,wechat.com"
-      - "DOMAIN-SUFFIX,wechatpay.cn"
-      - "DOMAIN-SUFFIX,wechatpay.com.cn"
-      - "DOMAIN-SUFFIX,weixin110.qq.com"
-      - "DOMAIN-SUFFIX,ptlogin2.qq.com"
-      - "DOMAIN-SUFFIX,ptlogin2.game.qq.com"
-      - "DOMAIN-SUFFIX,ptlogin2.wegame.com.cn"
-      - "DOMAIN-SUFFIX,urlsec.qq.com"
-      - "DOMAIN-SUFFIX,captcha.gtimg.com"
-      - "DOMAIN-SUFFIX,qqweb.qq.com"
-      - "DOMAIN-SUFFIX,beacon.qq.com"
-      - "DOMAIN-SUFFIX,beaconcdn.qq.com"
-      - "DOMAIN-SUFFIX,beacon.cdn.qq.com"
-      - "DOMAIN-SUFFIX,trace.qq.com"
-      - "DOMAIN-SUFFIX,h.trace.qq.com"
-      - "DOMAIN-SUFFIX,pingjs.qq.com"
-      - "DOMAIN-SUFFIX,tdm.qq.com"
+      - DOMAIN-SUFFIX,weixin.qq.com
+      - DOMAIN-SUFFIX,weixin.qq.com.cn
+      - DOMAIN-SUFFIX,weixinbridge.com
+      - DOMAIN-SUFFIX,wx.qq.com
+      - DOMAIN-SUFFIX,wxs.qq.com
+      - DOMAIN-SUFFIX,wechat.com
+      - DOMAIN-SUFFIX,wechatpay.cn
+      - DOMAIN-SUFFIX,wechatpay.com.cn
+      - DOMAIN-SUFFIX,weixin110.qq.com
+      - DOMAIN-SUFFIX,ptlogin2.qq.com
+      - DOMAIN-SUFFIX,ptlogin2.game.qq.com
+      - DOMAIN-SUFFIX,ptlogin2.wegame.com.cn
+      - DOMAIN-SUFFIX,urlsec.qq.com
+      - DOMAIN-SUFFIX,captcha.gtimg.com
+      - DOMAIN-SUFFIX,qqweb.qq.com
+      - DOMAIN-SUFFIX,beacon.qq.com
+      - DOMAIN-SUFFIX,beaconcdn.qq.com
+      - DOMAIN-SUFFIX,beacon.cdn.qq.com
+      - DOMAIN-SUFFIX,trace.qq.com
+      - DOMAIN-SUFFIX,h.trace.qq.com
+      - DOMAIN-SUFFIX,pingjs.qq.com
+      - DOMAIN-SUFFIX,tdm.qq.com
 
+  # 腾讯游戏、WeGame、反作弊和 TQOS。
   tencent_games_static:
     type: inline
     behavior: classical
     payload:
-      # 腾讯游戏 / WeGame / 反作弊 / TQOS 优先直连。
-      - "DOMAIN-SUFFIX,wegame.com.cn"
-      - "DOMAIN-SUFFIX,wegame.gtimg.com"
-      - "DOMAIN-SUFFIX,wegamex.com.hk"
-      - "DOMAIN-SUFFIX,test.wegame.gtimg.com"
-      - "DOMAIN-SUFFIX,game.qq.com"
-      - "DOMAIN-SUFFIX,qqgame.qq.com"
-      - "DOMAIN-SUFFIX,ams.game.qq.com"
-      - "DOMAIN-SUFFIX,comm.ams.game.qq.com"
-      - "DOMAIN-SUFFIX,dnf.qq.com"
-      - "DOMAIN-SUFFIX,dnf.lv.game.qq.com"
-      - "DOMAIN-SUFFIX,dnf2.game.qq.com"
-      - "DOMAIN-SUFFIX,game.gtimg.cn"
-      - "DOMAIN-SUFFIX,vm.gtimg.cn"
-      - "DOMAIN-SUFFIX,ied-tqos.qq.com"
-      - "DOMAIN-SUFFIX,ied-tqos-tgp.qq.com"
-      - "DOMAIN-SUFFIX,tqos.anticheatexpert.com"
-      - "DOMAIN-SUFFIX,anticheatexpert.com"
-      - "DOMAIN-SUFFIX,gamesafe.qq.com"
-      - "DOMAIN-SUFFIX,courtreport.gamesafe.qq.com"
-      - "DOMAIN-SUFFIX,down.qq.com"
-      - "DOMAIN-SUFFIX,cdn.gbot.qq.com"
-      - "DOMAIN-SUFFIX,static.o2.qq.com"
-      - "DOMAIN-SUFFIX,staticfile.qq.com"
-      - "DOMAIN-SUFFIX,ossweb-img.qq.com"
-      - "DOMAIN-SUFFIX,tplay.qq.com"
+      - DOMAIN-SUFFIX,wegame.com.cn
+      - DOMAIN-SUFFIX,wegame.gtimg.com
+      - DOMAIN-SUFFIX,wegamex.com.hk
+      - DOMAIN-SUFFIX,test.wegame.gtimg.com
+      - DOMAIN-SUFFIX,game.qq.com
+      - DOMAIN-SUFFIX,qqgame.qq.com
+      - DOMAIN-SUFFIX,ams.game.qq.com
+      - DOMAIN-SUFFIX,comm.ams.game.qq.com
+      - DOMAIN-SUFFIX,dnf.qq.com
+      - DOMAIN-SUFFIX,dnf.lv.game.qq.com
+      - DOMAIN-SUFFIX,dnf2.game.qq.com
+      - DOMAIN-SUFFIX,game.gtimg.cn
+      - DOMAIN-SUFFIX,vm.gtimg.cn
+      - DOMAIN-SUFFIX,ied-tqos.qq.com
+      - DOMAIN-SUFFIX,ied-tqos-tgp.qq.com
+      - DOMAIN-SUFFIX,tqos.anticheatexpert.com
+      - DOMAIN-SUFFIX,anticheatexpert.com
+      - DOMAIN-SUFFIX,gamesafe.qq.com
+      - DOMAIN-SUFFIX,courtreport.gamesafe.qq.com
+      - DOMAIN-SUFFIX,down.qq.com
+      - DOMAIN-SUFFIX,cdn.gbot.qq.com
+      - DOMAIN-SUFFIX,static.o2.qq.com
+      - DOMAIN-SUFFIX,staticfile.qq.com
+      - DOMAIN-SUFFIX,ossweb-img.qq.com
+      - DOMAIN-SUFFIX,tplay.qq.com
 
-  # 港澳不可用的 AI 服务
   openai_domain:
     type: http
     behavior: domain
     format: mrs
     interval: 86400
     path: ./ruleset/override/openai_domain.mrs
-    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/openai.mrs"
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/openai.mrs
 
   anthropic_domain:
     type: http
@@ -392,100 +387,94 @@ rule-providers!:
     format: mrs
     interval: 86400
     path: ./ruleset/override/anthropic_domain.mrs
-    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/anthropic.mrs"
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/anthropic.mrs
 
+  # 仅这 8 个后缀走 AI；不扩大到 Google，Gemini 网页保持直连。
   google_ai_dev:
     type: inline
     behavior: classical
     payload:
-      # 仅列出需要代理的 Google AI 域名，不按关键词匹配其他业务。
-      # gemini.google.com 不在此列，按当前配置保持直连。
-      - "DOMAIN-SUFFIX,aistudio.google.com"
-      - "DOMAIN-SUFFIX,generativelanguage.googleapis.com"
-      - "DOMAIN-SUFFIX,ai.google.dev"
-      - "DOMAIN-SUFFIX,notebooklm.google.com"
-      - "DOMAIN-SUFFIX,notebooklm.google"
-      - "DOMAIN-SUFFIX,labs.google"
-      - "DOMAIN-SUFFIX,antigravity.google"
-      # 日志实证：AI Studio 实际使用 workspace.google.com，旧域名已不再覆盖。
-      - "DOMAIN-SUFFIX,workspace.google.com"
+      - DOMAIN-SUFFIX,aistudio.google.com
+      - DOMAIN-SUFFIX,generativelanguage.googleapis.com
+      - DOMAIN-SUFFIX,ai.google.dev
+      - DOMAIN-SUFFIX,notebooklm.google.com
+      - DOMAIN-SUFFIX,notebooklm.google
+      - DOMAIN-SUFFIX,labs.google
+      - DOMAIN-SUFFIX,antigravity.google
+      - DOMAIN-SUFFIX,workspace.google.com
 
-  # 用户指定走家宽出口的域名（非 AI 服务，按实际需求单独列出）。
+  # 两个既有自定义后缀沿用 AI 解锁组。
   custom_proxy_domain:
     type: inline
     behavior: classical
     payload:
-      - "DOMAIN-SUFFIX,search.agonygao.top"
-      - "DOMAIN-SUFFIX,luckyg.131518.xyz"
+      - DOMAIN-SUFFIX,search.agonygao.top
+      - DOMAIN-SUFFIX,luckyg.131518.xyz
 
-  # 海外 AI 补充域名：category-ai-!cn 未覆盖或近期新增的服务。
-  # 港澳默认直连（🧪 AI 备选），内地两版走 🤖 AI 平台（默认家宽）。
+  # 有意保留场景差异：内地 15 条走 AI；港澳 23 条默认直连。
   overseas_ai_extra:
     type: inline
     behavior: classical
     payload:
-      - "DOMAIN-SUFFIX,openrouter.ai"
-      - "DOMAIN-SUFFIX,x.ai"
-      - "DOMAIN-SUFFIX,grok.com"
-      - "DOMAIN-SUFFIX,perplexity.ai"
-      - "DOMAIN-SUFFIX,mistral.ai"
-      - "DOMAIN-SUFFIX,huggingface.co"
-      - "DOMAIN-SUFFIX,replicate.com"
-      - "DOMAIN-SUFFIX,groq.com"
-      - "DOMAIN-SUFFIX,together.ai"
-      - "DOMAIN-SUFFIX,together.xyz"
-      - "DOMAIN-SUFFIX,fireworks.ai"
-      - "DOMAIN-SUFFIX,poe.com"
-      - "DOMAIN-SUFFIX,cohere.com"
-      - "DOMAIN-SUFFIX,midjourney.com"
-      - "DOMAIN-SUFFIX,suno.com"
-      - "DOMAIN-SUFFIX,udio.com"
-      - "DOMAIN-SUFFIX,elevenlabs.io"
-      - "DOMAIN-SUFFIX,cursor.sh"
-      - "DOMAIN-SUFFIX,cursor.com"
-      - "DOMAIN-SUFFIX,windsurf.com"
-      - "DOMAIN-SUFFIX,codeium.com"
-      - "DOMAIN-SUFFIX,lovable.dev"
-      - "DOMAIN-SUFFIX,v0.dev"
+      - DOMAIN-SUFFIX,openrouter.ai
+      - DOMAIN-SUFFIX,x.ai
+      - DOMAIN-SUFFIX,grok.com
+      - DOMAIN-SUFFIX,perplexity.ai
+      - DOMAIN-SUFFIX,mistral.ai
+      - DOMAIN-SUFFIX,huggingface.co
+      - DOMAIN-SUFFIX,replicate.com
+      - DOMAIN-SUFFIX,groq.com
+      - DOMAIN-SUFFIX,together.ai
+      - DOMAIN-SUFFIX,together.xyz
+      - DOMAIN-SUFFIX,fireworks.ai
+      - DOMAIN-SUFFIX,poe.com
+      - DOMAIN-SUFFIX,cohere.com
+      - DOMAIN-SUFFIX,midjourney.com
+      - DOMAIN-SUFFIX,suno.com
+      - DOMAIN-SUFFIX,udio.com
+      - DOMAIN-SUFFIX,elevenlabs.io
+      - DOMAIN-SUFFIX,cursor.sh
+      - DOMAIN-SUFFIX,cursor.com
+      - DOMAIN-SUFFIX,windsurf.com
+      - DOMAIN-SUFFIX,codeium.com
+      - DOMAIN-SUFFIX,lovable.dev
+      - DOMAIN-SUFFIX,v0.dev
 
-  # 遥测 / 监控上报：日志实证 3 天内约 1.4k 次，其中 otel.cline.bot 单域名 1,239 次
-  # （全站第 2）。排在腾讯直连保护之后，不走 🚀 节点选择，可在 🛑 广告拦截 组内切回 DIRECT。
+  # 既有遥测范围，位于国内保护之后。
   telemetry_domain:
     type: inline
     behavior: classical
     payload:
-      - "DOMAIN-SUFFIX,otel.cline.bot"
-      - "DOMAIN-SUFFIX,i.posthog.com"
-      - "DOMAIN-SUFFIX,arms-retcode.aliyuncs.com"
-      - "DOMAIN-SUFFIX,shence-api.mumu.163.com"
-      - "DOMAIN-SUFFIX,apmplus.volces.com"
-      - "DOMAIN-SUFFIX,ingest.sentry.io"
-      - "DOMAIN-SUFFIX,ingest.us.sentry.io"
-      - "DOMAIN-SUFFIX,ingest.de.sentry.io"
-      - "DOMAIN-SUFFIX,js-agent.newrelic.com"
+      - DOMAIN-SUFFIX,otel.cline.bot
+      - DOMAIN-SUFFIX,i.posthog.com
+      - DOMAIN-SUFFIX,arms-retcode.aliyuncs.com
+      - DOMAIN-SUFFIX,shence-api.mumu.163.com
+      - DOMAIN-SUFFIX,apmplus.volces.com
+      - DOMAIN-SUFFIX,ingest.sentry.io
+      - DOMAIN-SUFFIX,ingest.us.sentry.io
+      - DOMAIN-SUFFIX,ingest.de.sentry.io
+      - DOMAIN-SUFFIX,js-agent.newrelic.com
 
-  # 港澳不可用的流媒体 / 应用
   hulu_domain:
     type: http
     behavior: domain
     format: mrs
     interval: 86400
     path: ./ruleset/override/hulu_domain.mrs
-    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/hulu.mrs"
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/hulu.mrs
 
+  # 指定流媒体；BBC 按英国域名匹配，bbc.com 保持直连。
   streaming_special:
     type: inline
     behavior: classical
     payload:
-      # 配置指定的流媒体；HBO Max 不在此列，按默认规则直连。
-      - "DOMAIN-SUFFIX,peacocktv.com"
-      - "DOMAIN-SUFFIX,paramountplus.com"
-      - "DOMAIN-SUFFIX,cbsaavideo.com"
-      - "DOMAIN-SUFFIX,pluto.tv"
-      - "DOMAIN-SUFFIX,tubi.tv"
-      # 按域名代理 BBC 英国站和资源域名；无法仅匹配 /iplayer 路径，bbc.com 保持直连。
-      - "DOMAIN-SUFFIX,bbc.co.uk"
-      - "DOMAIN-SUFFIX,bbci.co.uk"
+      - DOMAIN-SUFFIX,peacocktv.com
+      - DOMAIN-SUFFIX,paramountplus.com
+      - DOMAIN-SUFFIX,cbsaavideo.com
+      - DOMAIN-SUFFIX,pluto.tv
+      - DOMAIN-SUFFIX,tubi.tv
+      - DOMAIN-SUFFIX,bbc.co.uk
+      - DOMAIN-SUFFIX,bbci.co.uk
 
   ads_domain:
     type: http
@@ -493,45 +482,32 @@ rule-providers!:
     format: mrs
     interval: 86400
     path: ./ruleset/override/ads_domain.mrs
-    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs"
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs
 
-# ============================================================
-# 路由规则：港澳场景 = 默认直连，仅特例走节点。
-# ============================================================
+
+# 08 · 首条命中分流：专项优先，兜底最后
 rules:
-  # 内网直连
+  # 私网
   - "RULE-SET,private_domain,🎯 全球直连"
   - "RULE-SET,private_ip,🎯 全球直连,no-resolve"
-
-  # 国内敏感服务 / 腾讯生态直连保护，必须在广告规则之前。
-  # 腾讯系 UDP 直连 IP 的流量无域名可匹配，由文末 MATCH 兜底直连覆盖，无需进程名规则。
+  # 国内敏感服务、中国 AI、腾讯与游戏直连保护
   - "RULE-SET,domestic_sensitive,🎯 全球直连"
   - "RULE-SET,domestic_ai_domain,🎯 全球直连"
   - "RULE-SET,tencent_services,🎯 全球直连"
   - "RULE-SET,tencent_games_static,🎯 全球直连"
-
-  # 广告
+  # 广告与遥测
   - "RULE-SET,ads_domain,🛑 广告拦截"
-  # 遥测 / 监控上报，放在国内直连保护与广告之后。
   - "RULE-SET,telemetry_domain,🛑 广告拦截"
-
-  # 港澳不可用的 AI：OpenAI / Claude / Google AI 开发者工具走节点。
-  # 其余 AI 服务未单独列出，按当前配置默认直连，不保证服务可用性。
+  # 指定 AI 开发工具、OpenAI、Anthropic
   - "RULE-SET,google_ai_dev,🤖 AI 解锁"
   - "RULE-SET,openai_domain,🤖 AI 解锁"
   - "RULE-SET,anthropic_domain,🤖 AI 解锁"
   - "DOMAIN-SUFFIX,chat.com,🤖 AI 解锁"
-
-  # 用户指定走家宽出口的域名；排在流媒体之前，便于日后单独调整。
+  # 自定义代理与默认直连的 AI 备选
   - "RULE-SET,custom_proxy_domain,🤖 AI 解锁"
-
-  # 海外 AI 补充域名：港澳默认直连，需要时在 🧪 AI 备选 组内切换。
   - "RULE-SET,overseas_ai_extra,🧪 AI 备选"
-
-  # 港澳不可用的流媒体 / 应用。
-  # TikTok 默认直连；启用代理前需添加 tiktok_domain 规则集、对应 DNS 策略和路由。
+  # 指定流媒体
   - "RULE-SET,hulu_domain,🎬 流媒体解锁"
   - "RULE-SET,streaming_special,🎬 流媒体解锁"
-
-  # 其余全部直连。
+  # 其余直连
   - "MATCH,🎯 全球直连"

@@ -1,0 +1,2403 @@
+{
+  "date": "2026-09-25",
+  "scope": "synthetic core components; no system TUN, real subscription, real AI/streaming or iOS tests",
+  "scenarios": [
+    {
+      "file": "rule_single.yaml",
+      "layout": "synthetic",
+      "status": "pass",
+      "startupConvergenceMs": 42,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "empty",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "provider-only",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "mixed-providers",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 3,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "no-home",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "no-us",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "unlabelled",
+      "status": "pass",
+      "startupConvergenceMs": 26,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "healthyCandidates": 1,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "information-only",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "preferred-down",
+      "status": "pass",
+      "startupConvergenceMs": 26,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 1,
+      "recovered": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "all-down",
+      "status": "pass",
+      "startupConvergenceMs": 28,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "synthetic",
+      "status": "pass",
+      "startupConvergenceMs": 34,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "empty",
+      "status": "pass",
+      "startupConvergenceMs": 29,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "provider-only",
+      "status": "pass",
+      "startupConvergenceMs": 28,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "mixed-providers",
+      "status": "pass",
+      "startupConvergenceMs": 26,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 3,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "no-home",
+      "status": "pass",
+      "startupConvergenceMs": 32,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "no-us",
+      "status": "pass",
+      "startupConvergenceMs": 35,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "unlabelled",
+      "status": "pass",
+      "startupConvergenceMs": 32,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "healthyCandidates": 1,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "information-only",
+      "status": "pass",
+      "startupConvergenceMs": 29,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "preferred-down",
+      "status": "pass",
+      "startupConvergenceMs": 30,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 1,
+      "recovered": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "all-down",
+      "status": "pass",
+      "startupConvergenceMs": 29,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "synthetic",
+      "status": "pass",
+      "startupConvergenceMs": 42,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "empty",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "provider-only",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "mixed-providers",
+      "status": "pass",
+      "startupConvergenceMs": 32,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 3,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "no-home",
+      "status": "pass",
+      "startupConvergenceMs": 28,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "no-us",
+      "status": "pass",
+      "startupConvergenceMs": 28,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "unlabelled",
+      "status": "pass",
+      "startupConvergenceMs": 32,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "healthyCandidates": 1,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "information-only",
+      "status": "pass",
+      "startupConvergenceMs": 28,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "preferred-down",
+      "status": "pass",
+      "startupConvergenceMs": 31,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 1,
+      "recovered": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special.yaml",
+      "layout": "all-down",
+      "status": "pass",
+      "startupConvergenceMs": 28,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "synthetic",
+      "status": "pass",
+      "startupConvergenceMs": 35,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "empty",
+      "status": "pass",
+      "startupConvergenceMs": 43,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "provider-only",
+      "status": "pass",
+      "startupConvergenceMs": 32,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US 01"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "mixed-providers",
+      "status": "pass",
+      "startupConvergenceMs": 29,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 3,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "no-home",
+      "status": "pass",
+      "startupConvergenceMs": 29,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "no-us",
+      "status": "pass",
+      "startupConvergenceMs": 42,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "unlabelled",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "healthyCandidates": 1,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "information-only",
+      "status": "pass",
+      "startupConvergenceMs": 28,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "preferred-down",
+      "status": "pass",
+      "startupConvergenceMs": 30,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 1,
+      "recovered": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "forwarding": 204
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "layout": "all-down",
+      "status": "pass",
+      "startupConvergenceMs": 26,
+      "initial": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    }
+  ],
+  "business": [
+    {
+      "file": "rule_single.yaml",
+      "domain": "baidu.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "cn_domain",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "bilibili.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "cn_domain",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "alipay.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "domestic_sensitive",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "deepseek.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "domestic_ai_domain",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "badjs.weixinbridge.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "tencent_services",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "chatgpt.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "claude.ai",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "aistudio.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "notebooklm.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "gemini.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "openrouter.ai",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "grok.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_domain",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "github.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "github_domain",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "netflix.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "netflix_domain",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "hulu.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "disney_domain",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "peacocktv.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "streaming_static",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "bbc.co.uk",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "geolocation_not_cn",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "bbc.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "geolocation_not_cn",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "sciencedirect.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "academic_platforms",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "otel.cline.bot",
+      "status": "pass",
+      "rule": "RuleSet(telemetry_domain)",
+      "group": "🛑 广告拦截",
+      "current": [
+        "🛑 广告拦截",
+        "REJECT"
+      ],
+      "final": "REJECT",
+      "syntheticHTTP": 502,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "search.agonygao.top",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🐟 漏网之鱼",
+      "current": [
+        "🐟 漏网之鱼",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "luckyg.131518.xyz",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🐟 漏网之鱼",
+      "current": [
+        "🐟 漏网之鱼",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "rewrite-unmatched-20260925.codexunmatched",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🐟 漏网之鱼",
+      "current": [
+        "🐟 漏网之鱼",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "baidu.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "cn_domain",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "bilibili.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "cn_domain",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "alipay.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "domestic_sensitive",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "deepseek.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "domestic_ai_domain",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "badjs.weixinbridge.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "tencent_services",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "chatgpt.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "claude.ai",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "aistudio.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "notebooklm.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "gemini.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "openrouter.ai",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "grok.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_domain",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "github.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "github_domain",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "netflix.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "netflix_domain",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "hulu.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "disney_domain",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "peacocktv.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "streaming_static",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "bbc.co.uk",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "geolocation_not_cn",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "bbc.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "geolocation_not_cn",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "sciencedirect.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "academic_platforms",
+      "group": "🚀 节点选择",
+      "current": [
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "otel.cline.bot",
+      "status": "pass",
+      "rule": "RuleSet(telemetry_domain)",
+      "group": "🛑 广告拦截",
+      "current": [
+        "🛑 广告拦截",
+        "REJECT"
+      ],
+      "final": "REJECT",
+      "syntheticHTTP": 502,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "search.agonygao.top",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🐟 漏网之鱼",
+      "current": [
+        "🐟 漏网之鱼",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "luckyg.131518.xyz",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🐟 漏网之鱼",
+      "current": [
+        "🐟 漏网之鱼",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "rewrite-unmatched-20260925.codexunmatched",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🐟 漏网之鱼",
+      "current": [
+        "🐟 漏网之鱼",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "VPS"
+      ],
+      "final": "VPS",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "baidu.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "bilibili.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "alipay.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "domestic_sensitive",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "deepseek.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "domestic_ai_domain",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "badjs.weixinbridge.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "tencent_services",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "chatgpt.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "openai_domain",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "claude.ai",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "anthropic_domain",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "aistudio.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_ai_dev",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "notebooklm.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_ai_dev",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "gemini.google.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "openrouter.ai",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "overseas_ai_extra",
+      "group": "🧪 AI 备选",
+      "current": [
+        "🧪 AI 备选",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "grok.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "overseas_ai_extra",
+      "group": "🧪 AI 备选",
+      "current": [
+        "🧪 AI 备选",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "google.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "github.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "netflix.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "hulu.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "hulu_domain",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "peacocktv.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "streaming_special",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "bbc.co.uk",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "streaming_special",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "🛟 通用自动回退",
+        "Australia 01"
+      ],
+      "final": "Australia 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "bbc.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "sciencedirect.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "otel.cline.bot",
+      "status": "pass",
+      "rule": "RuleSet(telemetry_domain)",
+      "group": "🛑 广告拦截",
+      "current": [
+        "🛑 广告拦截",
+        "REJECT"
+      ],
+      "final": "REJECT",
+      "syntheticHTTP": 502,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "search.agonygao.top",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "custom_proxy_domain",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "luckyg.131518.xyz",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "custom_proxy_domain",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "rewrite-unmatched-20260925.codexunmatched",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "baidu.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "bilibili.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "alipay.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "domestic_sensitive",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "deepseek.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "domestic_ai_domain",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "badjs.weixinbridge.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "tencent_services",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "chatgpt.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "openai_domain",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "claude.ai",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "anthropic_domain",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "aistudio.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_ai_dev",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "notebooklm.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_ai_dev",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "gemini.google.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "openrouter.ai",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "overseas_ai_extra",
+      "group": "🧪 AI 备选",
+      "current": [
+        "🧪 AI 备选",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "grok.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "overseas_ai_extra",
+      "group": "🧪 AI 备选",
+      "current": [
+        "🧪 AI 备选",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "google.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "github.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "netflix.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "hulu.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "hulu_domain",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "US 01"
+      ],
+      "final": "US 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "peacocktv.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "streaming_special",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "US 01"
+      ],
+      "final": "US 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "bbc.co.uk",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "streaming_special",
+      "group": "🎬 流媒体解锁",
+      "current": [
+        "🎬 流媒体解锁",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "US 01"
+      ],
+      "final": "US 01",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "bbc.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "sciencedirect.com",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "otel.cline.bot",
+      "status": "pass",
+      "rule": "RuleSet(telemetry_domain)",
+      "group": "🛑 广告拦截",
+      "current": [
+        "🛑 广告拦截",
+        "REJECT"
+      ],
+      "final": "REJECT",
+      "syntheticHTTP": 502,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "search.agonygao.top",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "custom_proxy_domain",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "luckyg.131518.xyz",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "custom_proxy_domain",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "rewrite-unmatched-20260925.codexunmatched",
+      "status": "pass",
+      "rule": "Match",
+      "payload": "",
+      "group": "🎯 全球直连",
+      "current": [
+        "🎯 全球直连",
+        "DIRECT"
+      ],
+      "final": "DIRECT",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    }
+  ],
+  "lifecycle": [
+    {
+      "file": "rule_single.yaml",
+      "check": "core reload/restart preserves optional choice, rule providers and default AI path",
+      "status": "pass",
+      "ai": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ]
+    },
+    {
+      "file": "rule_single.yaml",
+      "check": "provider remove/add preferred candidates",
+      "status": "pass",
+      "removed": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "restored": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ]
+    },
+    {
+      "file": "rule_multi.yaml",
+      "check": "core reload/restart preserves optional choice, rule providers and default AI path",
+      "status": "pass",
+      "ai": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ]
+    },
+    {
+      "file": "rule_multi.yaml",
+      "check": "provider remove/add preferred candidates",
+      "status": "pass",
+      "removed": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "restored": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ]
+    },
+    {
+      "file": "rule_special.yaml",
+      "check": "core reload/restart preserves optional choice, rule providers and default AI path",
+      "status": "pass",
+      "ai": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ]
+    },
+    {
+      "file": "rule_special.yaml",
+      "check": "provider remove/add preferred candidates",
+      "status": "pass",
+      "removed": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "restored": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ]
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "check": "core reload/restart preserves optional choice, rule providers and default AI path",
+      "status": "pass",
+      "ai": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ]
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "check": "provider remove/add preferred candidates",
+      "status": "pass",
+      "removed": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "restored": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US 01"
+      ]
+    }
+  ],
+  "testedAt": "2026-09-25T01:46:40.445Z",
+  "inputSha256": {
+    "rule_single.yaml": "31d1f6e6cc472d948bbf824a86d4fbeb7cc01e3fa26431870a1b7d197ed7dd99",
+    "rule_multi.yaml": "2f000029501786ad23fee728b57267dff81ec46201b26743919e340ab9c7734d",
+    "rule_special.yaml": "68a553395c75d5674737c34e5f330b488d04e89e5daa75962a67c06148ebc707",
+    "rule_special_multi.yaml": "b7f1f666a9d014e9b67ded17e32acf41c1203c368270e17ae553f2c859df9b62",
+    "scripts/validate-core.cjs": "72c4a1b4749bf77cd7c6a85314e4ab9f3a776025add034aa482dae8929eb68a5"
+  },
+  "status": "pass"
+}

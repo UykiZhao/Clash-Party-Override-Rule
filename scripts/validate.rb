@@ -1,12 +1,9 @@
 #!/usr/bin/env ruby
-# Local-only validation. Client credentials stay in memory/private temporary files.
+# Portable static validation of all six deliverables and their immutable migration inventory.
 require 'yaml'
 require 'json'
-require 'tmpdir'
-require 'fileutils'
-require 'open3'
 require 'optparse'
-
+require 'set'
 ROOT = File.expand_path('..', __dir__)
 FILES = %w[rule_single.yaml rule_multi.yaml rule_special.yaml rule_special_multi.yaml].freeze
 options = {}
@@ -14,151 +11,198 @@ OptionParser.new do |o|
   o.on('--mihomo PATH') { |v| options[:core] = File.expand_path(v) }
   o.on('--client-data PATH') { |v| options[:client] = File.expand_path(v) }
 end.parse!
-def load_yaml(path)
-  text = File.read(path)
-  # Fail on duplicate mapping keys rather than silently discarding earlier groups.
+def insist(ok, message)
+  raise message unless ok
+end
+def load_yaml(file)
   walk = lambda do |node|
     if node.is_a?(Psych::Nodes::Mapping)
       keys = node.children.each_slice(2).map { |k, _| k.value }
-      raise "Duplicate YAML key in #{File.basename(path)}" unless keys.uniq == keys
+      insist(keys.uniq == keys, "Duplicate YAML key: #{File.basename(file)}")
     end
     (node.children || []).each { |child| walk.call(child) } if node.respond_to?(:children)
   end
+  text = File.read(file)
   walk.call(Psych.parse_stream(text))
   YAML.safe_load(text, [], [], false)
 end
-
-def check_groups(config, label)
-  groups = config.fetch('proxy-groups')
+def conf(file)
+  sections, section = {}, nil
+  File.readlines(file).each do |line|
+    line = line.strip
+    next if line.empty? || line.start_with?('#')
+    if line.start_with?('[')
+      section = line[1..-2]
+      insist(!sections.key?(section), "Duplicate CONF section #{file}")
+      sections[section] = []
+    else
+      insist(section, "CONF line outside section #{file}")
+      sections[section] << line
+    end
+  end
+  sections
+end
+def list(file)
+  File.readlines(file).map(&:strip).reject { |line| line.empty? || line.start_with?('#') }
+end
+def covers?(rules, rule)
+  return true if rules.include?(rule)
+  kind, name = rule.split(',')
+  return false unless %w[DOMAIN DOMAIN-SUFFIX].include?(kind)
+  rules.any? do |other|
+    type, suffix = other.split(',')
+    type == 'DOMAIN-SUFFIX' && (name == suffix || name.end_with?(".#{suffix}"))
+  end
+end
+baseline = JSON.parse(File.read(File.join(ROOT, 'docs/migration-baseline.json')))
+configs = FILES.map { |file| [file, load_yaml(File.join(ROOT, file))] }.to_h
+configs.each do |file, cfg|
+  scene = file.include?('special') ? 'special' : 'mainland'
+  # Every route, payload entry, DNS field, source, cache path and update interval migrates unchanged.
+  actual = cfg.reject { |key, _| %w[proxy-groups proxy-providers].include?(key) }
+  insist(actual == baseline['scenarios'][scene], "Unreviewed service/DNS migration: #{file}")
+  groups = cfg.fetch('proxy-groups')
   names = groups.map { |g| g.fetch('name') }
-  raise "#{label}: duplicate group" unless names.uniq == names
+  insist(names.uniq == names, "Duplicate group #{file}")
   by_name = groups.map { |g| [g['name'], g] }.to_h
   visiting, done = [], []
   visit = lambda do |name|
     return if done.include?(name)
-    raise "#{label}: group cycle: #{(visiting + [name]).join(' -> ')}" if visiting.include?(name)
+    insist(!visiting.include?(name), "Group cycle #{file}: #{name}")
     visiting << name
     by_name[name].fetch('proxies', []).each do |target|
       next if %w[DIRECT REJECT].include?(target)
-      raise "#{label}: unknown group reference #{target}" unless by_name.key?(target)
+      insist(by_name.key?(target), "Unknown group #{file}: #{target}")
       visit.call(target)
     end
     visiting.pop
     done << name
   end
   names.each { |name| visit.call(name) }
-  providers = config.fetch('rule-providers!')
-  config.fetch('rules').each do |rule|
-    parts = rule.split(',')
-    raise "#{label}: unknown rule set" if parts[0] == 'RULE-SET' && !providers.key?(parts[1])
-    target = parts[0] == 'MATCH' ? parts[1] : parts[2]
-    raise "#{label}: unknown routing policy #{target}" unless (names + %w[DIRECT REJECT]).include?(target)
-  end
-  config.fetch('dns!').fetch('nameserver-policy', {}).each_key do |key|
-    next unless key.start_with?('rule-set:')
-    key.delete_prefix('rule-set:').split(',').each do |name|
-      raise "#{label}: unknown DNS rule set #{name}" unless providers.key?(name)
+  baseline['groups'][file].each do |old|
+    now = by_name.fetch(old['name'])
+    permitted = Marshal.load(Marshal.dump(old))
+    permitted['proxies'] = ['🛟 AI 自动回退'] + old['proxies'] if old['name'].start_with?('🤖')
+    if !file.include?('multi') && old['name'] == '🚀 节点选择'
+      permitted['proxies'] = ['🛟 通用自动回退']
     end
+    insist(now == permitted, "Unexpected existing group behavior change #{file}: #{old['name']}")
   end
-end
-
-configs = FILES.map { |f| [f, load_yaml(File.join(ROOT, f))] }.to_h
-configs.each { |name, cfg| check_groups(cfg, name); puts "PASS structure #{name}" }
-[%w[rule_single.yaml rule_multi.yaml], %w[rule_special.yaml rule_special_multi.yaml]].each do |a, b|
-  %w[dns! tun! sniffer! rule-providers! rules].each do |key|
-    raise "Scenario drift: #{a} vs #{b}: #{key}" unless configs[a][key] == configs[b][key]
-  end
-  puts "PASS same-scenario routing/DNS consistency: #{a}, #{b}"
-end
-
-sample_names = ['HK 01', 'TPE 01', 'JP 01', 'SG 01', 'US 01', 'US Residential', 'Australia 01', 'CMI 美国 02', 'Premium1 美国', '剩余流量 100G']
-synthetic = sample_names.map { |n| {'name' => n, 'type' => 'socks5', 'server' => '127.0.0.1', 'port' => 9} }
-configs.each do |name, cfg|
-  next unless name.include?('multi')
-  cfg['proxy-groups'].select { |g| g['filter'] }.each do |group|
-    re = Regexp.new(group['filter'])
-    excluded = Regexp.new(group.fetch('exclude-filter', '(?!)'))
-    matches = sample_names.select { |n| re.match(n) && !excluded.match(n) }
-    raise 'US false positive: Australia' if group['name'].include?('美国') && matches.include?('Australia 01')
-    raise 'Region false positive: operator' if (group['name'].include?('香港') || group['name'].include?('新加坡')) && (matches & ['CMI 美国 02', 'Premium1 美国']).any?
-  end
-end
-puts 'PASS region regex negative samples'
-configs.each do |name, cfg|
-  special = name.include?('special')
-  expected = special ? 'MATCH,🎯 全球直连' : 'MATCH,🐟 漏网之鱼'
-  raise "#{name}: wrong default route" unless cfg['rules'].last == expected
-  ads = cfg['rules'].index('RULE-SET,ads_domain,🛑 广告拦截')
-  %w[domestic_sensitive domestic_ai_domain tencent_services tencent_games_static].each do |set|
-    index = cfg['rules'].index("RULE-SET,#{set},🎯 全球直连")
-    raise "#{name}: direct protection must precede ads" unless index && ads && index < ads
-  end
-  raise "#{name}: DNS listener exposed to LAN" unless cfg['dns!']['listen'] == '127.0.0.1:1053'
-end
-ai = configs['rule_special_multi.yaml']['proxy-groups'].find { |g| g['name'] == '🤖 AI 解锁' }
-raise 'Macau AI default must not follow global latency' unless ai['proxies'].first == '🇺🇸 美国'
-puts 'PASS routing defaults, direct protection, loopback DNS and Macau AI default'
-exit unless options[:core]
-puts Open3.capture2(options[:core], '-v').first.lines.first
-client = options[:client]
-scenarios = {'synthetic' => synthetic, 'empty' => [], 'provider-only' => synthetic}
-old = nil
-if client
-  profiles = load_yaml(File.join(client, 'profile.yaml'))
-  item = profiles.fetch('items').find { |p| p['name'] == '赔钱机场' }
-  raise 'Expected local subscription not found' unless item
-  subscription = load_yaml(File.join(client, 'profiles', "#{item.fetch('id')}.yaml"))
-  nodes = subscription.fetch('proxies', [])
-  raise 'Subscription has no directly listed nodes' if nodes.empty?
-  scenarios['local-subscription'] = nodes
-  puts "Local subscription: #{nodes.length} nodes (credentials and addresses not printed)"
-  configs['rule_special_multi.yaml']['proxy-groups'].select { |g| g['filter'] }.each do |group|
-    re, excluded = Regexp.new(group['filter']), Regexp.new(group.fetch('exclude-filter'))
-    count = nodes.count { |n| re.match(n['name']) && !excluded.match(n['name']) }
-    puts "  #{group['name']}: #{count} matching nodes"
-  end
-  overrides = load_yaml(File.join(client, 'override.yaml'))
-  entry = overrides.fetch('items').find { |p| p['name'] == 'rule_multi.yaml' }
-  old = load_yaml(File.join(client, 'override', "#{entry.fetch('id')}.yaml")) if entry
-end
-
-Dir.mktmpdir('clash-rule-validation-') do |dir|
-  # Only public geodata is copied. Never use the live core's writable working dir.
-  if client
-    %w[geoip.dat geosite.dat country.mmdb ASN.mmdb].each do |file|
-      source = File.join(client, 'work', file)
-      FileUtils.cp(source, File.join(dir, file)) if File.file?(source)
-    end
-  end
-  run = lambda do |label, override, nodes, provider_only, expected_failure|
-    cfg = override.map { |key, value| [key.delete_suffix('!'), value] }.to_h
-    cfg['proxies'] = provider_only ? [] : nodes
-    if provider_only
-      File.write(File.join(dir, 'nodes.yaml'), {'proxies' => nodes}.to_yaml)
-      cfg['proxy-providers'] = {'test' => {'type' => 'file', 'path' => './nodes.yaml'}}
-    end
-    path = File.join(dir, 'config.yaml')
-    File.write(path, cfg.to_yaml)
-    File.chmod(0600, path)
-    output, status = Open3.capture2e(options[:core], '-t', '-d', dir, '-f', path)
-    if expected_failure
-      raise 'Old client override did not reproduce expected group cycle' unless !status.success? && output.include?('loop is detected in ProxyGroup')
-      puts "PASS regression #{label}: old group cycle reproduced"
+  extras = file.include?('multi') ? 1 : 2
+  insist(groups.size == baseline['groups'][file].size + extras, "Unexpected group count #{file}")
+  groups.select { |g| g['type'] == 'fallback' }.each do |g|
+    insist(g['empty-fallback'] == 'REJECT' && g['lazy'] == false, "Unsafe automatic fallback #{file}")
+    if g['name'] == '🛟 AI 自动回退'
+      preferred = file == 'rule_special_multi.yaml' ? '🇺🇸 美国-自动' : '🏠 家宽'
+      insist(g['filter'] == by_name[preferred]['filter'] + '`.*', "Unsafe AI fallback order #{file}")
+      insist(g['include-all'] && !g.key?('proxies'), "AI fallback must contain actual nodes #{file}")
     else
-      unless status.success?
-        # Do not print arbitrary core output, which could include a subscription secret.
-        puts "FAIL core #{label} (exit #{status.exitstatus})"
-        puts 'ProxyGroup cycle detected' if output.include?('loop is detected in ProxyGroup')
-        raise 'Core configuration validation failed; inspect locally with redaction'
-      end
-      puts "PASS core #{label}"
+      insist(g['include-all'] && !g.key?('proxies'), "Fallback leaf must contain only actual nodes #{file}")
+    end
+    insist(g['interval'] == 300 && g['timeout'] == 5000, "Fallback health check drift #{file}")
+  end
+  providers = cfg.fetch('rule-providers!')
+  cfg.fetch('rules').each do |rule|
+    parts = rule.split(',')
+    insist(providers.key?(parts[1]), "Unknown rule set #{file}") if parts[0] == 'RULE-SET'
+    target = parts[0] == 'MATCH' ? parts[1] : parts[2]
+    insist((names + %w[DIRECT REJECT]).include?(target), "Unknown route target #{file}")
+  end
+  cfg.fetch('dns!').fetch('nameserver-policy').each_key do |key|
+    next unless key.start_with?('rule-set:')
+    key.delete_prefix('rule-set:').split(',').each { |name| insist(providers.key?(name), "Unknown DNS set #{file}: #{name}") }
+  end
+  paths = providers.values.map { |p| p['path'] }.compact
+  insist(paths.uniq == paths, "Provider cache collision #{file}")
+  providers.each do |name, provider|
+    if provider['type'] == 'inline'
+      insist(provider['behavior'] == 'classical', "Wrong inline behavior #{name}")
+    else
+      valid = provider['format'] == 'mrs' && %w[domain ipcidr].include?(provider['behavior'])
+      valid ||= provider['format'] == 'text' && provider['behavior'] == 'domain'
+      insist(valid, "Wrong remote format/behavior #{name}")
+      insist(provider['interval'] == 86400 && provider['url'].start_with?('https://'), "Remote source drift #{name}")
     end
   end
-  run.call('installed old multi', old, synthetic, false, true) if old
-  scenarios.each do |scenario, nodes|
-    configs.each do |name, cfg|
-      run.call("#{name} / #{scenario}", cfg, nodes, scenario == 'provider-only', false)
+  ads = cfg['rules'].index('RULE-SET,ads_domain,🛑 广告拦截')
+  %w[domestic_sensitive domestic_ai_domain tencent_services tencent_games_static].each do |name|
+    insist(cfg['rules'].index("RULE-SET,#{name},🎯 全球直连") < ads, "Direct protection order #{file}")
+  end
+  insist(cfg['dns!']['listen'] == '127.0.0.1:1053' && !cfg['dns!']['fake-ip-filter'].include?('*'), "DNS scope #{file}")
+  anchor = {'__override_sort_anchor' => {'type' => 'inline', 'payload' => [{'name' => '订阅排序占位（REJECT）', 'type' => 'reject'}]}}
+  insist(!cfg.key?('proxies') && cfg['proxy-providers'] == anchor, "Unexpected subscription data in override #{file}")
+  groups.select { |g| g['include-all'] }.each do |g|
+    insist(Regexp.new(g['exclude-filter']).match('订阅排序占位（REJECT）'), "Sort anchor exposed as a candidate #{file}")
+  end
+  puts "PASS YAML #{file}: full baseline coverage, #{groups.size} groups, #{providers.size} providers, #{cfg['rules'].size} routes"
+end
+[%w[rule_single.yaml rule_multi.yaml], %w[rule_special.yaml rule_special_multi.yaml]].each do |a, b|
+  insist(configs[a].reject { |k, _| k == 'proxy-groups' } == configs[b].reject { |k, _| k == 'proxy-groups' }, "Scenario drift #{a}")
+end
+puts 'PASS all same-scenario fields (except groups) are identical'
+# Ruby checks are preliminary; validate-core.cjs independently exercises the target kernel regex engine.
+samples = ['HK 01', 'TPE 01', 'JP 01', 'SG 01', 'US 01', 'US Residential', 'Australia 01', 'CMI 美国 02', 'Premium1 美国', 'VPS', '家宽', '剩余流量 100G']
+configs.each do |file, cfg|
+  cfg['proxy-groups'].select { |g| g['include-all'] }.each do |g|
+    filters = g.fetch('filter', '.*').split('`').map { |s| Regexp.new(s) }
+    excluded = Regexp.new(g['exclude-filter'])
+    matches = samples.select { |n| filters.any? { |re| re.match(n) } && !excluded.match(n) }
+    insist(!matches.include?('剩余流量 100G'), "Information node leaked #{file}")
+    next if g['type'] == 'fallback'
+    insist(!matches.include?('Australia 01'), "US false positive #{file}") if g['name'].include?('美国')
+    if g['name'].include?('香港') || g['name'].include?('新加坡')
+      insist((matches & ['CMI 美国 02', 'Premium1 美国']).empty?, "Operator false positive #{file}")
     end
   end
 end
-puts 'All checks passed. Syntax/structure only: no live reload or node connectivity/unlock test.'
+puts 'PASS preliminary regex cases; actual kernel verification is separate'
+main = configs['rule_single.yaml']['rule-providers!']
+special = configs['rule_special.yaml']['rule-providers!']
+mappings = {
+  'direct-supplement.list' => %w[domestic_sensitive domestic_ai_domain tencent_services tencent_games_static].flat_map { |n| main[n]['payload'] }.uniq,
+  'ai-supplement.list' => %w[ai_static overseas_ai_extra].flat_map { |n| main[n]['payload'] }.uniq,
+  'overseas-ai-extra.list' => special['overseas_ai_extra']['payload'],
+  'streaming-supplement.list' => main['streaming_static']['payload'],
+  'telemetry.list' => main['telemetry_domain']['payload'],
+  'academic.list' => main['academic_platforms']['payload']
+}
+baseline['lists'].each do |name, old|
+  actual = list(File.join(ROOT, 'rules/shadowrocket', name))
+  insist(actual == old && actual.uniq == actual, "Supplement drift/duplicate #{name}")
+  insist(actual.all? { |line| line.match(/\A(?:DOMAIN(?:-SUFFIX)?|IP-CIDR6?),[^,]+(?:,no-resolve)?\z/) }, "Invalid list syntax #{name}")
+  if mappings[name]
+    want = mappings[name]
+    insist(want.all? { |rule| covers?(actual, rule) } && actual.all? { |rule| covers?(want, rule) }, "YAML/list coverage mismatch #{name}")
+  end
+  puts "PASS list #{name}: #{actual.size} entries, unchanged first-match semantics"
+end
+baseline['shadowrocket'].each do |file, old|
+  data = conf(File.join(ROOT, file))
+  insist(data == old, "Unreviewed CONF migration #{file}")
+  insist(data.keys == ['General', 'Proxy Group', 'Rule', 'Host', 'MITM'], "CONF sections #{file}")
+  names = data['Proxy Group'].map { |s| s.split(' = ').first }
+  insist(names.uniq == names, "Duplicate CONF group #{file}")
+  %w[General Host].each do |section|
+    keys = data[section].map { |s| s.split(' = ').first }
+    insist(keys.uniq == keys, "Duplicate CONF key #{file}")
+  end
+  data['Rule'].each do |rule|
+    p = rule.split(',')
+    insist((names + %w[DIRECT PROXY REJECT]).include?(p[0] == 'FINAL' ? p[1] : p[2]), "Unknown CONF target #{file}")
+    if %w[RULE-SET DOMAIN-SET].include?(p[0])
+      insist(!p.include?('force-remote-dns') && !p[1].end_with?('.mrs'), "Clash-only or inline option on CONF remote rule #{file}")
+      if p[1].include?('/UykiZhao/')
+        insist(File.file?(File.join(ROOT, 'rules/shadowrocket', File.basename(p[1]))), "Missing local supplement #{file}")
+      end
+    end
+  end
+  insist(data['MITM'] == ['hostname ='], "Active MITM #{file}")
+  insist(data['Rule'].last == (file.include?('special') ? 'FINAL,DIRECT' : 'FINAL,PROXY'), "Wrong FINAL #{file}")
+  puts "PASS CONF #{file}: all sections, rules, parameters and defaults preserved (iOS runtime untested)"
+end
+puts 'PASS static checks. These checks do not establish TUN connectivity or service unlock.'
+if options[:core]
+  args = ['node', File.join(ROOT, 'scripts/validate-client.cjs'), '--mihomo', options[:core]]
+  args += ['--client-data', options[:client]] if options[:client]
+  exec(*args)
+end

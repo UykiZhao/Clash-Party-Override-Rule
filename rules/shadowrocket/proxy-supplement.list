@@ -1,15 +1,9 @@
-# NAME: ProxySupplement
-# AUTHOR: UykiZhao
-# REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-09-22
-# PURPOSE: DNS leak guard extras. Foreign DoH endpoints, leak-test mirrors and
-#          public resolver IPs are forced through the proxy so apps with
-#          hardcoded DNS cannot bypass the hijack. Domestic DoH endpoints are
-#          intentionally excluded - proxying them would break CN CDN results.
-#          Leak-test/VPN sites mirror the prevent_dns_leak ruleset referenced
-#          by the Clash YAML overrides.
+# proxy-supplement.list
+# 内地解析检测/海外 DNS 补充；与 YAML 远程集按覆盖范围核对，非逐字镜像。
+# 更新：2026-09-25；基线规则条目保持不变。
+# 来源：https://github.com/UykiZhao/Clash-Party-Override-Rule
+# RULE-SET 内容，不携带策略名称；由引用配置指定策略。
 
-# Leak-test mirrors and VPN/provider domains (xishang0128 prevent_dns_leak)
 DOMAIN-SUFFIX,vpnunlimited.com
 DOMAIN-SUFFIX,whrq.net
 DOMAIN-SUFFIX,whoer.net
@@ -25,15 +19,11 @@ DOMAIN-SUFFIX,surfsharkdns.com
 DOMAIN-SUFFIX,astrill.com
 DOMAIN-SUFFIX,astrill.org
 DOMAIN-SUFFIX,dnsleak.asn247.net
-
-# Foreign encrypted DNS endpoints
 DOMAIN-SUFFIX,doh.cleanbrowsing.org
 DOMAIN-SUFFIX,dns.adguard-dns.com
 DOMAIN-SUFFIX,dns.nextdns.io
 DOMAIN-SUFFIX,doh.mullvad.net
 DOMAIN-SUFFIX,dns.controld.com
-
-# Public resolver IPs: catches DoH/DoT straight to IP (hijack-dns covers :53)
 IP-CIDR,1.1.1.1/32,no-resolve
 IP-CIDR,1.0.0.1/32,no-resolve
 IP-CIDR,8.8.8.8/32,no-resolve

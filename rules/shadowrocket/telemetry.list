@@ -1,13 +1,9 @@
-# NAME: TelemetryBlock
-# AUTHOR: UykiZhao
-# REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-09-22
-# PURPOSE: Telemetry / monitoring upload domains, routed to REJECT.
-#          Mirrors the telemetry_domain inline ruleset of the Clash YAML
-#          overrides (logged ~1.4k hits in 3 days; otel.cline.bot alone 1,239).
-#          Placed AFTER direct-supplement so Tencent diagnostics stay direct.
+# telemetry.list
+# telemetry_domain 的 9 条；国内保护优先。
+# 更新：2026-09-25；基线规则条目保持不变。
+# 来源：https://github.com/UykiZhao/Clash-Party-Override-Rule
+# RULE-SET 内容，不携带策略名称；由引用配置指定策略。
 
-# Cline OTel / PostHog / 阿里 ARMS / 神策 / 火山 APM / Sentry / New Relic
 DOMAIN-SUFFIX,otel.cline.bot
 DOMAIN-SUFFIX,i.posthog.com
 DOMAIN-SUFFIX,arms-retcode.aliyuncs.com

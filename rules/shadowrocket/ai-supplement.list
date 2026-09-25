@@ -1,13 +1,9 @@
-# NAME: AISupplement
-# AUTHOR: UykiZhao
-# REPO: https://github.com/UykiZhao/Clash-Party-Override-Rule
-# UPDATED: 2026-09-22
-# PURPOSE: Static AI domains. Precise fallback for platforms the auto-updated
-#          OpenAI/Claude/Gemini rule-sets lag behind. Kept deliberately small:
-#          broad coverage comes from the upstream sets, this only fills gaps.
-#          Synced with ai_static + overseas_ai_extra of the Clash YAML overrides.
+# ai-supplement.list
+# 内地 ai_static + overseas_ai_extra 的等价覆盖；四个 OpenAI 子域由 openai.com 覆盖。
+# 更新：2026-09-25；基线规则条目保持不变。
+# 来源：https://github.com/UykiZhao/Clash-Party-Override-Rule
+# RULE-SET 内容，不携带策略名称；由引用配置指定策略。
 
-# OpenAI / ChatGPT
 DOMAIN-SUFFIX,openai.com
 DOMAIN-SUFFIX,chatgpt.com
 DOMAIN-SUFFIX,chat.com
@@ -16,13 +12,9 @@ DOMAIN-SUFFIX,oaiusercontent.com
 DOMAIN-SUFFIX,openaiapi-site.azureedge.net
 DOMAIN-SUFFIX,client-api.arkoselabs.com
 DOMAIN-SUFFIX,challenges.cloudflare.com
-
-# Anthropic / Claude
 DOMAIN-SUFFIX,anthropic.com
 DOMAIN-SUFFIX,claude.ai
 DOMAIN-SUFFIX,claudeusercontent.com
-
-# Google Gemini / NotebookLM / DeepMind
 DOMAIN-SUFFIX,gemini.google.com
 DOMAIN-SUFFIX,aistudio.google.com
 DOMAIN-SUFFIX,ai.google.dev
@@ -34,20 +26,14 @@ DOMAIN-SUFFIX,notebooklm.google.com
 DOMAIN-SUFFIX,notebooklm.google
 DOMAIN-SUFFIX,deepmind.com
 DOMAIN-SUFFIX,deepmind.google
-
-# Microsoft Copilot / Bing AI
 DOMAIN-SUFFIX,copilot.microsoft.com
 DOMAIN-SUFFIX,copilot.cloud.microsoft
 DOMAIN-SUFFIX,sydney.bing.com
 DOMAIN-SUFFIX,bing.com
-
-# GitHub Copilot
 DOMAIN-SUFFIX,githubcopilot.com
 DOMAIN-SUFFIX,api.githubcopilot.com
 DOMAIN-SUFFIX,copilot-proxy.githubusercontent.com
 DOMAIN-SUFFIX,copilot-telemetry.githubusercontent.com
-
-# Common overseas AI products
 DOMAIN-SUFFIX,perplexity.ai
 DOMAIN-SUFFIX,pplx.ai
 DOMAIN-SUFFIX,poe.com
@@ -68,8 +54,6 @@ DOMAIN-SUFFIX,together.xyz
 DOMAIN-SUFFIX,fireworks.ai
 DOMAIN-SUFFIX,lovable.dev
 DOMAIN-SUFFIX,v0.dev
-
-# AI coding
 DOMAIN-SUFFIX,cursor.com
 DOMAIN-SUFFIX,cursor.sh
 DOMAIN-SUFFIX,cursorapi.com
@@ -77,8 +61,6 @@ DOMAIN-SUFFIX,cursor-cdn.com
 DOMAIN-SUFFIX,windsurf.com
 DOMAIN-SUFFIX,codeium.com
 DOMAIN-SUFFIX,codeiumdata.com
-
-# AI image / audio / video
 DOMAIN-SUFFIX,midjourney.com
 DOMAIN-SUFFIX,stability.ai
 DOMAIN-SUFFIX,runwayml.com
