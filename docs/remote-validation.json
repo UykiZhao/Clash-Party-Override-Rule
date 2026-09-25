@@ -829,11 +829,11 @@
         }
       ],
       "download": "pass",
-      "bytes": 4282,
-      "sha256": "ade587663bfd0f5d0a403c58dd0525359fbe224029b62ccfb850f90a20ea2aa8",
+      "bytes": 3770,
+      "sha256": "a7ea79bcba8233922d79d7f570c24a46ac02e9fefe0e0ac2ce6b0470bfc77486",
       "entries": 124,
       "localRawRuleEquality": "pass",
-      "localRawBytesEqual": false,
+      "localRawBytesEqual": true,
       "format": "pass"
     },
     {
@@ -845,11 +845,11 @@
         }
       ],
       "download": "pass",
-      "bytes": 1648,
-      "sha256": "fb30af1d9999a82e1a64d155a7b7a2d5c48e1b3d8db875cc344d9f755b4af16c",
+      "bytes": 1229,
+      "sha256": "f9fcef19ba76231452b27a87db16197cdf353371fea54c8d1d253a143f0b455b",
       "entries": 30,
       "localRawRuleEquality": "pass",
-      "localRawBytesEqual": false,
+      "localRawBytesEqual": true,
       "format": "pass"
     },
     {
@@ -901,11 +901,11 @@
         }
       ],
       "download": "pass",
-      "bytes": 809,
-      "sha256": "59ce12a9b2cd4e6ac83461b6a1b01da1473c449c898fadd6e434394df6fba319",
+      "bytes": 572,
+      "sha256": "a849959359a50ef2de1766d87ed4d9258b54692577678ff1f0a5f62bdfc88561",
       "entries": 9,
       "localRawRuleEquality": "pass",
-      "localRawBytesEqual": false,
+      "localRawBytesEqual": true,
       "format": "pass"
     },
     {
@@ -967,11 +967,11 @@
         }
       ],
       "download": "pass",
-      "bytes": 2566,
-      "sha256": "0df2b60aaa53d9933d30adf2497e02c405a0e9ee26059f099ad5710e503df0d0",
-      "entries": 66,
+      "bytes": 2307,
+      "sha256": "cd331cde3744782a1bdf634de329c76fdbeb46358e6f235a1092acca17f6cf1d",
+      "entries": 68,
       "localRawRuleEquality": "pass",
-      "localRawBytesEqual": false,
+      "localRawBytesEqual": true,
       "format": "pass"
     },
     {
@@ -1183,11 +1183,11 @@
         }
       ],
       "download": "pass",
-      "bytes": 703,
-      "sha256": "1ac5addfa77675862299b5ab94a9e51286fe13ecbd4b03fca68d0c4e1f5f9e4f",
+      "bytes": 742,
+      "sha256": "473902308305c22e9eac6d1cc35d4d8fe00dc606a19c822b88c2492a72257be0",
       "entries": 16,
       "localRawRuleEquality": "pass",
-      "localRawBytesEqual": false,
+      "localRawBytesEqual": true,
       "format": "pass"
     },
     {
@@ -1241,11 +1241,11 @@
         }
       ],
       "download": "pass",
-      "bytes": 3228,
-      "sha256": "561d7a6468fa15c037e9804bcb0f2c940b76c1dd2d7250bdd1f7f827432727d9",
+      "bytes": 2652,
+      "sha256": "9467024461585f4c28f507e414921f63ae1d412d62b8a5200d98b522e25853dd",
       "entries": 89,
       "localRawRuleEquality": "pass",
-      "localRawBytesEqual": false,
+      "localRawBytesEqual": true,
       "format": "pass"
     },
     {
@@ -1313,11 +1313,11 @@
         }
       ],
       "download": "pass",
-      "bytes": 1255,
-      "sha256": "a2da296c943919b2a210e0099a23d52fe92ab49ebdcb3242799baf93663fef79",
+      "bytes": 874,
+      "sha256": "5b169fb154a61cd714008483c446f9cc1d4410eba914b267aba7684b0dd9458a",
       "entries": 23,
       "localRawRuleEquality": "pass",
-      "localRawBytesEqual": false,
+      "localRawBytesEqual": true,
       "format": "pass"
     }
   ]

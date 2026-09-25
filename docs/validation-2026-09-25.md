@@ -46,9 +46,9 @@
 
 实际 HTTP 跳转链为 `notebooklm.google.com → notebook.google.com → notebooklm.google?location=unsupported → notebook.google/?location=unsupported`。旧规则只覆盖 `notebooklm.google.com` 和 `notebooklm.google`；中间的新域名落入港澳最终直连。Google 于 2026-07 将 NotebookLM 更名为 Gemini Notebook，因此加入 `notebook.google.com`、`notebook.google`，并让 OpenRouter 在港澳版于补充集之前显式命中 AI 解锁。[Google 更名公告](https://blog.google/innovation-and-ai/products/gemini-notebook/notebooklm-gemini-notebook/)
 
-Net.Coffee 当前 WebRTC 页面实际配置 `stun.l.google.com:19302`、`stun1.l.google.com:19302`、`stun.cloudflare.com:3478`。旧港澳规则使这三条 UDP 流量落入 `MATCH → 全球直连 → DIRECT`，因此显示澳门公网地址符合当时的分流。修复仅将三个精确 STUN 主机送入 AI，不扩展到所有 UDP；目标内核已逐条验证首命中和 AI 链，真实浏览器 UDP 仍待更新后复测。[检测页说明](https://ip.net.coffee/webrtc/)
+Net.Coffee 当前 WebRTC 页面实际配置 `stun.l.google.com:19302`、`stun1.l.google.com:19302`、`stun.cloudflare.com:3478`。旧港澳规则使这三条 UDP 流量落入 `MATCH → 全球直连 → DIRECT`，因此显示澳门公网地址符合当时的分流；APNIC 将现场的 `103.240.56.20` 登记在澳门科技大学网段。修复仅将三个精确 STUN 主机送入 AI，不扩展到所有 UDP；目标内核已逐条验证首命中和 AI 链，真实浏览器 UDP 仍待更新后复测。[检测页说明](https://ip.net.coffee/webrtc/)、[APNIC RDAP](https://rdap.apnic.net/ip/103.240.56.20)
 
-DNS 检测与上述域名缺口不同。用户主动开启 DNS 覆写后，当前有效配置是 `respect-rules=false`，默认解析器为 `doh.pub`／`dns.alidns.com`；AI 域名策略仍列出 Cloudflare／Google DoH，但 DNS 连接本身不按代理规则选路。检测到香港解析器出口不表示查询退回明文 53，但它与美国家宽出口不一致。mihomo 文档明确说明只有 `respect-rules=true` 时 DNS 连接才遵循路由规则；应用级覆写在 YAML 后合并，纯 YAML 不能把当前有效值反向改回 true。[mihomo DNS 文档](https://wiki.metacubex.one/config/dns/)
+DNS 检测与上述域名缺口不同。用户主动开启 DNS 覆写后，当前有效配置是 `respect-rules=false`，默认解析器为 `doh.pub`／`dns.alidns.com`；AI 域名策略仍列出 Cloudflare／Google DoH，但 DNS 连接本身不按代理规则选路。APNIC 将检测到的 `8.210.140.120` 登记为 `AlibabaCloud_HK`。这不表示查询退回明文 53，但解析器出口确实与美国家宽出口不一致。mihomo 文档明确说明只有 `respect-rules=true` 时 DNS 连接才遵循路由规则；应用级覆写在 YAML 后合并，纯 YAML 不能把当前有效值反向改回 true。[mihomo DNS 文档](https://wiki.metacubex.one/config/dns/)、[APNIC RDAP](https://rdap.apnic.net/ip/8.210.140.120)
 
 ### 节点场景
 
