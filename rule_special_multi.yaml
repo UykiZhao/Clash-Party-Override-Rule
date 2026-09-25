@@ -486,7 +486,7 @@ rule-providers!:
     path: ./ruleset/override/anthropic_domain.mrs
     url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/anthropic.mrs
 
-  # 仅这 8 个后缀走 AI；不扩大到 Google，Gemini 网页保持直连。
+  # 仅列出的 Google AI / Gemini Notebook 后缀走 AI；普通 Google 与 Gemini 网页保持直连。
   google_ai_dev:
     type: inline
     behavior: classical
@@ -496,6 +496,8 @@ rule-providers!:
       - DOMAIN-SUFFIX,ai.google.dev
       - DOMAIN-SUFFIX,notebooklm.google.com
       - DOMAIN-SUFFIX,notebooklm.google
+      - DOMAIN-SUFFIX,notebook.google.com
+      - DOMAIN-SUFFIX,notebook.google
       - DOMAIN-SUFFIX,labs.google
       - DOMAIN-SUFFIX,antigravity.google
       - DOMAIN-SUFFIX,workspace.google.com
@@ -596,11 +598,17 @@ rules:
   - "RULE-SET,ads_domain,🛑 广告拦截"
   - "RULE-SET,telemetry_domain,🛑 广告拦截"
   # 指定 AI 开发工具、OpenAI、Anthropic
+  # STUN UDP 随 AI 出口，防止 WebRTC 检测回落到港澳本地直连。
+  - "DOMAIN,stun.l.google.com,🤖 AI 解锁"
+  - "DOMAIN,stun1.l.google.com,🤖 AI 解锁"
+  - "DOMAIN,stun.cloudflare.com,🤖 AI 解锁"
   - "RULE-SET,google_ai_dev,🤖 AI 解锁"
   - "RULE-SET,openai_domain,🤖 AI 解锁"
   - "RULE-SET,anthropic_domain,🤖 AI 解锁"
   - "DOMAIN-SUFFIX,chat.com,🤖 AI 解锁"
-  # 自定义代理与默认直连的 AI 备选
+  # OpenRouter 明确使用 AI 出口；其余补充 AI 保留可选的默认方向。
+  - "DOMAIN-SUFFIX,openrouter.ai,🤖 AI 解锁"
+  # 自定义代理与 AI 备选
   - "RULE-SET,custom_proxy_domain,🤖 AI 解锁"
   - "RULE-SET,overseas_ai_extra,🧪 AI 备选"
   # 指定流媒体

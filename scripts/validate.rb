@@ -55,12 +55,31 @@ def covers?(rules, rule)
   end
 end
 baseline = JSON.parse(File.read(File.join(ROOT, 'docs/migration-baseline.json')))
+NOTEBOOK_DOMAINS = %w[DOMAIN-SUFFIX,notebook.google.com DOMAIN-SUFFIX,notebook.google].freeze
+STUN_MAINLAND = %w[DOMAIN,stun.l.google.com,🤖\ AI\ 平台 DOMAIN,stun1.l.google.com,🤖\ AI\ 平台 DOMAIN,stun.cloudflare.com,🤖\ AI\ 平台].freeze
+STUN_SPECIAL = %w[DOMAIN,stun.l.google.com,🤖\ AI\ 解锁 DOMAIN,stun1.l.google.com,🤖\ AI\ 解锁 DOMAIN,stun.cloudflare.com,🤖\ AI\ 解锁].freeze
+def insert_after!(values, marker, additions)
+  index = values.index(marker)
+  insist(index, "Missing insertion marker #{marker}")
+  values.insert(index + 1, *additions)
+end
+def insert_before!(values, marker, additions)
+  index = values.index(marker)
+  insist(index, "Missing insertion marker #{marker}")
+  values.insert(index, *additions)
+end
+expected_scenarios = JSON.parse(JSON.generate(baseline['scenarios']))
+insert_after!(expected_scenarios['mainland']['rule-providers!']['ai_static']['payload'], 'DOMAIN-SUFFIX,notebooklm.google', NOTEBOOK_DOMAINS)
+insert_before!(expected_scenarios['mainland']['rules'], 'RULE-SET,ai_static,🤖 AI 平台', STUN_MAINLAND)
+insert_after!(expected_scenarios['special']['rule-providers!']['google_ai_dev']['payload'], 'DOMAIN-SUFFIX,notebooklm.google', NOTEBOOK_DOMAINS)
+insert_before!(expected_scenarios['special']['rules'], 'RULE-SET,google_ai_dev,🤖 AI 解锁', STUN_SPECIAL)
+insert_before!(expected_scenarios['special']['rules'], 'RULE-SET,custom_proxy_domain,🤖 AI 解锁', ['DOMAIN-SUFFIX,openrouter.ai,🤖 AI 解锁'])
 configs = FILES.map { |file| [file, load_yaml(File.join(ROOT, file))] }.to_h
 configs.each do |file, cfg|
   scene = file.include?('special') ? 'special' : 'mainland'
-  # Every route, payload entry, DNS field, source, cache path and update interval migrates unchanged.
+  # Every baseline item is preserved; only the exact user-approved service fixes are added.
   actual = cfg.reject { |key, _| %w[proxy-groups proxy-providers].include?(key) }
-  insist(actual == baseline['scenarios'][scene], "Unreviewed service/DNS migration: #{file}")
+  insist(actual == expected_scenarios[scene], "Unreviewed service/DNS migration: #{file}")
   groups = cfg.fetch('proxy-groups')
   names = groups.map { |g| g.fetch('name') }
   insist(names.uniq == names, "Duplicate group #{file}")
@@ -166,19 +185,40 @@ mappings = {
   'telemetry.list' => main['telemetry_domain']['payload'],
   'academic.list' => main['academic_platforms']['payload']
 }
+expected_lists = JSON.parse(JSON.generate(baseline['lists']))
+insert_after!(expected_lists['ai-supplement.list'], 'DOMAIN-SUFFIX,notebooklm.google', NOTEBOOK_DOMAINS)
 baseline['lists'].each do |name, old|
   actual = list(File.join(ROOT, 'rules/shadowrocket', name))
-  insist(actual == old && actual.uniq == actual, "Supplement drift/duplicate #{name}")
+  insist(actual == expected_lists[name] && actual.uniq == actual, "Supplement drift/duplicate #{name}")
   insist(actual.all? { |line| line.match(/\A(?:DOMAIN(?:-SUFFIX)?|IP-CIDR6?),[^,]+(?:,no-resolve)?\z/) }, "Invalid list syntax #{name}")
   if mappings[name]
     want = mappings[name]
     insist(want.all? { |rule| covers?(actual, rule) } && actual.all? { |rule| covers?(want, rule) }, "YAML/list coverage mismatch #{name}")
   end
-  puts "PASS list #{name}: #{actual.size} entries, unchanged first-match semantics"
+  puts "PASS list #{name}: #{actual.size} entries, baseline preserved with approved additions"
 end
 baseline['shadowrocket'].each do |file, old|
   data = conf(File.join(ROOT, file))
-  insist(data == old, "Unreviewed CONF migration #{file}")
+  expected = JSON.parse(JSON.generate(old))
+  if file.include?('special')
+    insert_after!(expected['Rule'], 'DOMAIN-SUFFIX,notebooklm.google,AI,force-remote-dns', [
+      'DOMAIN-SUFFIX,notebook.google.com,AI,force-remote-dns',
+      'DOMAIN-SUFFIX,notebook.google,AI,force-remote-dns'
+    ])
+    insert_before!(expected['Rule'], 'RULE-SET,https://raw.githubusercontent.com/UykiZhao/Clash-Party-Override-Rule/main/rules/shadowrocket/overseas-ai-extra.list,AI_EXTRA', [
+      'DOMAIN,stun.l.google.com,AI,force-remote-dns',
+      'DOMAIN,stun1.l.google.com,AI,force-remote-dns',
+      'DOMAIN,stun.cloudflare.com,AI,force-remote-dns',
+      'DOMAIN-SUFFIX,openrouter.ai,AI,force-remote-dns'
+    ])
+  else
+    insert_before!(expected['Rule'], 'RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/OpenAI/OpenAI.list,AI', [
+      'DOMAIN,stun.l.google.com,AI,force-remote-dns',
+      'DOMAIN,stun1.l.google.com,AI,force-remote-dns',
+      'DOMAIN,stun.cloudflare.com,AI,force-remote-dns'
+    ])
+  end
+  insist(data == expected, "Unreviewed CONF migration #{file}")
   insist(data.keys == ['General', 'Proxy Group', 'Rule', 'Host', 'MITM'], "CONF sections #{file}")
   names = data['Proxy Group'].map { |s| s.split(' = ').first }
   insist(names.uniq == names, "Duplicate CONF group #{file}")
@@ -198,7 +238,7 @@ baseline['shadowrocket'].each do |file, old|
   end
   insist(data['MITM'] == ['hostname ='], "Active MITM #{file}")
   insist(data['Rule'].last == (file.include?('special') ? 'FINAL,DIRECT' : 'FINAL,PROXY'), "Wrong FINAL #{file}")
-  puts "PASS CONF #{file}: all sections, rules, parameters and defaults preserved (iOS runtime untested)"
+  puts "PASS CONF #{file}: baseline preserved with approved Notebook/STUN/OpenRouter fixes (iOS runtime untested)"
 end
 puts 'PASS static checks. These checks do not establish TUN connectivity or service unlock.'
 if options[:core]

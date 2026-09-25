@@ -33,9 +33,10 @@
 | --- | --- | --- |
 | 私网、国内支付／银行／政务、中国 AI、腾讯与游戏保护 | 直连，优先于广告 | 同左 |
 | 广告、现有遥测清单 | REJECT | REJECT |
-| OpenAI、Claude、列出的 Google AI 开发工具 | AI 平台 | AI 解锁 |
+| OpenAI、Claude、列出的 Google AI／Gemini Notebook 工具 | AI 平台 | AI 解锁 |
 | Gemini 网页 | AI 平台 | 直连 |
-| OpenRouter、Grok 等海外 AI 补充 | AI 平台 | AI 备选，默认 DIRECT |
+| OpenRouter | AI 平台 | AI 解锁 |
+| Grok 等其余海外 AI 补充 | AI 平台 | AI 备选，默认 DIRECT |
 | Google 普通业务、GitHub、国际学术平台 | 普通代理入口 | 直连 |
 | Telegram、YouTube | 各自应用组 | 直连 |
 | Netflix、Disney+ 等主流流媒体 | 流媒体组 | 默认直连 |
@@ -49,7 +50,7 @@
 
 香港、台湾保留手动地区组；日本、新加坡、美国保留自动与手动入口。无地区标记的节点仍进入总入口，信息节点被排除。节点名称只用于筛选，不能认证真实出口、住宅 IP 或服务解锁能力。健康检查不等于平台账号可用。
 
-港澳 Google AI 仅包含配置中的八个既有后缀，不扩展到全部 Google。`bbc.co.uk`、`bbci.co.uk` 走流媒体，`bbc.com` 直连；TikTok 保持默认直连。两个既有自定义后缀沿用 AI 组。内地 `bing.com` 整个后缀仍属于 AI，没有缩小范围。
+港澳 Google AI 只包含配置中列出的开发工具与 Gemini Notebook 后缀，不扩展到全部 Google；2026 年品牌迁移后的 `notebook.google.com`／`notebook.google` 已补入。OpenRouter 明确使用 AI 出口；Grok 等其余补充 AI 保留默认直连选项。WebRTC 检测所用的 Google／Cloudflare STUN 域名明确随 AI 出口。`bbc.co.uk`、`bbci.co.uk` 走流媒体，`bbc.com` 直连；TikTok 保持默认直连。两个既有自定义后缀沿用 AI 组。内地 `bing.com` 整个后缀仍属于 AI，没有缩小范围。
 
 ## Shadowrocket 导入
 

@@ -578,6 +578,8 @@ rule-providers!:
       - DOMAIN-SUFFIX,antigravity.google
       - DOMAIN-SUFFIX,notebooklm.google.com
       - DOMAIN-SUFFIX,notebooklm.google
+      - DOMAIN-SUFFIX,notebook.google.com
+      - DOMAIN-SUFFIX,notebook.google
       - DOMAIN-SUFFIX,deepmind.com
       - DOMAIN-SUFFIX,deepmind.google
       - DOMAIN-SUFFIX,copilot.microsoft.com
@@ -981,6 +983,10 @@ rules:
   - "RULE-SET,ads_domain,🛑 广告拦截"
   - "RULE-SET,telemetry_domain,🛑 广告拦截"
   # AI、Telegram、YouTube
+  # WebRTC 测试使用的 STUN UDP 明确随 AI 出口，避免港澳直连出口暴露。
+  - "DOMAIN,stun.l.google.com,🤖 AI 平台"
+  - "DOMAIN,stun1.l.google.com,🤖 AI 平台"
+  - "DOMAIN,stun.cloudflare.com,🤖 AI 平台"
   - "RULE-SET,ai_static,🤖 AI 平台"
   - "RULE-SET,ai_domain,🤖 AI 平台"
   - "DOMAIN-SUFFIX,ai.com,🤖 AI 平台"

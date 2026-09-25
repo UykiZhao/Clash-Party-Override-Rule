@@ -1,8 +1,8 @@
 # 六份配置重写验证记录 · 2026-09-25
 
-**总体状态：仓库重写与隔离检查已交付；“初始化状态，仅开启 TUN，导入绑定后直接使用”的完整验收未满足。** 本轮未在实际客户端导入、绑定、重载新配置，未进行真实 TUN 业务回归或 iOS 导入验证。下列已通过的检查不能替代这些项目。2.0.3 默认嗅探合并还存在已证实的字段覆盖限制。
+**总体状态：仓库重写与隔离检查已交付；“初始化状态，仅开启 TUN，导入绑定后直接使用”的完整验收未满足。** 用户已在实际客户端绑定港澳单地区版并完成第一轮访问测试；Gemini Notebook 新域名与 WebRTC STUN 分流暴露出缺口，已在候选修复并完成隔离回归，等待更新后的现场复测。其余三份 YAML、真实服务矩阵及 iOS 尚未实测。2.0.3 默认嗅探合并仍有已证实的字段覆盖限制。
 
-执行范围来自 [REWRITE-SPEC.md](../REWRITE-SPEC.md)：只改仓库，不切换正在运行的客户端，不自动发布，不更改 DNS／嗅探／TUN 高级选项，不恢复重装前的数据。实际客户端尚未导入本次覆写。重写期间用户主动开启了 DNS 覆写，已确认该操作；本轮保留用户当前状态，没有代为复原。
+执行范围来自 [REWRITE-SPEC.md](../REWRITE-SPEC.md)。初次交付只改仓库；用户随后明确要求发布并自行绑定覆写进行测试。诊断仅只读当前运行配置和内核 API，没有替用户切换节点、策略或应用设置。用户主动开启的 DNS 覆写保持开启，没有代为复原。
 
 ## 1. 基线与证据来源
 
@@ -18,7 +18,7 @@
 | 初始化 DNS／嗅探／DNS 策略 | `controlDns=false`、`controlSniff=true`、`useNameserverPolicy=false`；开始时源码默认值与现场读值一致 |
 | 后续现场变化 | 用户确认主动开启 DNS 覆写；当前 `controlDns=true`，其余两项不变；与初始化基准不同，不能计作初始化验收通过 |
 | TUN | 已开启；保存的协议栈、自动路由、自动探测、劫持和其他 TUN 参数与该版本默认值一致 |
-| 订阅与覆写 | 当前订阅已存在；当前订阅无绑定覆写，全局覆写为零；不输出订阅名、ID、节点地址或凭据 |
+| 订阅与覆写 | 当前订阅已绑定 `rule_special.yaml`，全局覆写为零；不输出订阅名、ID、节点地址或凭据 |
 | 状态保护 | 校验前后对 `config.yaml`、`mihomo.yaml`、`profile.yaml`、`override.yaml` 比较摘要；没有写入客户端 |
 
 [迁移基线](migration-baseline.json) 保存全部原规则和 13 个配置／清单的 SHA256。13 个摘要已经重新与 `git show c5420b9:<file>` 核对，全部一致。原始节点、完整客户端配置、订阅 URL 和私密连接日志没有写入仓库。
@@ -33,12 +33,22 @@
 | 真实客户端函数合成 | 通过 | 480 次生成：4 文件 × 8 节点布局 × 3 DNS 输入 × 5 次生成／作用域／重建；真实 DNS 守卫、YAML 合并、全局／订阅覆写顺序与去重 | GUI 导入、订阅远程更新、完整应用重启 |
 | 目标内核 `-t` | 通过 | 32 份合成夹具完整配置 + 4 份合入当前完整订阅的配置；TUN 在配置中始终开启 | `-t` 不创建 TUN，不证明规则下载或实际出站 |
 | 远程资源检查 | 通过 | 68 个唯一规则资源；下载、MRS 按 behavior 解码、纯域名／RULE-SET 格式、七份本地／线上有效规则逐条比较 | 目标网络的首次无缓存下载、平台服务可用 |
-| 内核运行组件 | 通过 | 40 个节点场景，检查实际内核筛选／去重、初始选择、空组、故障与恢复、实际本地 HTTP 转发；96 条业务首命中；8 项 provider 更新／重载／重启检查 | 不含系统 TUN 入站，不计作 Z1–Z6 的完整客户端验收 |
-| 当前客户端只读检查 | 失败 | 用户已开启 DNS 覆写，与初始化默认值不同；其余两开关及 TUN 高级设置符合基准，仍无绑定覆写，检查没有写入 | 不能把用户主动改动视为本次覆写的运行结果，也不据此判定网络故障 |
-| 真实 TUN 与服务账号访问 | 未执行 | 未切换实际客户端 | 不可从合成 HTTP 204 推导 ChatGPT／Netflix 可用 |
+| 内核运行组件 | 通过 | 40 个节点场景，检查实际内核筛选／去重、初始选择、空组、故障与恢复、实际本地 HTTP 转发；116 条业务首命中；8 项 provider 更新／重载／重启检查 | 不含系统 TUN 入站，不计作 Z1–Z6 的完整客户端验收 |
+| 当前客户端只读检查 | 失败 | 用户已开启 DNS 覆写，与初始化默认值不同；其余两开关及 TUN 高级设置符合基准，已绑定一份覆写；检查没有写入 | 不能把用户主动改动视为覆写自动修改，也不能把绑定本身当成业务通过 |
+| 真实 TUN 与服务账号访问 | 部分执行 | 用户确认 OpenAI／Claude 经美国家宽，Gemini Notebook 旧配置跳转地区不支持，DNS／WebRTC 出口分裂 | 只覆盖当前港澳单地区版和用户报告的站点；修复版尚待现场复测 |
 | Shadowrocket iOS | 未执行 | 未在目标 iOS 环境导入、启用两份 CONF | 本地文本解析不能证明 iOS 参数兼容 |
 
 机器可读记录：[客户端](client-validation.json)、[内核运行组件](core-validation.json)、[远程资源](remote-validation.json)。客户端和组件报告记录输入文件摘要，业务记录逐项包含规则、目标组、当前链路、最终合成节点、合成 HTTP 结果；`realServiceAccess` 明确为 `not-run`。
+
+### 现场反馈与本次修复
+
+当前绑定内容的 SHA256 与仓库 `rule_special.yaml` 一致。只读运行态显示 `🤖 AI 解锁 → 🛟 AI 自动回退 → 家宽候选`；`🧪 AI 备选` 因保存过的选择当时也指向家宽。因此 OpenRouter 在该次现场状态并非澳门直连，但旧配置的首次导入默认仍是 DIRECT，不能保证重建后保持美国出口。
+
+实际 HTTP 跳转链为 `notebooklm.google.com → notebook.google.com → notebooklm.google?location=unsupported → notebook.google/?location=unsupported`。旧规则只覆盖 `notebooklm.google.com` 和 `notebooklm.google`；中间的新域名落入港澳最终直连。Google 于 2026-07 将 NotebookLM 更名为 Gemini Notebook，因此加入 `notebook.google.com`、`notebook.google`，并让 OpenRouter 在港澳版于补充集之前显式命中 AI 解锁。[Google 更名公告](https://blog.google/innovation-and-ai/products/gemini-notebook/notebooklm-gemini-notebook/)
+
+Net.Coffee 当前 WebRTC 页面实际配置 `stun.l.google.com:19302`、`stun1.l.google.com:19302`、`stun.cloudflare.com:3478`。旧港澳规则使这三条 UDP 流量落入 `MATCH → 全球直连 → DIRECT`，因此显示澳门公网地址符合当时的分流。修复仅将三个精确 STUN 主机送入 AI，不扩展到所有 UDP；目标内核已逐条验证首命中和 AI 链，真实浏览器 UDP 仍待更新后复测。[检测页说明](https://ip.net.coffee/webrtc/)
+
+DNS 检测与上述域名缺口不同。用户主动开启 DNS 覆写后，当前有效配置是 `respect-rules=false`，默认解析器为 `doh.pub`／`dns.alidns.com`；AI 域名策略仍列出 Cloudflare／Google DoH，但 DNS 连接本身不按代理规则选路。检测到香港解析器出口不表示查询退回明文 53，但它与美国家宽出口不一致。mihomo 文档明确说明只有 `respect-rules=true` 时 DNS 连接才遵循路由规则；应用级覆写在 YAML 后合并，纯 YAML 不能把当前有效值反向改回 true。[mihomo DNS 文档](https://wiki.metacubex.one/config/dns/)
 
 ### 节点场景
 
@@ -110,25 +120,26 @@
 
 | 编号 | 状态 | 已有证据与剩余工作 |
 | --- | --- | --- |
-| Z1 初始化导入绑定并完成业务回归 | 未执行 | 四份真实合成与内核加载已通过；未在隔离的真实 TUN 客户端中导入绑定、访问全部业务 |
-| Z2 导入前后选项保持初始化值 | 未执行 | 初始值已只读确认；隔离生成没有持久化写入；用户后续主动开启 DNS 覆写，当前现场不符初始化基准；未做实际 GUI 导入前后对照 |
+| Z1 初始化导入绑定并完成业务回归 | 失败（部分执行） | 港澳单地区旧版已绑定；Gemini Notebook 与 STUN 暴露规则缺口，候选已修复、待复测；其余三版和完整业务矩阵未执行 |
+| Z2 导入前后选项保持初始化值 | 失败 | 初始值曾只读确认；用户后续主动开启 DNS 覆写，当前现场不符初始化基准；隔离生成没有持久化写入 |
 | Z3 无旧规则／DNS 缓存首次加载 | 未执行 | 新下载的规则和 GeoSite 能解析；原生 GeoSite 下载尝试失败，不能用独立下载替代完整冷启动验收 |
-| Z4 三类订阅 DNS 与守卫 | 未执行 | 三类输入的真实合成／守卫全部通过，完整 DNS 被保留；真实节点域名解析与业务解析尚未验证 |
-| Z5 缺家宽／美国、无地区标记、仅 provider | 未执行 | 目标内核组件已验证默认选路与合成流量转发；尚未在开启 TUN 的完整客户端中验证这些输入 |
+| Z4 三类订阅 DNS 与守卫 | 失败（部分执行） | 三类隔离输入的真实合成／守卫通过；现场主动开启 DNS 覆写后有效 `respect-rules=false`，检测到解析器出口与 AI 出口不一致 |
+| Z5 缺家宽／美国、无地区标记、仅 provider | 未执行 | 目标内核组件已验证默认选路与合成流量转发；现场仅验证当前两节点布局 |
 | Z6 更新订阅／覆写、重启客户端 | 未执行 | 真实生成重复执行无追加；组件 provider 更新、内核重载／重启与选择记忆通过；未实际更新订阅或重启桌面客户端 |
 
 Z1–Z6 未全部通过，故“无需额外设置”保持**未满足／待目标环境验收**，不附加手动修复开关清单。另有上述嗅探有效字段限制，不能因业务样本成功而隐去。
 
 ## 5. 业务回归证据
 
-四份 YAML 每份各 24 个域名样本，共 96 条，由实际内核读取当次远程资源快照后选择首条规则。完整明细见 [core-validation.json](core-validation.json) 的 `business`。
+四份 YAML 每份各 29 个域名样本，共 116 条，由实际内核读取当次远程资源快照后选择首条规则。完整明细见 [core-validation.json](core-validation.json) 的 `business`。
 
 | 样本范围 | 内地合成结果 | 港澳合成结果 |
 | --- | --- | --- |
 | baidu、bilibili、alipay、deepseek、badjs.weixinbridge | 全球直连；腾讯保护先于广告 | 同左 |
-| chatgpt、claude、aistudio、notebooklm | AI 平台，默认家宽优先 | AI 解锁；单地区家宽、多地区美国优先 |
+| chatgpt、claude、aistudio、notebooklm、notebook.google | AI 平台，默认家宽优先 | AI 解锁；单地区家宽、多地区美国优先 |
+| 三个 Net.Coffee STUN 主机 | AI 平台 | AI 解锁 |
 | gemini | AI 平台 | 全球直连 |
-| openrouter、grok | AI 平台 | AI 备选，DIRECT |
+| openrouter / grok | AI 平台 | 前者 AI 解锁；后者 AI 备选，默认 DIRECT |
 | google、github | 节点选择 | 全球直连 |
 | netflix | 流媒体 | 全球直连 |
 | hulu、peacocktv | 流媒体 | 流媒体 |

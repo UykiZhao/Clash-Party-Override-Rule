@@ -634,12 +634,12 @@
     "The application also overrides Geo URLs/update switch, IPv6 and TCP concurrency; source fields are not locks.",
     "No iOS device test; remote rule verification and synthetic core component tests are separate."
   ],
-  "testedAt": "2026-09-25T01:42:07.611Z",
+  "testedAt": "2026-09-25T02:11:40.285Z",
   "inputSha256": {
-    "rule_single.yaml": "31d1f6e6cc472d948bbf824a86d4fbeb7cc01e3fa26431870a1b7d197ed7dd99",
-    "rule_multi.yaml": "2f000029501786ad23fee728b57267dff81ec46201b26743919e340ab9c7734d",
-    "rule_special.yaml": "68a553395c75d5674737c34e5f330b488d04e89e5daa75962a67c06148ebc707",
-    "rule_special_multi.yaml": "b7f1f666a9d014e9b67ded17e32acf41c1203c368270e17ae553f2c859df9b62",
+    "rule_single.yaml": "4bcf00e04d2d0aa56d1798d287680dd50255d6d55ef320e6e60061d1d3ccfb5b",
+    "rule_multi.yaml": "7906d599279633b774bae5bbf16a96a9092858e690b754c3558fdeaa39740426",
+    "rule_special.yaml": "7c40a4ea001d71a723d147d8d7819b6008a8ac320e75ab8ef3c703500d4269f7",
+    "rule_special_multi.yaml": "717038b07caca1292a3cde357d31a12daf1f4d4c487a293aecb2d323fee6334b",
     "scripts/validate-client.cjs": "855c177244341d60c6b587376d95979192facb93788d9d77c34839c3b329596e",
     "scripts/lib/clash-party.cjs": "2b3a0e5a77c624187c0111bacb0196575a1ade5d79a889c13b14cf87ab48d63c"
   },
@@ -663,7 +663,7 @@
     "tunEnabled": true,
     "tunStack": "mixed",
     "subscriptions": 2,
-    "boundOverrides": 0,
+    "boundOverrides": 1,
     "globalOverrides": 0,
     "nodeCount": 2,
     "providerCount": 0

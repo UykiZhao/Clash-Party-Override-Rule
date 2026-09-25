@@ -6,297 +6,297 @@
       "file": "rule_single.yaml",
       "layout": "synthetic",
       "status": "pass",
-      "startupConvergenceMs": 42,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "healthyCandidates": 11,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "empty",
-      "status": "pass",
-      "startupConvergenceMs": 27,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "REJECT"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "REJECT"
-      ],
-      "healthyCandidates": 0,
-      "failureDetail": {
-        "body": ""
-      },
-      "forwarding": 502
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "provider-only",
-      "status": "pass",
-      "startupConvergenceMs": 27,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "healthyCandidates": 11,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "mixed-providers",
-      "status": "pass",
-      "startupConvergenceMs": 27,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "healthyCandidates": 3,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "no-home",
-      "status": "pass",
-      "startupConvergenceMs": 27,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "JP 01"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "JP 01"
-      ],
-      "healthyCandidates": 2,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "no-us",
-      "status": "pass",
-      "startupConvergenceMs": 27,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "HK 01"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "HK 01"
-      ],
-      "healthyCandidates": 2,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "unlabelled",
-      "status": "pass",
-      "startupConvergenceMs": 26,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "VPS"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "VPS"
-      ],
-      "healthyCandidates": 1,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "information-only",
-      "status": "pass",
-      "startupConvergenceMs": 27,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "REJECT"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "REJECT"
-      ],
-      "healthyCandidates": 0,
-      "failureDetail": {
-        "body": ""
-      },
-      "forwarding": 502
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "preferred-down",
-      "status": "pass",
-      "startupConvergenceMs": 26,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "HK 01"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "HK 01"
-      ],
-      "healthyCandidates": 1,
-      "recovered": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "forwarding": 204
-    },
-    {
-      "file": "rule_single.yaml",
-      "layout": "all-down",
-      "status": "pass",
-      "startupConvergenceMs": 28,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "healthyCandidates": 0,
-      "failureDetail": {
-        "body": ""
-      },
-      "forwarding": 502
-    },
-    {
-      "file": "rule_multi.yaml",
-      "layout": "synthetic",
-      "status": "pass",
-      "startupConvergenceMs": 34,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "healthyCandidates": 11,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_multi.yaml",
-      "layout": "empty",
-      "status": "pass",
-      "startupConvergenceMs": 29,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "REJECT"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "REJECT"
-      ],
-      "healthyCandidates": 0,
-      "failureDetail": {
-        "body": ""
-      },
-      "forwarding": 502
-    },
-    {
-      "file": "rule_multi.yaml",
-      "layout": "provider-only",
-      "status": "pass",
-      "startupConvergenceMs": 28,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "healthyCandidates": 11,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_multi.yaml",
-      "layout": "mixed-providers",
-      "status": "pass",
-      "startupConvergenceMs": 26,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "US Residential"
-      ],
-      "healthyCandidates": 3,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_multi.yaml",
-      "layout": "no-home",
-      "status": "pass",
-      "startupConvergenceMs": 32,
-      "initial": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "JP 01"
-      ],
-      "afterHealth": [
-        "🤖 AI 平台",
-        "🛟 AI 自动回退",
-        "JP 01"
-      ],
-      "healthyCandidates": 2,
-      "forwarding": 204
-    },
-    {
-      "file": "rule_multi.yaml",
-      "layout": "no-us",
-      "status": "pass",
       "startupConvergenceMs": 35,
       "initial": [
         "🤖 AI 平台",
         "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "empty",
+      "status": "pass",
+      "startupConvergenceMs": 21,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "provider-only",
+      "status": "pass",
+      "startupConvergenceMs": 23,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "mixed-providers",
+      "status": "pass",
+      "startupConvergenceMs": 23,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 3,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "no-home",
+      "status": "pass",
+      "startupConvergenceMs": 25,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "no-us",
+      "status": "pass",
+      "startupConvergenceMs": 23,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "unlabelled",
+      "status": "pass",
+      "startupConvergenceMs": 23,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "VPS"
+      ],
+      "healthyCandidates": 1,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "information-only",
+      "status": "pass",
+      "startupConvergenceMs": 23,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "preferred-down",
+      "status": "pass",
+      "startupConvergenceMs": 22,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "HK 01"
+      ],
+      "healthyCandidates": 1,
+      "recovered": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "forwarding": 204
+    },
+    {
+      "file": "rule_single.yaml",
+      "layout": "all-down",
+      "status": "pass",
+      "startupConvergenceMs": 22,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "synthetic",
+      "status": "pass",
+      "startupConvergenceMs": 24,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "empty",
+      "status": "pass",
+      "startupConvergenceMs": 23,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "REJECT"
+      ],
+      "healthyCandidates": 0,
+      "failureDetail": {
+        "body": ""
+      },
+      "forwarding": 502
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "provider-only",
+      "status": "pass",
+      "startupConvergenceMs": 25,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 11,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "mixed-providers",
+      "status": "pass",
+      "startupConvergenceMs": 25,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "healthyCandidates": 3,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "no-home",
+      "status": "pass",
+      "startupConvergenceMs": 27,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "afterHealth": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "JP 01"
+      ],
+      "healthyCandidates": 2,
+      "forwarding": 204
+    },
+    {
+      "file": "rule_multi.yaml",
+      "layout": "no-us",
+      "status": "pass",
+      "startupConvergenceMs": 24,
+      "initial": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
         "HK 01"
       ],
       "afterHealth": [
@@ -311,7 +311,7 @@
       "file": "rule_multi.yaml",
       "layout": "unlabelled",
       "status": "pass",
-      "startupConvergenceMs": 32,
+      "startupConvergenceMs": 24,
       "initial": [
         "🤖 AI 平台",
         "🛟 AI 自动回退",
@@ -329,7 +329,7 @@
       "file": "rule_multi.yaml",
       "layout": "information-only",
       "status": "pass",
-      "startupConvergenceMs": 29,
+      "startupConvergenceMs": 23,
       "initial": [
         "🤖 AI 平台",
         "🛟 AI 自动回退",
@@ -350,7 +350,7 @@
       "file": "rule_multi.yaml",
       "layout": "preferred-down",
       "status": "pass",
-      "startupConvergenceMs": 30,
+      "startupConvergenceMs": 24,
       "initial": [
         "🤖 AI 平台",
         "🛟 AI 自动回退",
@@ -373,7 +373,7 @@
       "file": "rule_multi.yaml",
       "layout": "all-down",
       "status": "pass",
-      "startupConvergenceMs": 29,
+      "startupConvergenceMs": 22,
       "initial": [
         "🤖 AI 平台",
         "🛟 AI 自动回退",
@@ -394,7 +394,7 @@
       "file": "rule_special.yaml",
       "layout": "synthetic",
       "status": "pass",
-      "startupConvergenceMs": 42,
+      "startupConvergenceMs": 26,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -412,7 +412,7 @@
       "file": "rule_special.yaml",
       "layout": "empty",
       "status": "pass",
-      "startupConvergenceMs": 27,
+      "startupConvergenceMs": 19,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -433,7 +433,7 @@
       "file": "rule_special.yaml",
       "layout": "provider-only",
       "status": "pass",
-      "startupConvergenceMs": 27,
+      "startupConvergenceMs": 25,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -451,7 +451,7 @@
       "file": "rule_special.yaml",
       "layout": "mixed-providers",
       "status": "pass",
-      "startupConvergenceMs": 32,
+      "startupConvergenceMs": 26,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -469,7 +469,7 @@
       "file": "rule_special.yaml",
       "layout": "no-home",
       "status": "pass",
-      "startupConvergenceMs": 28,
+      "startupConvergenceMs": 23,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -487,7 +487,7 @@
       "file": "rule_special.yaml",
       "layout": "no-us",
       "status": "pass",
-      "startupConvergenceMs": 28,
+      "startupConvergenceMs": 24,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -505,7 +505,7 @@
       "file": "rule_special.yaml",
       "layout": "unlabelled",
       "status": "pass",
-      "startupConvergenceMs": 32,
+      "startupConvergenceMs": 22,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -523,7 +523,7 @@
       "file": "rule_special.yaml",
       "layout": "information-only",
       "status": "pass",
-      "startupConvergenceMs": 28,
+      "startupConvergenceMs": 23,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -544,7 +544,7 @@
       "file": "rule_special.yaml",
       "layout": "preferred-down",
       "status": "pass",
-      "startupConvergenceMs": 31,
+      "startupConvergenceMs": 23,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -567,7 +567,7 @@
       "file": "rule_special.yaml",
       "layout": "all-down",
       "status": "pass",
-      "startupConvergenceMs": 28,
+      "startupConvergenceMs": 21,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -588,7 +588,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "synthetic",
       "status": "pass",
-      "startupConvergenceMs": 35,
+      "startupConvergenceMs": 28,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -606,7 +606,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "empty",
       "status": "pass",
-      "startupConvergenceMs": 43,
+      "startupConvergenceMs": 23,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -627,7 +627,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "provider-only",
       "status": "pass",
-      "startupConvergenceMs": 32,
+      "startupConvergenceMs": 25,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -645,7 +645,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "mixed-providers",
       "status": "pass",
-      "startupConvergenceMs": 29,
+      "startupConvergenceMs": 25,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -663,7 +663,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "no-home",
       "status": "pass",
-      "startupConvergenceMs": 29,
+      "startupConvergenceMs": 27,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -681,7 +681,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "no-us",
       "status": "pass",
-      "startupConvergenceMs": 42,
+      "startupConvergenceMs": 26,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -699,7 +699,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "unlabelled",
       "status": "pass",
-      "startupConvergenceMs": 27,
+      "startupConvergenceMs": 25,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -717,7 +717,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "information-only",
       "status": "pass",
-      "startupConvergenceMs": 28,
+      "startupConvergenceMs": 22,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -738,7 +738,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "preferred-down",
       "status": "pass",
-      "startupConvergenceMs": 30,
+      "startupConvergenceMs": 25,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -761,7 +761,7 @@
       "file": "rule_special_multi.yaml",
       "layout": "all-down",
       "status": "pass",
-      "startupConvergenceMs": 26,
+      "startupConvergenceMs": 25,
       "initial": [
         "🤖 AI 解锁",
         "🛟 AI 自动回退",
@@ -921,6 +921,86 @@
     },
     {
       "file": "rule_single.yaml",
+      "domain": "notebook.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "notebook.google",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "stun.l.google.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun.l.google.com",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "stun1.l.google.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun1.l.google.com",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
+      "domain": "stun.cloudflare.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun.cloudflare.com",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_single.yaml",
       "domain": "gemini.google.com",
       "status": "pass",
       "rule": "RuleSet",
@@ -1304,6 +1384,86 @@
     },
     {
       "file": "rule_multi.yaml",
+      "domain": "notebook.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "notebook.google",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "ai_static",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "stun.l.google.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun.l.google.com",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "stun1.l.google.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun1.l.google.com",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
+      "domain": "stun.cloudflare.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun.cloudflare.com",
+      "group": "🤖 AI 平台",
+      "current": [
+        "🤖 AI 平台",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_multi.yaml",
       "domain": "gemini.google.com",
       "status": "pass",
       "rule": "RuleSet",
@@ -1360,9 +1520,9 @@
       "current": [
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1376,9 +1536,9 @@
       "current": [
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1393,9 +1553,9 @@
         "🎬 流媒体解锁",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1410,9 +1570,9 @@
         "🎬 流媒体解锁",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1427,9 +1587,9 @@
         "🎬 流媒体解锁",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1443,9 +1603,9 @@
       "current": [
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1459,9 +1619,9 @@
       "current": [
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1475,9 +1635,9 @@
       "current": [
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1506,9 +1666,9 @@
         "🐟 漏网之鱼",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1523,9 +1683,9 @@
         "🐟 漏网之鱼",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1540,9 +1700,9 @@
         "🐟 漏网之鱼",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "VPS"
+        "HK 01"
       ],
-      "final": "VPS",
+      "final": "HK 01",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -1687,6 +1847,86 @@
     },
     {
       "file": "rule_special.yaml",
+      "domain": "notebook.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_ai_dev",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "notebook.google",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_ai_dev",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "stun.l.google.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun.l.google.com",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "stun1.l.google.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun1.l.google.com",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
+      "domain": "stun.cloudflare.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun.cloudflare.com",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
+      ],
+      "final": "US Residential",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special.yaml",
       "domain": "gemini.google.com",
       "status": "pass",
       "rule": "Match",
@@ -1704,14 +1944,15 @@
       "file": "rule_special.yaml",
       "domain": "openrouter.ai",
       "status": "pass",
-      "rule": "RuleSet",
-      "payload": "overseas_ai_extra",
-      "group": "🧪 AI 备选",
+      "rule": "DomainSuffix",
+      "payload": "openrouter.ai",
+      "group": "🤖 AI 解锁",
       "current": [
-        "🧪 AI 备选",
-        "DIRECT"
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "US Residential"
       ],
-      "final": "DIRECT",
+      "final": "US Residential",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -2058,6 +2299,86 @@
     },
     {
       "file": "rule_special_multi.yaml",
+      "domain": "notebook.google.com",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_ai_dev",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "notebook.google",
+      "status": "pass",
+      "rule": "RuleSet",
+      "payload": "google_ai_dev",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "stun.l.google.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun.l.google.com",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "stun1.l.google.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun1.l.google.com",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
+      "domain": "stun.cloudflare.com",
+      "status": "pass",
+      "rule": "Domain",
+      "payload": "stun.cloudflare.com",
+      "group": "🤖 AI 解锁",
+      "current": [
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
+      ],
+      "final": "CMI 美国 02",
+      "syntheticHTTP": 204,
+      "realServiceAccess": "not-run"
+    },
+    {
+      "file": "rule_special_multi.yaml",
       "domain": "gemini.google.com",
       "status": "pass",
       "rule": "Match",
@@ -2075,14 +2396,15 @@
       "file": "rule_special_multi.yaml",
       "domain": "openrouter.ai",
       "status": "pass",
-      "rule": "RuleSet",
-      "payload": "overseas_ai_extra",
-      "group": "🧪 AI 备选",
+      "rule": "DomainSuffix",
+      "payload": "openrouter.ai",
+      "group": "🤖 AI 解锁",
       "current": [
-        "🧪 AI 备选",
-        "DIRECT"
+        "🤖 AI 解锁",
+        "🛟 AI 自动回退",
+        "CMI 美国 02"
       ],
-      "final": "DIRECT",
+      "final": "CMI 美国 02",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -2157,9 +2479,9 @@
         "🎬 流媒体解锁",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "US 01"
+        "US Residential"
       ],
-      "final": "US 01",
+      "final": "US Residential",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -2174,9 +2496,9 @@
         "🎬 流媒体解锁",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "US 01"
+        "US Residential"
       ],
-      "final": "US 01",
+      "final": "US Residential",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -2191,9 +2513,9 @@
         "🎬 流媒体解锁",
         "🚀 节点选择",
         "♻️ 自动选择",
-        "US 01"
+        "US Residential"
       ],
-      "final": "US 01",
+      "final": "US Residential",
       "syntheticHTTP": 204,
       "realServiceAccess": "not-run"
     },
@@ -2391,13 +2713,13 @@
       ]
     }
   ],
-  "testedAt": "2026-09-25T01:46:40.445Z",
+  "testedAt": "2026-09-25T02:12:25.486Z",
   "inputSha256": {
-    "rule_single.yaml": "31d1f6e6cc472d948bbf824a86d4fbeb7cc01e3fa26431870a1b7d197ed7dd99",
-    "rule_multi.yaml": "2f000029501786ad23fee728b57267dff81ec46201b26743919e340ab9c7734d",
-    "rule_special.yaml": "68a553395c75d5674737c34e5f330b488d04e89e5daa75962a67c06148ebc707",
-    "rule_special_multi.yaml": "b7f1f666a9d014e9b67ded17e32acf41c1203c368270e17ae553f2c859df9b62",
-    "scripts/validate-core.cjs": "72c4a1b4749bf77cd7c6a85314e4ab9f3a776025add034aa482dae8929eb68a5"
+    "rule_single.yaml": "4bcf00e04d2d0aa56d1798d287680dd50255d6d55ef320e6e60061d1d3ccfb5b",
+    "rule_multi.yaml": "7906d599279633b774bae5bbf16a96a9092858e690b754c3558fdeaa39740426",
+    "rule_special.yaml": "7c40a4ea001d71a723d147d8d7819b6008a8ac320e75ab8ef3c703500d4269f7",
+    "rule_special_multi.yaml": "717038b07caca1292a3cde357d31a12daf1f4d4c487a293aecb2d323fee6334b",
+    "scripts/validate-core.cjs": "6b29aa7e0d44c62299ab19f84f9d900d86b6ef4f93fb9d024d4da2572a5af92f"
   },
   "status": "pass"
 }

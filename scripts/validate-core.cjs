@@ -257,7 +257,9 @@ async function main() {
           const tests = [
             ['baidu.com', direct], ['bilibili.com', direct], ['alipay.com', direct], ['deepseek.com', direct], ['badjs.weixinbridge.com', direct],
             ['chatgpt.com', ai], ['claude.ai', ai], ['aistudio.google.com', ai], ['notebooklm.google.com', ai],
-            ['gemini.google.com', special ? direct : ai], ['openrouter.ai', special ? '🧪 AI 备选' : ai], ['grok.com', special ? '🧪 AI 备选' : ai],
+            ['notebook.google.com', ai], ['notebook.google', ai],
+            ['stun.l.google.com', ai], ['stun1.l.google.com', ai], ['stun.cloudflare.com', ai],
+            ['gemini.google.com', special ? direct : ai], ['openrouter.ai', ai], ['grok.com', special ? '🧪 AI 备选' : ai],
             ['google.com', special ? direct : '🚀 节点选择'], ['github.com', special ? direct : '🚀 节点选择'],
             ['netflix.com', special ? direct : '🎬 流媒体解锁'], ['hulu.com', '🎬 流媒体解锁'], ['peacocktv.com', '🎬 流媒体解锁'],
             ['bbc.co.uk', special ? '🎬 流媒体解锁' : '🚀 节点选择'], ['bbc.com', special ? direct : '🚀 节点选择'],
@@ -326,7 +328,7 @@ async function main() {
         for (const server of servers) await close(server);
       }
     }
-    console.log('PASS target-kernel candidates, preference/failure/recovery and 24 routing samples: ' + file);
+    console.log('PASS target-kernel candidates, preference/failure/recovery and 29 routing samples: ' + file);
   }
   report.status = 'pass';
   console.log(`PASS ${report.scenarios.length} component scenarios and ${report.business.length} synthetic routing checks; real TUN/service acceptance not run`);
