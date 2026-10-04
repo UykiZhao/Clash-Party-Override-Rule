@@ -5,6 +5,7 @@
 # 源码合并、设备验收边界见 docs/validation-2026-09-25.md。
 
 # 01 · 基础行为与选择记忆
+# 顶层 ipv6 跟随应用 IPv6 开关；无论开关状态如何，规则层的 ::/0 REJECT 兜底阻止 IPv6 抢占分流。
 mode: rule
 ipv6: false
 unified-delay: true
@@ -14,7 +15,8 @@ profile:
   store-fake-ip: true
 
 # 02 · 自包含 DNS：整对象替换订阅 DNS
-# 2.0.3 初始化 controlDns=false，DNS 策略直接随本对象生效。
+# 应用“DNS 覆写”默认开启时，应用替换默认解析池并置 respect-rules=false，规则分流与 fake-ip 不受影响；
+# 关闭时本对象完整生效，AI 域名 DNS 额外随代理出口。两种状态均稳定可用，稳定优先、泄露防护其次。
 # 引导解析、节点解析、业务解析分开；respect-rules 按 DNS 连接自身的目标分流。
 # fake-ip 只保留兼容排除，不使用全匹配 *；监听仅开放给本机。
 # 内地默认/直连/节点使用国内池；指定海外规则的 Cloudflare/Google DoH 随 AI 出口。
@@ -1046,4 +1048,7 @@ rules:
   - "RULE-SET,cn_ip,🎯 全球直连,no-resolve"
   # 海外规则与最终代理兜底
   - "RULE-SET,geolocation_not_cn,🚀 节点选择"
+  # IPv6 fail-closed：未命中任何规则的 IPv6 一律拒绝，强制回退 IPv4。
+  # 避免切换覆写或应用 IPv6 开关变化时，物理网卡原生 IPv6 绕过 TUN 抢占分流。
+  - "IP-CIDR6,::/0,REJECT,no-resolve"
   - "MATCH,🐟 漏网之鱼"
