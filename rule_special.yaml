@@ -5,9 +5,10 @@
 # 源码合并、设备验收边界见 docs/validation-2026-09-25.md。
 
 # 01 · 基础行为与选择记忆
-# 顶层 ipv6 跟随应用 IPv6 开关；无论开关状态如何，规则层的 ::/0 REJECT 兜底阻止 IPv6 抢占分流。
+# 接收 IPv6 流量以便 TUN 接管；DNS 仍不返回 AAAA，常规域名连接优先使用 IPv4。
+# Clash Party 应用 IPv6 开关也需开启；无 IPv6 网络启动的跨网场景见 README。
 mode: rule
-ipv6: false
+ipv6: true
 unified-delay: true
 tcp-concurrent: true
 profile:
@@ -17,7 +18,7 @@ profile:
 # 02 · DNS：由本覆写管理，应用 DNS 覆写需关闭
 # 节点和直连解析独立走 DIRECT；海外策略显式指定代理组。
 # 自定义 DoH 列在各池首位；同池上游并发查询，顺序不保证独占优先。
-# 双 UDP 引导避免唯一 TCP 853 依赖；保留 Fake-IP 映射与两地一致的基础设置。
+# 两条 IP DoH 引导；用 YAML 锚点集中维护解析池，避免唯一 TCP 853 或节点依赖。
 dns!:
   enable: true
   cache-algorithm: arc
@@ -59,43 +60,38 @@ dns!:
     - time7.*.com
     - "*.ntp.org.cn"
     - "*.pool.ntp.org"
+  # 引导池仅解析 DNS 上游域名；IP DoH 不依赖其他域名先解析成功。
   default-nameserver:
     - https://223.5.5.5/dns-query
     - https://1.1.1.1/dns-query
-  nameserver:
+  # 改动直连池只需改此处；默认、节点和 DIRECT 连接共用上游但职责独立。
+  nameserver: &dns_direct
     - https://edge.1molchuan.top/linuxdo#DIRECT
     - https://223.5.5.5/dns-query#DIRECT
-  proxy-server-nameserver:
-    - https://edge.1molchuan.top/linuxdo#DIRECT
-    - https://223.5.5.5/dns-query#DIRECT
-  nameserver-policy:
-    geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn:
-      - https://edge.1molchuan.top/linuxdo#DIRECT
-      - https://223.5.5.5/dns-query#DIRECT
-    rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static:
-      - https://edge.1molchuan.top/linuxdo#DIRECT
-      - https://223.5.5.5/dns-query#DIRECT
-    stun.l.google.com:
-      - https://edge.1molchuan.top/linuxdo#🤖 AI 解锁
-      - https://1.1.1.1/dns-query#🤖 AI 解锁
-      - https://8.8.8.8/dns-query#🤖 AI 解锁
-    stun1.l.google.com:
-      - https://edge.1molchuan.top/linuxdo#🤖 AI 解锁
-      - https://1.1.1.1/dns-query#🤖 AI 解锁
-      - https://8.8.8.8/dns-query#🤖 AI 解锁
-    stun.cloudflare.com:
-      - https://edge.1molchuan.top/linuxdo#🤖 AI 解锁
-      - https://1.1.1.1/dns-query#🤖 AI 解锁
-      - https://8.8.8.8/dns-query#🤖 AI 解锁
-    rule-set:openai_domain,anthropic_domain,google_ai_dev,hulu_domain,streaming_special,custom_proxy_domain,overseas_ai_extra:
-      - https://edge.1molchuan.top/linuxdo#🤖 AI 解锁
-      - https://1.1.1.1/dns-query#🤖 AI 解锁
-      - https://8.8.8.8/dns-query#🤖 AI 解锁
-  respect-rules: false
-  direct-nameserver:
-    - https://edge.1molchuan.top/linuxdo#DIRECT
-    - https://223.5.5.5/dns-query#DIRECT
+  proxy-server-nameserver: *dns_direct
+  direct-nameserver: *dns_direct
   direct-nameserver-follow-policy: false
+  # 明确 DNS 连接出口；保持业务规则和所有策略组不变。
+  respect-rules: false
+  nameserver-policy:
+    rule-set:domestic_sensitive,domestic_ai_domain,tencent_services,tencent_games_static: *dns_direct
+    geosite:private,cn,apple-cn,microsoft@cn,steam@cn,category-games@cn: *dns_direct
+    stun.l.google.com: &dns_ai
+      - https://edge.1molchuan.top/linuxdo#🤖 AI 解锁
+      - https://1.1.1.1/dns-query#🤖 AI 解锁
+      - https://8.8.8.8/dns-query#🤖 AI 解锁
+    stun1.l.google.com: *dns_ai
+    stun.cloudflare.com: *dns_ai
+    rule-set:openai_domain,anthropic_domain,google_ai_dev,custom_proxy_domain: *dns_ai
+    openrouter.ai: *dns_ai
+    rule-set:hulu_domain,streaming_special: &dns_media
+      - https://edge.1molchuan.top/linuxdo#🎬 流媒体解锁
+      - https://1.1.1.1/dns-query#🎬 流媒体解锁
+      - https://8.8.8.8/dns-query#🎬 流媒体解锁
+    rule-set:overseas_ai_extra: &dns_ai_extra
+      - https://edge.1molchuan.top/linuxdo#🧪 AI 备选
+      - https://1.1.1.1/dns-query#🧪 AI 备选
+      - https://8.8.8.8/dns-query#🧪 AI 备选
 
 # 03 · TUN：兼容应用初始化设置
 # 应用在覆写后合并，最终协议栈、路由和 DNS 劫持以初始化值为准。
@@ -109,6 +105,9 @@ tun!:
     - any:53
     - tcp://any:53
   strict-route: true
+  # 明确 TUN 的 IPv6 地址；顶层 ipv6 与系统检查仍决定是否保留它。
+  inet6-address:
+    - fdfe:dcba:9876::1/126
 
 # 04 · 域名嗅探：保留 HTTP / TLS / QUIC 与兼容排除
 # 2.0.3 默认开启嗅探覆写，会覆盖部分端口、HTTP 目的地行为和 skip-domain。
@@ -536,8 +535,8 @@ rules:
   # 指定流媒体
   - "RULE-SET,hulu_domain,🎬 流媒体解锁"
   - "RULE-SET,streaming_special,🎬 流媒体解锁"
-  # IPv6 fail-closed：未命中任何规则的 IPv6 一律拒绝，强制回退 IPv4。
-  # 避免切换覆写或应用 IPv6 开关变化时，物理网卡原生 IPv6 绕过 TUN 抢占分流。
+  # 仅拒绝已进入内核且未命中前面规则的 IPv6；不能阻断绕过 TUN 的连接。
+  # 应用是否回退 IPv4 取决于自身行为；IPv6 接管须检查 TUN 地址和系统路由。
   - "IP-CIDR6,::/0,REJECT,no-resolve"
   # 其余直连
   - "MATCH,🎯 全球直连"
